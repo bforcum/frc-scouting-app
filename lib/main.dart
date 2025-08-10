@@ -7,11 +7,7 @@ import 'package:scouting_app/page/share_page.dart';
 import 'package:scouting_app/provider/page_provider.dart';
 
 void main() {
-  runApp(
-    const ProviderScope(
-      child: MyApp()
-    )
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +19,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FRC SAASquatch Scouting',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red,
+          brightness: Brightness.dark,
+          dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
+          contrastLevel: 0.5,
+        ),
+        // brightness: Brightness.dark,
       ),
       home: const App(),
     );
@@ -38,10 +40,8 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
-
   @override
   Widget build(BuildContext context) {
-
     int currentPage = ref.watch(pageProvider).index;
 
     return Scaffold(
@@ -51,17 +51,24 @@ class _AppState extends ConsumerState<App> {
         // the App.build method, and use it to set our appbar title.
         title: Text(ref.watch(pageProvider).title),
       ),
-      body: [ScoutingPage(), SharePage(), AnalysisPage(), SettingsPage()][currentPage],
+      body:
+          [
+            ScoutingPage(),
+            SharePage(),
+            AnalysisPage(),
+            SettingsPage(),
+          ][currentPage],
       bottomNavigationBar: NavigationBar(
         destinations: [
           NavigationDestination(icon: Icon(Icons.search), label: "Scouting"),
-          NavigationDestination(icon: Icon(Icons.import_export), label: "Share"),
+          NavigationDestination(icon: Icon(Icons.list), label: "Data"),
           NavigationDestination(icon: Icon(Icons.bar_chart), label: "Analysis"),
           NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
         ],
         selectedIndex: currentPage,
-        onDestinationSelected: (int index) => 
-          ref.read(pageProvider.notifier).state = PageState.values[index],
+        onDestinationSelected:
+            (int index) =>
+                ref.read(pageProvider.notifier).state = PageState.values[index],
       ),
     );
   }

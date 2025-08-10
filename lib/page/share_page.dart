@@ -10,8 +10,6 @@ class SharePage extends StatefulWidget {
 class _SharePageState extends State<SharePage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("Import and Export"),
-    );
+    return const Center(child: Text("Data"));
   }
 }
