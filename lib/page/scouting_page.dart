@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
-import 'package:scouting_app/page/scouting_page/custom_field.dart';
+import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 
 class ScoutingPage extends StatefulWidget {
