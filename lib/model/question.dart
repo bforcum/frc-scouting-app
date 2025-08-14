@@ -1,4 +1,4 @@
-enum QuestionType { binary, counter, number, dropdown, text }
+enum QuestionType { toggle, counter, number, dropdown, text }
 
 abstract class Question {
   final QuestionType type;
@@ -17,13 +17,16 @@ abstract class Question {
   });
 }
 
-class QuestionBinary extends Question {
+class QuestionToggle extends Question {
+  final bool? preset;
+
   @override
-  const QuestionBinary({
+  const QuestionToggle({
     required super.section,
     required super.label,
+    this.preset,
     super.pointVal,
-  }) : super._(type: QuestionType.binary);
+  }) : super._(type: QuestionType.toggle);
 }
 
 class QuestionCounter extends Question {

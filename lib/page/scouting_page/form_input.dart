@@ -3,6 +3,7 @@ import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/scouting_page/form_input/counter_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/number_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
+import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 
 enum FieldType { text, number, counter, dropdown, barSelect, toggle }
 
@@ -14,7 +15,12 @@ class CustomField extends StatelessWidget {
 
   factory CustomField.fromQuestion(Question question) {
     switch (question.type) {
-      case QuestionType.binary:
+      case QuestionType.toggle:
+        question = question as QuestionToggle;
+        return CustomField._(
+          question.label,
+          ToggleInput(key: UniqueKey(), preset: question.preset),
+        );
       case QuestionType.counter:
         question = question as QuestionCounter;
         return CustomField._(
