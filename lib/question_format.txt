@@ -1,0 +1,16 @@
+
+
+S,Match Info
+N,Match number,1,80,0
+N,Team number,1,10000,0
+
+S,Autonomous
+B,Leave
+
+
+S,Tele-Operated
+C,L4 Coral,0,12,0
+C,L3 Coral,0,12,0
+C,L2 Coral,0,12,0
+C,L1 Coral,0,12,0
+D

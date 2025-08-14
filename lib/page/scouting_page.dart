@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_app/page/form_page/custom_fields.dart';
-import 'package:scouting_app/page/form_page/form_section.dart';
+import 'package:scouting_app/model/question.dart';
+import 'package:scouting_app/page/scouting_page/custom_field.dart';
+import 'package:scouting_app/page/scouting_page/form_section.dart';
 
 class ScoutingPage extends StatefulWidget {
   const ScoutingPage({super.key});
@@ -20,17 +21,29 @@ class ScoutingPageState extends State<ScoutingPage> {
           FormSection(
             title: "Match Info",
             children: [
-              CustomField.number(label: "Match number", hintText: "0"),
-              CustomField.number(label: "Team number", hintText: "0000"),
+              CustomField.fromQuestion(
+                QuestionNumber(section: 0, label: "Match number", hint: "0"),
+              ),
+              CustomField.fromQuestion(
+                QuestionNumber(section: 0, label: "Team number", hint: "0000"),
+              ),
             ],
           ),
           FormSection(
             title: "Tele-Operated",
             children: [
-              CustomField.counter(label: "L4 Coral", min: 0, max: 12),
-              CustomField.counter(label: "L3 Coral", min: 0, max: 12),
-              CustomField.counter(label: "L2 Coral", min: 0, max: 12),
-              CustomField.counter(label: "L1 Coral", min: 0, max: 12),
+              CustomField.fromQuestion(
+                QuestionCounter(section: 1, label: "L4 Coral", min: 0, max: 12),
+              ),
+              CustomField.fromQuestion(
+                QuestionCounter(section: 1, label: "L3 Coral", min: 0, max: 12),
+              ),
+              CustomField.fromQuestion(
+                QuestionCounter(section: 1, label: "L2 Coral", min: 0, max: 12),
+              ),
+              CustomField.fromQuestion(
+                QuestionCounter(section: 1, label: "L1 Coral", min: 0, max: 12),
+              ),
             ],
           ),
         ],

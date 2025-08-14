@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
@@ -42,6 +43,7 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     int currentPage = ref.watch(pageProvider).index;
 
     return Scaffold(
