@@ -5,66 +5,36 @@ import 'package:scouting_app/page/scouting_page/form_input/number_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 
-enum FieldType { text, number, counter, dropdown, barSelect, toggle }
-
-class CustomField extends StatelessWidget {
+interface class FormInput extends StatelessWidget {
   final Widget inputField;
-  final String label;
 
-  const CustomField._(this.label, this.inputField);
+  const FormInput._(this.inputField);
 
-  factory CustomField.fromQuestion(Question question) {
+  factory FormInput.fromQuestion(Question question) {
     switch (question.type) {
       case QuestionType.toggle:
         question = question as QuestionToggle;
-        return CustomField._(
-          question.label,
-          ToggleInput(key: UniqueKey(), preset: question.preset),
-        );
+        return FormInput._(ToggleInput(key: UniqueKey(), question: question));
+
       case QuestionType.counter:
         question = question as QuestionCounter;
-        return CustomField._(
-          question.label,
-          CounterInput(
-            key: UniqueKey(),
-            min: question.min,
-            max: question.max,
-            preset: question.preset,
-          ),
-        );
+        return FormInput._(CounterInput(key: UniqueKey(), question: question));
+
       case QuestionType.dropdown:
+        throw UnimplementedError("Dropdown input not implemented yet.");
+
       case QuestionType.number:
         question = question as QuestionNumber;
-        return CustomField._(
-          question.label,
-          NumberField(
-            key: UniqueKey(),
-            hintText: question.hint,
-            min: question.min,
-            max: question.max,
-          ),
-        );
+        return FormInput._(NumberField(key: UniqueKey(), question: question));
+
       case QuestionType.text:
         question = question as QuestionText;
-        return CustomField._(
-          question.label,
-          TextInput(
-            key: UniqueKey(),
-            hintText: question.hintText,
-            maxLength: question.length,
-          ),
-        );
+        return FormInput._(TextInput(key: UniqueKey(), question: question));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(label, style: TextStyle(fontSize: 25)),
-        Spacer(),
-        inputField,
-      ],
-    );
+    return inputField;
   }
 }

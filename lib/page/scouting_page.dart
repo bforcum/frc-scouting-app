@@ -22,10 +22,10 @@ class ScoutingPageState extends State<ScoutingPage> {
             FormSection(
               title: "Match Info",
               children: [
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionNumber(section: 0, label: "Match number", hint: "0"),
                 ),
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionNumber(
                     section: 0,
                     label: "Team number",
@@ -37,7 +37,7 @@ class ScoutingPageState extends State<ScoutingPage> {
             FormSection(
               title: "Tele-Operated",
               children: [
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionCounter(
                     section: 1,
                     label: "L4 Coral",
@@ -45,7 +45,7 @@ class ScoutingPageState extends State<ScoutingPage> {
                     max: 12,
                   ),
                 ),
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionCounter(
                     section: 1,
                     label: "L3 Coral",
@@ -53,7 +53,7 @@ class ScoutingPageState extends State<ScoutingPage> {
                     max: 12,
                   ),
                 ),
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionCounter(
                     section: 1,
                     label: "L2 Coral",
@@ -61,7 +61,7 @@ class ScoutingPageState extends State<ScoutingPage> {
                     max: 12,
                   ),
                 ),
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionCounter(
                     section: 1,
                     label: "L1 Coral",
@@ -69,8 +69,16 @@ class ScoutingPageState extends State<ScoutingPage> {
                     max: 12,
                   ),
                 ),
-                CustomField.fromQuestion(
+                FormInput.fromQuestion(
                   QuestionToggle(section: 1, label: "Movement"),
+                ),
+                FormInput.fromQuestion(
+                  QuestionText(
+                    section: 1,
+                    label: "Additional Notes",
+                    hintText: "Enter any additional notes here",
+                    length: 100,
+                  ),
                 ),
               ],
             ),
