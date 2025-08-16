@@ -73,6 +73,13 @@ class ScoutingPageState extends State<ScoutingPage> {
                   QuestionToggle(section: 1, label: "Movement"),
                 ),
                 FormInput.fromQuestion(
+                  QuestionDropdown(
+                    section: 1,
+                    label: "Robot damage",
+                    options: ["None", "Minor", "Major"],
+                  ),
+                ),
+                FormInput.fromQuestion(
                   QuestionText(
                     section: 1,
                     label: "Additional Notes",
