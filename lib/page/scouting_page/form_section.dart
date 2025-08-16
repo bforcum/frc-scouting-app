@@ -13,7 +13,7 @@ class FormSection extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+        borderRadius: BorderRadius.all(Radius.circular(kBorderRadius)),
         color: Theme.of(context).colorScheme.surfaceContainer,
       ),
       child: Padding(

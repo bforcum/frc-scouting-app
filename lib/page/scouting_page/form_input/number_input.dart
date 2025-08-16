@@ -43,7 +43,7 @@ class _NumberFieldState extends State<NumberField> {
         Container(
           clipBehavior: Clip.hardEdge,
           width: 154,
-          height: 58,
+          height: 60,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(

@@ -1,13 +1,13 @@
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 
-const double borderRadius = 10;
+const double kBorderRadius = 10;
 
-const int maxTeamNumber = 12000;
+const int kMaxTeamNumber = 12000;
 
-final gameFormat = game2025;
+final kGameFormat = kGame2025;
 
-final game2025 = GameFormat(
+final kGame2025 = GameFormat(
   sections: ["Autonomous", "Tele-Op", "End Game", "Additional"],
   questions: [
     QuestionCounter(

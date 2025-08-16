@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class DropdownInput extends StatefulWidget {
+class DropdownInput extends StatelessWidget {
   final QuestionDropdown question;
   final Function(int)? onChanged;
 
   const DropdownInput({super.key, required this.question, this.onChanged});
-
-  @override
-  State<DropdownInput> createState() => _DropdownInputState();
-}
-
-class _DropdownInputState extends State<DropdownInput> {
-  late final QuestionDropdown question;
-
-  @override
-  void initState() {
-    super.initState();
-
-    question = widget.question;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +36,8 @@ class _DropdownInputState extends State<DropdownInput> {
                 DropdownMenuEntry(value: i, label: question.options[i]),
             ],
             onSelected: (value) {
-              if (widget.onChanged != null && value != null) {
-                widget.onChanged!(value);
+              if (onChanged != null && value != null) {
+                onChanged!(value);
               }
             },
           ),

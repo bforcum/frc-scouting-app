@@ -11,16 +11,27 @@ interface class FormInput extends StatelessWidget {
 
   const FormInput._(this.inputField);
 
-  factory FormInput.fromQuestion(Question question) {
+  factory FormInput.fromQuestion(
+    Question question, {
+    Function(dynamic)? onChanged,
+  }) {
     switch (question.type) {
       case QuestionType.toggle:
         return FormInput._(
-          ToggleInput(key: UniqueKey(), question: question as QuestionToggle),
+          ToggleInput(
+            key: UniqueKey(),
+            question: question as QuestionToggle,
+            onChanged: onChanged,
+          ),
         );
 
       case QuestionType.counter:
         return FormInput._(
-          CounterInput(key: UniqueKey(), question: question as QuestionCounter),
+          CounterInput(
+            key: UniqueKey(),
+            question: question as QuestionCounter,
+            onChanged: onChanged,
+          ),
         );
 
       case QuestionType.dropdown:
@@ -28,16 +39,28 @@ interface class FormInput extends StatelessWidget {
           DropdownInput(
             key: UniqueKey(),
             question: question as QuestionDropdown,
+            onChanged: onChanged,
           ),
         );
 
       case QuestionType.number:
         question = question as QuestionNumber;
-        return FormInput._(NumberField(key: UniqueKey(), question: question));
+        return FormInput._(
+          NumberField(
+            key: UniqueKey(),
+            question: question,
+            onChanged: onChanged,
+          ),
+        );
 
       case QuestionType.text:
-        question = question as QuestionText;
-        return FormInput._(TextInput(key: UniqueKey(), question: question));
+        return FormInput._(
+          TextInput(
+            key: UniqueKey(),
+            question: question as QuestionText,
+            onChanged: onChanged,
+          ),
+        );
     }
   }
 
