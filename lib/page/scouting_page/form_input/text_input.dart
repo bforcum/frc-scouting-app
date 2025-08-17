@@ -55,10 +55,10 @@ class _TextInputState extends State<TextInput> {
             padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
             child: TextField(
               minLines: 1,
-              maxLines: 5,
+              maxLines: null,
               onChanged: widget.onChanged,
               focusNode: _focusNode,
-              keyboardType: TextInputType.multiline,
+              keyboardType: TextInputType.text,
               maxLength: question.length,
               autocorrect: false,
               textAlign: TextAlign.left,

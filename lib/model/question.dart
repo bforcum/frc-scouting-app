@@ -1,7 +1,19 @@
-enum QuestionType { toggle, counter, number, dropdown, text }
+enum QuestionType {
+  toggle(type: bool),
+  counter(type: int),
+  number(type: int),
+  dropdown(type: int),
+  text(type: String);
+
+  const QuestionType({required this.type});
+
+  final Type type;
+}
 
 abstract class Question {
   final QuestionType type;
+
+  final String key;
 
   final int section;
 
@@ -12,6 +24,7 @@ abstract class Question {
   const Question._({
     required this.type,
     required this.section,
+    required this.key,
     required this.label,
     this.pointVal,
   });
@@ -23,6 +36,7 @@ class QuestionToggle extends Question {
   @override
   const QuestionToggle({
     required super.section,
+    required super.key,
     required super.label,
     this.preset,
     super.pointVal,
@@ -36,6 +50,7 @@ class QuestionCounter extends Question {
   @override
   const QuestionCounter({
     required super.section,
+    required super.key,
     required super.label,
     super.pointVal,
     required this.min,
@@ -52,6 +67,7 @@ class QuestionNumber extends Question {
   @override
   const QuestionNumber({
     required super.section,
+    required super.key,
     required super.label,
     super.pointVal,
     this.min,
@@ -67,6 +83,7 @@ class QuestionDropdown extends Question {
   @override
   const QuestionDropdown({
     required super.section,
+    required super.key,
     required super.label,
     super.pointVal,
     required this.options,
@@ -80,6 +97,7 @@ class QuestionText extends Question {
   @override
   const QuestionText({
     required super.section,
+    required super.key,
     required super.label,
     super.pointVal,
     required this.length,

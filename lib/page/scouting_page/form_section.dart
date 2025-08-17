@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:scouting_app/consts.dart';
 
 class FormSection extends StatelessWidget {
-  final String? title;
+  final String title;
 
   final List<Widget> children;
 
-  const FormSection({super.key, this.title, required this.children});
+  const FormSection({super.key, required this.title, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +22,13 @@ class FormSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 20,
-          children: List.from(
-            title != null
-                ? [
-                  Text(
-                    title!,
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                ]
-                : [],
-          )..addAll(children),
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            ...children,
+          ],
         ),
       ),
     );
