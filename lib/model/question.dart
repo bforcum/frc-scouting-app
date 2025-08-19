@@ -93,7 +93,9 @@ class QuestionDropdown extends Question {
 
 class QuestionText extends Question {
   final int length;
-  final String? hintText;
+  final String? hint;
+  final bool requiredField;
+  final bool multiline;
   @override
   const QuestionText({
     required super.section,
@@ -101,6 +103,8 @@ class QuestionText extends Question {
     required super.label,
     super.pointVal,
     required this.length,
-    this.hintText,
+    this.requiredField = false,
+    this.multiline = false,
+    this.hint,
   }) : super._(type: QuestionType.text);
 }

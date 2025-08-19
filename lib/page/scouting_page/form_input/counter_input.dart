@@ -1,26 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class CounterInput extends StatefulWidget {
-  final Function(int)? onChanged;
+class CounterInput extends StatelessWidget {
+  final Function(int) onChanged;
+  final int value;
   final QuestionCounter question;
-  const CounterInput({super.key, this.onChanged, required this.question});
-
-  @override
-  State<CounterInput> createState() => _CounterInputState();
-}
-
-class _CounterInputState extends State<CounterInput> {
-  late final QuestionCounter question;
-
-  int count = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    question = widget.question;
-    count = question.preset ?? question.min;
-  }
+  CounterInput({
+    super.key,
+    int? value,
+    required this.onChanged,
+    required this.question,
+  }) : value = value ?? question.preset ?? question.min;
 
   @override
   Widget build(BuildContext context) {
@@ -46,20 +36,13 @@ class _CounterInputState extends State<CounterInput> {
                 icon: Icon(Icons.horizontal_rule),
 
                 onPressed:
-                    (count <= question.min)
-                        ? null
-                        : () => setState(() {
-                          count -= 1;
-                          if (widget.onChanged != null) {
-                            widget.onChanged!(count);
-                          }
-                        }),
+                    (value <= question.min) ? null : () => onChanged(value - 1),
               ),
               Container(
                 width: 40,
                 alignment: Alignment.center,
                 child: Text(
-                  '$count',
+                  '$value',
                   style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
                 ),
               ),
@@ -67,14 +50,7 @@ class _CounterInputState extends State<CounterInput> {
                 iconSize: 40,
                 icon: Icon(Icons.add),
                 onPressed:
-                    (count >= question.max)
-                        ? null
-                        : () => setState(() {
-                          count += 1;
-                          if (widget.onChanged != null) {
-                            widget.onChanged!(count);
-                          }
-                        }),
+                    (value >= question.max) ? null : () => onChanged(value + 1),
               ),
             ],
           ),

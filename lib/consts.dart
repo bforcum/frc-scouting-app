@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 
@@ -7,10 +8,34 @@ const int kMaxTeamNumber = 12000;
 
 final kGameFormat = kGame2025;
 
+final List<Question> kRequiredQuestions = [
+  QuestionNumber(
+    key: "teamNumber",
+    section: 0,
+    label: "Team number",
+    hint: "0000",
+  ),
+  QuestionNumber(
+    key: "matchNumber",
+    section: 0,
+    label: "Match number",
+    hint: "0",
+  ),
+  QuestionText(
+    key: "scoutName",
+    section: 0,
+    label: "Scout name",
+    length: 30,
+    hint: "Full name",
+    requiredField: true,
+  ),
+];
+
 final kGame2025 = GameFormat(
   name: "2025",
   sections: ["Autonomous", "Tele-Op", "End Game", "Additional"],
   questions: [
+    QuestionToggle(key: "autoMove", section: 0, label: "Movement"),
     QuestionCounter(
       key: "autoL4",
       section: 0,
@@ -75,5 +100,21 @@ final kGame2025 = GameFormat(
       max: 12,
       pointVal: (n) => 2 * n,
     ),
+    QuestionText(
+      key: "notes",
+      section: 3,
+      label: "Notes",
+      length: 150,
+      hint: "Enter any additional notes here",
+      multiline: true,
+    ),
   ],
+);
+
+final kButtonStyle = ButtonStyle(
+  padding: WidgetStatePropertyAll(const EdgeInsets.all(0)),
+  shape: WidgetStatePropertyAll(
+    RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  ),
+  alignment: Alignment.center,
 );

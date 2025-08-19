@@ -4,8 +4,14 @@ import 'package:scouting_app/model/question.dart';
 class TextInput extends StatefulWidget {
   final Function(String)? onChanged;
   final QuestionText question;
+  final String? initialValue;
 
-  const TextInput({super.key, required this.question, this.onChanged});
+  const TextInput({
+    super.key,
+    required this.question,
+    this.initialValue,
+    this.onChanged,
+  });
 
   @override
   State<TextInput> createState() => _TextInputState();
@@ -22,13 +28,13 @@ class _TextInputState extends State<TextInput> {
     super.initState();
 
     question = widget.question;
-    _hintText = question.hintText ?? "";
+    _hintText = question.hint ?? "";
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _hintText = "";
       } else {
-        _hintText = question.hintText ?? "";
+        _hintText = question.hint ?? "";
       }
       setState(() {});
     });
@@ -52,10 +58,12 @@ class _TextInputState extends State<TextInput> {
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-            child: TextField(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: TextFormField(
               minLines: 1,
-              maxLines: null,
+              maxLines: widget.question.multiline ? null : 1,
+              initialValue:
+                  (widget.initialValue != "") ? widget.initialValue : null,
               onChanged: widget.onChanged,
               focusNode: _focusNode,
               keyboardType: TextInputType.text,

@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scouting_app/model/question.dart';
 
-class NumberField extends StatefulWidget {
-  final Function(String)? onChanged;
+class NumberInput extends StatefulWidget {
+  final Function(int?) onChanged;
   final QuestionNumber question;
+  final int? initialValue;
 
-  const NumberField({super.key, required this.question, this.onChanged});
+  const NumberInput({
+    super.key,
+    required this.question,
+    required this.onChanged,
+    this.initialValue,
+  });
 
   @override
-  State<NumberField> createState() => _NumberFieldState();
+  State<NumberInput> createState() => _NumberInputState();
 }
 
-class _NumberFieldState extends State<NumberField> {
+class _NumberInputState extends State<NumberInput> {
   late final QuestionNumber question;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
@@ -23,6 +30,7 @@ class _NumberFieldState extends State<NumberField> {
     question = widget.question;
 
     _hintText = question.hint ?? "0";
+    _controller.text = widget.initialValue?.toString() ?? "";
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -53,7 +61,9 @@ class _NumberFieldState extends State<NumberField> {
             borderRadius: BorderRadius.circular(40),
           ),
           child: TextFormField(
-            onChanged: widget.onChanged,
+            onChanged:
+                (value) =>
+                    widget.onChanged((value != "") ? int.parse(value) : null),
             controller: _controller,
             focusNode: _focusNode,
             onTap: () {
@@ -62,19 +72,21 @@ class _NumberFieldState extends State<NumberField> {
                 extentOffset: _controller.text.length,
               );
             },
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             validator: (text) {
               if (text?.isEmpty ?? true) {
                 return null;
               }
-              int? val = int.tryParse(text!);
-              if (val == null) {
-                return "";
-              }
+              int val = int.parse(text!);
+
               if ((question.min != null && (val < question.min!)) ||
                   (question.max != null && val > question.max!)) {
                 return "";
               }
               return null;
+            },
+            onTapOutside: (event) {
+              _focusNode.unfocus();
             },
             keyboardType: TextInputType.number,
             autocorrect: false,
