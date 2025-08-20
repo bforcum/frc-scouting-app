@@ -19,35 +19,49 @@ class FormInput extends ConsumerWidget {
       ref.read(currentFormDataProvider.notifier).setValue(question.key, value);
     }
 
+    ref.listen(formResetProvider, (previous, next) {
+      (context as Element).markNeedsBuild(); // Force rebuild when form is reset
+    });
+    Key fieldKey = ValueKey(ref.watch(formResetProvider));
+
     FormField formField = switch (question.type) {
       QuestionType.toggle => FormField<bool>(
+        key: fieldKey,
         initialValue:
-            ref
-                .watch(currentFormDataProvider.notifier)
-                .getValue(question.key) ??
+            ref.watch(currentFormDataProvider).data[question.key] ??
             (question as QuestionToggle).preset ??
             false,
         builder:
             (formState) => ToggleInput(
               question: question as QuestionToggle,
-              value: ref
-                  .watch(currentFormDataProvider.notifier)
-                  .getValue(question.key),
-              onChanged: onChanged,
+              value: ref.watch(currentFormDataProvider).data[question.key],
+              onChanged: (value) {
+                onChanged(value);
+                formState.didChange(value);
+                if (formState.hasError) {
+                  formState.validate();
+                }
+              },
             ),
       ),
       QuestionType.counter => FormField<int>(
+        key: fieldKey,
         initialValue: ref.watch(currentFormDataProvider).data[question.key],
         builder:
             (formState) => CounterInput(
               question: question as QuestionCounter,
-              value: ref
-                  .watch(currentFormDataProvider.notifier)
-                  .getValue(question.key),
-              onChanged: onChanged,
+              value: ref.watch(currentFormDataProvider).data[question.key],
+              onChanged: (value) {
+                onChanged(value);
+                formState.didChange(value);
+                if (formState.hasError) {
+                  formState.validate();
+                }
+              },
             ),
       ),
       QuestionType.number => FormField<int>(
+        key: fieldKey,
         validator: (value) {
           QuestionNumber questionNumber = question as QuestionNumber;
           if (value == null) {
@@ -55,36 +69,71 @@ class FormInput extends ConsumerWidget {
           }
 
           if ((questionNumber.min != null && value < questionNumber.min!) ||
-              (questionNumber.min != null && value > questionNumber.max!)) {
+              (questionNumber.max != null && value > questionNumber.max!)) {
             return 'Value must be between ${questionNumber.min} and ${questionNumber.max}';
           }
           return null;
         },
-        initialValue: ref
-            .watch(currentFormDataProvider.notifier)
-            .getValue(question.key),
+        initialValue: ref.watch(currentFormDataProvider).data[question.key],
         builder:
             (formState) => NumberInput(
               initialValue:
                   ref.watch(currentFormDataProvider).data[question.key],
+              formState: formState,
               question: question as QuestionNumber,
-              onChanged: onChanged,
+              onChanged: (value) {
+                onChanged(value);
+                formState.didChange(value);
+                if (formState.hasError) {
+                  formState.validate();
+                }
+              },
             ),
       ),
       QuestionType.dropdown => FormField<int>(
+        key: fieldKey,
+        validator: (value) {
+          if (value == null) {
+            return 'Please select an option';
+          }
+          return null;
+        },
+        initialValue: ref.watch(currentFormDataProvider).data[question.key],
         builder:
             (formState) => DropdownInput(
               question: question as QuestionDropdown,
-              onChanged: onChanged,
+              formState: formState,
+              onChanged: (value) {
+                onChanged(value);
+                if (formState.hasError) {
+                  formState.validate();
+                }
+              },
             ),
       ),
       QuestionType.text => FormField<String>(
+        key: fieldKey,
+        validator: (value) {
+          if ((value == null || value == "") &&
+              (question as QuestionText).requiredField) {
+            return 'Please respond to the question';
+          }
+          return null;
+        },
+        initialValue: ref.watch(currentFormDataProvider).data[question.key],
         builder:
             (formState) => TextInput(
               initialValue:
                   ref.watch(currentFormDataProvider).data[question.key],
+              formState: formState,
               question: question as QuestionText,
-              onChanged: onChanged,
+              onChanged: (value) {
+                onChanged(value);
+                formState.didChange(value);
+                if (formState.hasError) {
+                  formState.validate();
+                }
+              },
             ),
       ),
     };

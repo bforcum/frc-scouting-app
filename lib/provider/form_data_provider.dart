@@ -21,8 +21,19 @@ class CurrentFormData extends _$CurrentFormData {
   }
 
   void clear() {
-    var data = state.data.entries;
-    data = data.map((e) => MapEntry(e.key, null));
-    state = state.copyWith(data: Map.fromEntries(data));
+    state = FormDataModel.empty();
+    ref.read(formResetProvider.notifier).reset();
   }
 }
+
+class FormReset extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void reset() {
+    state += 1; // Reset the state to trigger rebuilds
+    ref.notifyListeners();
+  }
+}
+
+final formResetProvider = NotifierProvider<FormReset, int>(FormReset.new);

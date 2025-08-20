@@ -5,10 +5,12 @@ class TextInput extends StatefulWidget {
   final Function(String)? onChanged;
   final QuestionText question;
   final String? initialValue;
+  final FormFieldState<String> formState;
 
   const TextInput({
     super.key,
     required this.question,
+    required this.formState,
     this.initialValue,
     this.onChanged,
   });
@@ -52,7 +54,10 @@ class _TextInputState extends State<TextInput> {
           alignment: Alignment.topLeft,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color:
+                  widget.formState.errorText != null
+                      ? Theme.of(context).colorScheme.errorContainer
+                      : Theme.of(context).colorScheme.outline,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(15),

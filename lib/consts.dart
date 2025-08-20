@@ -4,8 +4,6 @@ import 'package:scouting_app/model/question.dart';
 
 const double kBorderRadius = 10;
 
-const int kMaxTeamNumber = 12000;
-
 final kGameFormat = kGame2025;
 
 final List<Question> kRequiredQuestions = [
@@ -20,6 +18,7 @@ final List<Question> kRequiredQuestions = [
     section: 0,
     label: "Match number",
     hint: "0",
+    min: 1,
   ),
   QuestionText(
     key: "scoutName",

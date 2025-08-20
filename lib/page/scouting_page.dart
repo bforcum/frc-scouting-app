@@ -17,6 +17,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
   late FormSection matchInfoSection;
   late List<FormSection> sections;
   final _formKey = GlobalKey<FormState>();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -51,10 +52,11 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
   Widget build(BuildContext context) {
     // Unique key for the form
     return SingleChildScrollView(
+      controller: _scrollController,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
-          autovalidateMode: AutovalidateMode.onUserInteraction,
+          autovalidateMode: AutovalidateMode.onUnfocus,
           key: _formKey,
           child: Column(
             spacing: 20,
@@ -74,29 +76,42 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                           ),
                         ),
                         onPressed: () async {
-                          if (!await showConfirmationDialog(
-                            context,
-                            ConfirmationInfo(
-                              title: "Submit Form",
-                              content:
-                                  "Are you sure you want to submit the form?",
-                            ),
-                          )) {
+                          if (!_formKey.currentState!.validate()) {
+                            // If the form is not valid, show a snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  "Please fill out all required fields.",
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!(await showConfirmationDialog(
+                                context,
+                                ConfirmationInfo(
+                                  title: "Submit Form",
+                                  content:
+                                      "Are you sure you want to submit the form?",
+                                ),
+                              ) ??
+                              false)) {
                             return;
                           } // Validate and submit the form
-                          if ((_formKey.currentState as FormState).validate()) {
-                            // Handle form submission
-                            ref
-                                .read(currentFormDataProvider.notifier)
-                                .setValue("gameFormatName", kGameFormat.name);
-                            var formData = ref.read(currentFormDataProvider);
-                            var matchData = formData.toMatchData();
 
-                            ref
-                                .read(currentFormDataProvider.notifier)
-                                .clear(); // Clear form data after submission
-                            // TODO: Handle matchData submission
-                          }
+                          // Handle form submission
+                          ref
+                              .read(currentFormDataProvider.notifier)
+                              .setValue("gameFormatName", kGameFormat.name);
+                          var formData = ref.read(currentFormDataProvider);
+                          var matchData = formData.toMatchData();
+
+                          ref.read(currentFormDataProvider.notifier).clear();
+                          _formKey.currentState!
+                              .didChangeDependencies(); // Clear form data after submission
+                          _scrollController.jumpTo(0);
+                          // TODO: Handle matchData submission
                         },
                         child: const Text(
                           "Submit",
@@ -116,17 +131,23 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                         ),
                       ),
                       onPressed: () async {
-                        if (!await showConfirmationDialog(
-                          context,
-                          ConfirmationInfo(
-                            title: "Clear Form",
-                            content: "Are you sure you want to clear the form?",
-                          ),
-                        )) {
+                        if (!(await showConfirmationDialog(
+                              context,
+                              ConfirmationInfo(
+                                title: "Clear Form",
+                                content:
+                                    "Are you sure you want to clear the form?",
+                              ),
+                            ) ??
+                            false)) {
                           return;
                         } // Handle form reset
-                        (_formKey.currentState as FormState).reset();
                         ref.read(currentFormDataProvider.notifier).clear();
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
                       },
                       child: const Icon(Icons.delete, size: 25),
                     ),

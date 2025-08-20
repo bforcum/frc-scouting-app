@@ -4,8 +4,14 @@ import 'package:scouting_app/model/question.dart';
 class DropdownInput extends StatelessWidget {
   final QuestionDropdown question;
   final Function(int)? onChanged;
+  final FormFieldState<int> formState;
 
-  const DropdownInput({super.key, required this.question, this.onChanged});
+  const DropdownInput({
+    super.key,
+    required this.question,
+    required this.formState,
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,10 @@ class DropdownInput extends StatelessWidget {
           height: 60,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color:
+                  formState.errorText != null
+                      ? Theme.of(context).colorScheme.errorContainer
+                      : Theme.of(context).colorScheme.outline,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(30),

@@ -6,12 +6,14 @@ class NumberInput extends StatefulWidget {
   final Function(int?) onChanged;
   final QuestionNumber question;
   final int? initialValue;
+  final FormFieldState<int> formState;
 
   const NumberInput({
     super.key,
     required this.question,
     required this.onChanged,
     this.initialValue,
+    required this.formState,
   });
 
   @override
@@ -55,7 +57,10 @@ class _NumberInputState extends State<NumberInput> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color:
+                  widget.formState.errorText != null
+                      ? Theme.of(context).colorScheme.errorContainer
+                      : Theme.of(context).colorScheme.outline,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(40),
