@@ -6,7 +6,7 @@ import 'package:scouting_app/page/scouting_page/form_input/dropdown_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/number_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
-import 'package:scouting_app/provider/form_data_provider.dart';
+import 'package:scouting_app/provider/form_field_provider.dart';
 
 class FormInput extends ConsumerWidget {
   final Question question;
@@ -15,8 +15,11 @@ class FormInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(formFieldNotifierProvider(question.key));
     void onChanged(dynamic value) {
-      ref.read(currentFormDataProvider.notifier).setValue(question.key, value);
+      ref
+          .read(formFieldNotifierProvider(question.key).notifier)
+          .setValue(value);
     }
 
     ref.listen(formResetProvider, (previous, next) {
@@ -27,14 +30,11 @@ class FormInput extends ConsumerWidget {
     FormField formField = switch (question.type) {
       QuestionType.toggle => FormField<bool>(
         key: fieldKey,
-        initialValue:
-            ref.watch(currentFormDataProvider).data[question.key] ??
-            (question as QuestionToggle).preset ??
-            false,
+        initialValue: value ?? (question as QuestionToggle).preset ?? false,
         builder:
             (formState) => ToggleInput(
               question: question as QuestionToggle,
-              value: ref.watch(currentFormDataProvider).data[question.key],
+              value: value,
               onChanged: (value) {
                 onChanged(value);
                 formState.didChange(value);
@@ -46,11 +46,11 @@ class FormInput extends ConsumerWidget {
       ),
       QuestionType.counter => FormField<int>(
         key: fieldKey,
-        initialValue: ref.watch(currentFormDataProvider).data[question.key],
+        initialValue: value,
         builder:
             (formState) => CounterInput(
               question: question as QuestionCounter,
-              value: ref.watch(currentFormDataProvider).data[question.key],
+              value: value,
               onChanged: (value) {
                 onChanged(value);
                 formState.didChange(value);
@@ -74,11 +74,10 @@ class FormInput extends ConsumerWidget {
           }
           return null;
         },
-        initialValue: ref.watch(currentFormDataProvider).data[question.key],
+        initialValue: value,
         builder:
             (formState) => NumberInput(
-              initialValue:
-                  ref.watch(currentFormDataProvider).data[question.key],
+              initialValue: value,
               formState: formState,
               question: question as QuestionNumber,
               onChanged: (value) {
@@ -98,7 +97,7 @@ class FormInput extends ConsumerWidget {
           }
           return null;
         },
-        initialValue: ref.watch(currentFormDataProvider).data[question.key],
+        initialValue: value,
         builder:
             (formState) => DropdownInput(
               question: question as QuestionDropdown,
@@ -120,11 +119,10 @@ class FormInput extends ConsumerWidget {
           }
           return null;
         },
-        initialValue: ref.watch(currentFormDataProvider).data[question.key],
+        initialValue: value,
         builder:
             (formState) => TextInput(
-              initialValue:
-                  ref.watch(currentFormDataProvider).data[question.key],
+              initialValue: value,
               formState: formState,
               question: question as QuestionText,
               onChanged: (value) {

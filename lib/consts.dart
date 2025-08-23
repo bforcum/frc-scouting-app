@@ -6,6 +6,12 @@ const double kBorderRadius = 10;
 
 final kGameFormat = kGame2025;
 
+final String kDbName = "scouting_app";
+
+final bool incrementMatchNumber = true;
+
+final List<GameFormat> kSupportedGameFormats = [kGame2025];
+
 final List<Question> kRequiredQuestions = [
   QuestionNumber(
     key: "teamNumber",
@@ -19,6 +25,7 @@ final List<Question> kRequiredQuestions = [
     label: "Match number",
     hint: "0",
     min: 1,
+    max: 100,
   ),
   QuestionText(
     key: "scoutName",
@@ -106,6 +113,14 @@ final kGame2025 = GameFormat(
       length: 150,
       hint: "Enter any additional notes here",
       multiline: true,
+    ),
+    QuestionToggle(key: "didHang", section: 2, label: "Cage hang?"),
+    QuestionDropdown(
+      key: "collab",
+      section: 2,
+      label: "Collaboration",
+      options: ["Bad", "Standard", "Excellent"],
+      preset: 1,
     ),
   ],
 );

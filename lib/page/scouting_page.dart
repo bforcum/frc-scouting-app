@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/model/form_data.dart';
+import 'package:scouting_app/model/match_data.dart';
+import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
+import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
-import 'package:scouting_app/provider/form_data_provider.dart';
+import 'package:scouting_app/provider/database_provider.dart';
+import 'package:scouting_app/provider/form_field_provider.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
   const ScoutingPage({super.key});
@@ -75,44 +80,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                             Theme.of(context).colorScheme.primaryContainer,
                           ),
                         ),
-                        onPressed: () async {
-                          if (!_formKey.currentState!.validate()) {
-                            // If the form is not valid, show a snackbar
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  "Please fill out all required fields.",
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-
-                          if (!(await showConfirmationDialog(
-                                context,
-                                ConfirmationInfo(
-                                  title: "Submit Form",
-                                  content:
-                                      "Are you sure you want to submit the form?",
-                                ),
-                              ) ??
-                              false)) {
-                            return;
-                          } // Validate and submit the form
-
-                          // Handle form submission
-                          ref
-                              .read(currentFormDataProvider.notifier)
-                              .setValue("gameFormatName", kGameFormat.name);
-                          var formData = ref.read(currentFormDataProvider);
-                          var matchData = formData.toMatchData();
-
-                          ref.read(currentFormDataProvider.notifier).clear();
-                          _formKey.currentState!
-                              .didChangeDependencies(); // Clear form data after submission
-                          _scrollController.jumpTo(0);
-                          // TODO: Handle matchData submission
-                        },
+                        onPressed: _submit,
                         child: const Text(
                           "Submit",
                           style: TextStyle(fontSize: 25),
@@ -130,25 +98,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                           Theme.of(context).colorScheme.errorContainer,
                         ),
                       ),
-                      onPressed: () async {
-                        if (!(await showConfirmationDialog(
-                              context,
-                              ConfirmationInfo(
-                                title: "Clear Form",
-                                content:
-                                    "Are you sure you want to clear the form?",
-                              ),
-                            ) ??
-                            false)) {
-                          return;
-                        } // Handle form reset
-                        ref.read(currentFormDataProvider.notifier).clear();
-                        _scrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
+                      onPressed: _clear,
                       child: const Icon(Icons.delete, size: 25),
                     ),
                   ),
@@ -159,5 +109,77 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
         ),
       ),
     );
+  }
+
+  void _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      showSnackBarMessage(context, "Please fill out all required fields.");
+      return;
+    }
+
+    if (!(await showConfirmationDialog(
+          context,
+          ConfirmationInfo(
+            title: "Submit Form",
+            content: "Are you sure you want to submit the form?",
+          ),
+        ) ??
+        false)) {
+      return null;
+    } // Validate and submit the form
+
+    // Handle form submission
+
+    final data = <String, dynamic>{};
+
+    data["gameFormatName"] = kGameFormat.name;
+    data["dateTime"] = DateTime.now().toUtc();
+
+    // TODO load default values into providers
+    for (var question in List<Question>.from([
+      ...kRequiredQuestions,
+      ...kGameFormat.questions,
+    ])) {
+      dynamic value = ref.read(formFieldNotifierProvider(question.key));
+      data[question.key] = value;
+    }
+
+    MatchData? matchData = FormDataModel(data).toMatchData();
+
+    if (matchData == null) {
+      if (context.mounted) {
+        showSnackBarMessage(context, "Please fill out all fields");
+      }
+    }
+
+    final db = ref.read(databaseProvider);
+
+    try {
+      await db.into(db.matchDataTable).insert(matchData!);
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBarMessage(context, "This match already exists");
+      }
+      return;
+    }
+
+    // Clear form data after submission
+    for (var question in List<Question>.from([
+      ...kRequiredQuestions,
+      ...kGameFormat.questions,
+    ])) {
+      ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
+    }
+    _scrollController.jumpTo(0);
+  }
+
+  void _clear() async {
+    for (var question in List<Question>.from([
+      ...kRequiredQuestions,
+      ...kGameFormat.questions,
+    ])) {
+      ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
+    }
+    _scrollController.jumpTo(0);
   }
 }

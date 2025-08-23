@@ -38,6 +38,11 @@ dependencies:
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
   freezed_annotation: ^3.1.0
+  drift: ^2.28.1
+  drift_flutter: ^0.2.5
+  path_provider: ^2.1.5 
+  buffer: ^1.2.3
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +60,7 @@ dev_dependencies:
   riverpod_lint: ^2.6.5
   freezed: ^3.1.0
   json_serializable: ^6.9.5
+  drift_dev: ^2.28.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

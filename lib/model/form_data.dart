@@ -8,23 +8,26 @@ part 'form_data.freezed.dart';
 abstract class FormDataModel with _$FormDataModel {
   const FormDataModel._();
 
-  const factory FormDataModel({required Map<String, dynamic> data}) =
-      _FormDataModel;
+  const factory FormDataModel(Map<String, dynamic> data) = _FormDataModel;
 
   factory FormDataModel.empty() {
     var emptyData = <String, dynamic>{};
 
-    for (var question in kRequiredQuestions) {
-      emptyData[question.key] = null; // Initialize required questions to null
-    }
+    emptyData["teamNumber"] = null;
+    emptyData["dateTime"] = null;
+    emptyData["matchNumber"] = null;
+    emptyData["gameFormatName"] = null;
+    emptyData["gameFormatName"] = null;
 
     for (var question in kGameFormat.questions) {
       emptyData[question.key] = null; // Initialize all questions to null
     }
-    return FormDataModel(data: emptyData);
+    return FormDataModel(emptyData);
   }
 
-  MatchDataModel? toMatchData() {
+  MatchData? toMatchData() {
+    if (data["gameFormatName"] == null) return null;
+    if (data["dateTime"] == null) return null;
     for (var key in kRequiredQuestions.map((q) => q.key)) {
       if (!data.containsKey(key) || data[key] == null) {
         return null; // Ensure all questions are included
@@ -36,13 +39,6 @@ abstract class FormDataModel with _$FormDataModel {
         return null; // Ensure all questions are included
       }
     }
-
-    return MatchDataModel(
-      teamNumber: int.parse(data["teamNumber"]!),
-      matchNumber: int.parse(data["matchNumber"]!),
-      gameFormatName: data["gameFormatName"]!,
-      scoutName: data["scoutName"]!,
-      data: data,
-    );
+    return MatchData.fromMap(data);
   }
 }

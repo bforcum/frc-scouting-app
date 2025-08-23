@@ -17,7 +17,7 @@ class CounterInput extends StatelessWidget {
     return Row(
       children: [
         Text(question.label, style: TextStyle(fontSize: 25)),
-        Spacer(),
+        const Spacer(),
         Container(
           height: 60,
           decoration: BoxDecoration(

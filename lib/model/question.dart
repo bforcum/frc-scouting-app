@@ -56,7 +56,8 @@ class QuestionCounter extends Question {
     required this.min,
     required this.max,
     this.preset,
-  }) : super._(type: QuestionType.counter);
+  }) : assert(max - min < 256, "Counter range must be less than 256"),
+       super._(type: QuestionType.counter);
 }
 
 class QuestionNumber extends Question {
@@ -70,10 +71,15 @@ class QuestionNumber extends Question {
     required super.key,
     required super.label,
     super.pointVal,
-    this.min,
-    this.max,
+    this.min = 0,
+    this.max = 65535,
     this.hint,
-  }) : super._(type: QuestionType.number);
+  }) : assert(
+         (min ?? 0) >= 0 && (max ?? 65535) < 65536,
+         "Min and max must be in 16-bit int range",
+       ),
+       assert((min ?? 0) <= (max ?? 65535), "Min can't be greater than max"),
+       super._(type: QuestionType.number);
 }
 
 class QuestionDropdown extends Question {

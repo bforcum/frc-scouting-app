@@ -5,7 +5,6 @@ import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/share_page.dart';
-import 'package:scouting_app/provider/page_provider.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -41,17 +40,18 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
+  int currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    int currentPage = ref.watch(pageProvider).index;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(ref.watch(pageProvider).title),
+        title: Text(PageState.values[currentPage].title),
       ),
       body:
           [
@@ -69,9 +69,19 @@ class _AppState extends ConsumerState<App> {
         ],
         selectedIndex: currentPage,
         onDestinationSelected:
-            (int index) =>
-                ref.read(pageProvider.notifier).state = PageState.values[index],
+            (int index) => setState(() => currentPage = index),
       ),
     );
   }
+}
+
+enum PageState {
+  scouting(title: "Scouting"),
+  share(title: "Share"),
+  analysis(title: "Analysis"),
+  settings(title: "Settings");
+
+  const PageState({required this.title});
+
+  final String title;
 }
