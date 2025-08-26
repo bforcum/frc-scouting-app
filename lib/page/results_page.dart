@@ -26,18 +26,20 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
+        spacing: 10,
         children: [
-          Text("Match Results"),
-          TextField(
-            decoration: InputDecoration(
-              hintText: "Filter results",
-              hintStyle: TextStyle(
-                fontSize: 20,
-                color: Theme.of(context).hintColor,
-              ),
-            ),
-          ),
+          // TextField(
+          //   decoration: InputDecoration(
+          //     hintText: "Filter results",
+          //     hintStyle: TextStyle(
+          //       fontSize: 20,
+          //       color: Theme.of(context).hintColor,
+          //     ),
+          //   ),
+          // ),
           Column(
+            spacing: 10,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: matchResults.when(
               loading: () => [CircularProgressIndicator()],
               error: (error, stack) => [Text("Something went wrong: \n$error")],
