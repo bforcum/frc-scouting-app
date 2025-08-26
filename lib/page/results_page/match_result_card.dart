@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
+import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
 
 class MatchResultCard extends StatelessWidget {
   final MatchResult matchResult;
@@ -42,7 +43,10 @@ class MatchResultCard extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          IconButton(onPressed: () {}, icon: Icon(Icons.qr_code_2)),
+          IconButton(
+            onPressed: () => showQRCodeOverlay(matchResult.toBin()),
+            icon: Icon(Icons.qr_code),
+          ),
           IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
         ],
       ),

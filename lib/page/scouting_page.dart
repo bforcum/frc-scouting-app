@@ -113,7 +113,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
   void _submit() async {
     if (!_formKey.currentState!.validate()) {
-      showSnackBarMessage(context, "Please fill out all required fields.");
+      showSnackBarMessage("Please fill out all required fields.");
       return;
     }
 
@@ -147,9 +147,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     MatchResult? matchResult = FormDataModel(data).toMatchResult();
 
     if (matchResult == null) {
-      if (context.mounted) {
-        showSnackBarMessage(context, "Please fill out all fields");
-      }
+      showSnackBarMessage("Please fill out all fields");
       return;
     }
 
@@ -158,9 +156,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     try {
       await db.into(db.matchResults).insert(matchResult);
     } catch (error) {
-      if (context.mounted) {
-        showSnackBarMessage(context, error.toString());
-      }
+      showSnackBarMessage("This match already exists");
       return;
     }
 

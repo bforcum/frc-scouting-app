@@ -5,7 +5,7 @@ class CounterInput extends StatelessWidget {
   final Function(int) onChanged;
   final int value;
   final QuestionCounter question;
-  CounterInput({
+  const CounterInput({
     super.key,
     required this.value,
     required this.onChanged,

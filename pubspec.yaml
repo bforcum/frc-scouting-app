@@ -45,6 +45,7 @@ dependencies:
   path: ^1.9.1
   sqlite3: ^2.9.0
   sqlite3_flutter_libs: ^0.5.39
+  qr_bar_code: ^2.0.0
 
 dev_dependencies:
   flutter_test:

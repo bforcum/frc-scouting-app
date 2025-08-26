@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_app/main.dart';
 
-void showSnackBarMessage(BuildContext context, String text) {
+void showSnackBarMessage(String text) {
+  if (homeKey.currentContext == null || !homeKey.currentContext!.mounted) {
+    return;
+  }
   ScaffoldMessenger.of(
-    context,
+    homeKey.currentContext!,
   ).showSnackBar(SnackBar(content: SelectableText(text)));
 }

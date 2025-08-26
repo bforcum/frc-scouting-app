@@ -22,6 +22,8 @@ class DropdownInput extends StatelessWidget {
         Container(
           width: 154,
           height: 60,
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
               color:
@@ -35,9 +37,12 @@ class DropdownInput extends StatelessWidget {
           child: DropdownMenu<int>(
             width: 154,
             inputDecorationTheme: const InputDecorationTheme(
+              isCollapsed: true,
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
             ),
+            trailingIcon: Icon(Icons.arrow_drop_down, size: 30),
+            selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 30),
             requestFocusOnTap: false,
             initialSelection: question.preset,
             keyboardType: TextInputType.none,

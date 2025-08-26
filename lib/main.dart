@@ -6,6 +6,8 @@ import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/results_page.dart';
 
+final GlobalKey homeKey = GlobalKey();
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -19,6 +21,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'FRC SAASquatch Scouting',
       theme: ThemeData(
+        textTheme: TextTheme(
+          // TODO create text theme
+        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red,
           brightness: Brightness.dark,
@@ -55,10 +60,10 @@ class _AppState extends ConsumerState<App> {
       ),
       body:
           [
-            ScoutingPage(),
-            ResultsPage(),
-            AnalysisPage(),
-            SettingsPage(),
+            ScoutingPage(key: homeKey),
+            ResultsPage(key: homeKey),
+            AnalysisPage(key: homeKey),
+            SettingsPage(key: homeKey),
           ][currentPage],
       bottomNavigationBar: NavigationBar(
         destinations: [
