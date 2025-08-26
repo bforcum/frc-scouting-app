@@ -24,19 +24,19 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   Widget build(BuildContext context) {
     matchResults = ref.watch(storedMatchResultsProvider);
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(20),
       child: Column(
-        spacing: 10,
+        spacing: 20,
         children: [
-          // TextField(
-          //   decoration: InputDecoration(
-          //     hintText: "Filter results",
-          //     hintStyle: TextStyle(
-          //       fontSize: 20,
-          //       color: Theme.of(context).hintColor,
-          //     ),
-          //   ),
-          // ),
+          TextField(
+            decoration: InputDecoration(
+              hintText: "Filter team number",
+              hintStyle: TextStyle(
+                fontSize: 20,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
           Column(
             spacing: 10,
             mainAxisAlignment: MainAxisAlignment.start,

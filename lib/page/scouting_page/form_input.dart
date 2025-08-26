@@ -31,10 +31,16 @@ class FormInput extends ConsumerWidget {
       QuestionType.toggle => FormField<bool>(
         key: fieldKey,
         initialValue: value ?? (question as QuestionToggle).preset ?? false,
+        validator: (value) {
+          // Required because counter has a default value
+          // which is not automatically stored in formFieldProvider
+          onChanged(value);
+          return;
+        },
         builder:
             (formState) => ToggleInput(
               question: question as QuestionToggle,
-              value: value,
+              value: value ?? (question as QuestionToggle).preset ?? false,
               onChanged: (value) {
                 onChanged(value);
                 formState.didChange(value);
@@ -46,11 +52,23 @@ class FormInput extends ConsumerWidget {
       ),
       QuestionType.counter => FormField<int>(
         key: fieldKey,
-        initialValue: value,
+        initialValue:
+            value ??
+            (question as QuestionCounter).preset ??
+            (question as QuestionCounter).min,
+        validator: (value) {
+          // Required because counter has a default value
+          // which is not automatically stored in formFieldProvider
+          onChanged(value);
+          return;
+        },
         builder:
             (formState) => CounterInput(
               question: question as QuestionCounter,
-              value: value,
+              value:
+                  value ??
+                  (question as QuestionCounter).preset ??
+                  (question as QuestionCounter).min,
               onChanged: (value) {
                 onChanged(value);
                 formState.didChange(value);
@@ -93,7 +111,11 @@ class FormInput extends ConsumerWidget {
         key: fieldKey,
         validator: (value) {
           if (value == null) {
-            return 'Please select an option';
+            if ((question as QuestionDropdown).preset == null) {
+              return 'Please select an option';
+            } else {
+              onChanged((question as QuestionDropdown).preset);
+            }
           }
           return null;
         },
@@ -104,6 +126,7 @@ class FormInput extends ConsumerWidget {
               formState: formState,
               onChanged: (value) {
                 onChanged(value);
+                formState.didChange(value);
                 if (formState.hasError) {
                   formState.validate();
                 }
@@ -116,6 +139,10 @@ class FormInput extends ConsumerWidget {
           if ((value == null || value == "") &&
               (question as QuestionText).requiredField) {
             return 'Please respond to the question';
+          }
+          // Set value to empty string if this is not a required field
+          if (value == null && !(question as QuestionText).requiredField) {
+            onChanged("");
           }
           return null;
         },

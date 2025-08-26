@@ -38,6 +38,7 @@ class DropdownInput extends StatelessWidget {
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
             ),
+            requestFocusOnTap: false,
             initialSelection: question.preset,
             keyboardType: TextInputType.none,
             enableSearch: false,

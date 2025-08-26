@@ -7,10 +7,10 @@ class CounterInput extends StatelessWidget {
   final QuestionCounter question;
   CounterInput({
     super.key,
-    int? value,
+    required this.value,
     required this.onChanged,
     required this.question,
-  }) : value = value ?? question.preset ?? question.min;
+  });
 
   @override
   Widget build(BuildContext context) {
