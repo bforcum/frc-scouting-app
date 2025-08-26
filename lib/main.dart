@@ -63,7 +63,7 @@ class _AppState extends ConsumerState<App> {
       bottomNavigationBar: NavigationBar(
         destinations: [
           NavigationDestination(icon: Icon(Icons.search), label: "Scouting"),
-          NavigationDestination(icon: Icon(Icons.list), label: "Data"),
+          NavigationDestination(icon: Icon(Icons.list), label: "Results"),
           NavigationDestination(icon: Icon(Icons.bar_chart), label: "Analysis"),
           NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
         ],
@@ -77,7 +77,7 @@ class _AppState extends ConsumerState<App> {
 
 enum PageState {
   scouting(title: "Scouting"),
-  share(title: "Share"),
+  results(title: "Results"),
   analysis(title: "Analysis"),
   settings(title: "Settings");
 

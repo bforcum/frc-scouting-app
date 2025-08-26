@@ -171,6 +171,8 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     ])) {
       ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
     }
+    ref.read(formResetProvider.notifier).reset();
+
     _scrollController.jumpTo(0);
   }
 
@@ -181,6 +183,8 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     ])) {
       ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
     }
+    ref.read(formResetProvider.notifier).reset();
+
     _scrollController.jumpTo(0);
   }
 }

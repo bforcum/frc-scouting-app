@@ -3,14 +3,14 @@ import 'package:scouting_app/model/question.dart';
 
 class DropdownInput extends StatelessWidget {
   final QuestionDropdown question;
-  final Function(int)? onChanged;
-  final FormFieldState<int> formState;
+  final Function(int?) onChanged;
+  final FormFieldState<int?> formState;
 
   const DropdownInput({
     super.key,
     required this.question,
     required this.formState,
-    this.onChanged,
+    required this.onChanged,
   });
 
   @override
@@ -39,15 +39,14 @@ class DropdownInput extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
             ),
             initialSelection: question.preset,
+            keyboardType: TextInputType.none,
             enableSearch: false,
             dropdownMenuEntries: [
               for (int i = 0; i < question.options.length; i++)
                 DropdownMenuEntry(value: i, label: question.options[i]),
             ],
             onSelected: (value) {
-              if (onChanged != null && value != null) {
-                onChanged!(value);
-              }
+              onChanged(value);
             },
           ),
         ),
