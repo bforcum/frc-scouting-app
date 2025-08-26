@@ -43,6 +43,8 @@ dependencies:
   path_provider: ^2.1.5 
   buffer: ^1.2.3
   path: ^1.9.1
+  sqlite3: ^2.9.0
+  sqlite3_flutter_libs: ^0.5.39
 
 dev_dependencies:
   flutter_test:

@@ -13,8 +13,8 @@ part 'database_provider.g.dart';
 class Database extends _$Database {
   @override
   AppDatabase build() {
-    ref.read(appDirectoryProvider.future);
-    return AppDatabase(_openConnection());
+    ref.watch(appDirectoryProvider.future);
+    return AppDatabase();
   }
 
   QueryExecutor _openConnection() {

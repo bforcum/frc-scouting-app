@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/consts.dart';
-import 'package:scouting_app/model/match_data.dart';
+import 'package:scouting_app/model/match_result.dart';
 
 part 'form_data.freezed.dart';
 
@@ -25,7 +25,7 @@ abstract class FormDataModel with _$FormDataModel {
     return FormDataModel(emptyData);
   }
 
-  MatchData? toMatchData() {
+  MatchResult? toMatchResult() {
     if (data["gameFormatName"] == null) return null;
     if (data["dateTime"] == null) return null;
     for (var key in kRequiredQuestions.map((q) => q.key)) {
@@ -39,6 +39,6 @@ abstract class FormDataModel with _$FormDataModel {
         return null; // Ensure all questions are included
       }
     }
-    return MatchData.fromMap(data);
+    return MatchResult.fromMap(data);
   }
 }

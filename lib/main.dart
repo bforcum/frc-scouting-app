@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
-import 'package:scouting_app/page/share_page.dart';
+import 'package:scouting_app/page/results_page.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -56,7 +56,7 @@ class _AppState extends ConsumerState<App> {
       body:
           [
             ScoutingPage(),
-            SharePage(),
+            ResultsPage(),
             AnalysisPage(),
             SettingsPage(),
           ][currentPage],

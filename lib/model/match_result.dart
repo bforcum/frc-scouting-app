@@ -9,31 +9,31 @@ import 'package:scouting_app/model/question.dart';
 import 'dart:convert' show utf8;
 import 'package:drift/drift.dart' as drift;
 
-part 'match_data.freezed.dart';
+part 'match_result.freezed.dart';
 
 @freezed
-abstract class MatchData
-    with _$MatchData
-    implements drift.Insertable<MatchData> {
-  const MatchData._();
+abstract class MatchResult
+    with _$MatchResult
+    implements drift.Insertable<MatchResult> {
+  const MatchResult._();
 
-  const factory MatchData({
+  const factory MatchResult({
     required String gameFormatName,
     required DateTime date,
     required int teamNumber,
     required int matchNumber,
     required String scoutName,
     required Map<String, dynamic> data,
-  }) = _MatchDataModel;
+  }) = _MatchResultModel;
 
-  factory MatchData.fromMap(Map<String, dynamic> data) {
+  factory MatchResult.fromMap(Map<String, dynamic> data) {
     assert(data["gameFormatName"].runtimeType == String);
     assert(data["dateTime"].runtimeType == DateTime);
     assert(data["teamNumber"].runtimeType == int);
     assert(data["matchNumber"].runtimeType == int);
     assert(data["scoutName"].runtimeType == String);
 
-    return MatchData(
+    return MatchResult(
       // Remove time information to get just local date
       date: (data["dateTime"]! as DateTime).toLocal().copyWith(
         hour: 0,
@@ -90,14 +90,14 @@ abstract class MatchData
     return writer.toBytes();
   }
 
-  factory MatchData.fromBin(Uint8List bytes) {
+  factory MatchResult.fromBin(Uint8List bytes) {
     final reader = ByteDataReader();
     reader.add(bytes);
 
     final data = <String, dynamic>{};
 
     data["gameFormatName"] = String.fromCharCodes(reader.read(8)).trim();
-    data["dateTime"] = DateTime.fromMillisecondsSinceEpoch(reader.readUint8());
+    data["dateTime"] = DateTime.fromMillisecondsSinceEpoch(reader.readUint64());
     data["teamNumber"] = reader.readUint16();
     data["matchNumber"] = reader.readUint8();
     data["scoutName"] = utf8.decode(reader.read(30)).trim();
@@ -132,10 +132,10 @@ abstract class MatchData
       }
     }
 
-    return MatchData.fromMap(data);
+    return MatchResult.fromMap(data);
   }
 
-  factory MatchData.fromDb({
+  factory MatchResult.fromDb({
     required String gameFormatName,
     required DateTime date,
     required int teamNumber,
@@ -143,12 +143,12 @@ abstract class MatchData
     required String scoutName,
     required Uint8List data,
   }) {
-    return MatchData.fromBin(data);
+    return MatchResult.fromBin(data);
   }
 
   @override
   Map<String, drift.Expression<Object>> toColumns(bool nullToAbsent) {
-    return MatchDataTableCompanion(
+    return MatchResultsCompanion(
       gameFormatName: drift.Value<String>(gameFormatName),
       date: drift.Value<DateTime>(date),
       teamNumber: drift.Value<int>(teamNumber),

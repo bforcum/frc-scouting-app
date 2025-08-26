@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/form_data.dart';
-import 'package:scouting_app/model/match_data.dart';
+import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
@@ -144,21 +144,22 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
       data[question.key] = value;
     }
 
-    MatchData? matchData = FormDataModel(data).toMatchData();
+    MatchResult? matchResult = FormDataModel(data).toMatchResult();
 
-    if (matchData == null) {
+    if (matchResult == null) {
       if (context.mounted) {
         showSnackBarMessage(context, "Please fill out all fields");
       }
+      return;
     }
 
     final db = ref.read(databaseProvider);
 
     try {
-      await db.into(db.matchDataTable).insert(matchData!);
-    } catch (e) {
+      await db.into(db.matchResults).insert(matchResult);
+    } catch (error) {
       if (context.mounted) {
-        showSnackBarMessage(context, "This match already exists");
+        showSnackBarMessage(context, error.toString());
       }
       return;
     }
