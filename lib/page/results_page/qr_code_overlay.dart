@@ -1,66 +1,53 @@
-import 'dart:async';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:qr_bar_code/qr/qr.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/main.dart';
+import 'package:scouting_app/model/match_result.dart';
 
-Future<void> showQRCodeOverlay(Uint8List data) async {
+void showQRCodeOverlay(MatchResult result) {
   if (homeKey.currentContext == null) {
     return;
   }
 
-  late OverlayEntry overlayEntry;
-
-  final completer = Completer<void>();
-
-  overlayEntry = OverlayEntry(
-    builder:
-        (context) => _QrCodeOverlay(
-          data: data,
-          onDismissed: () {
-            overlayEntry.remove();
-            completer.complete();
-          },
+  showDialog(
+    context: homeKey.currentContext!,
+    builder: (context) {
+      final mainColor =
+          (Theme.of(context).brightness == Brightness.light)
+              ? Colors.black
+              : Colors.white;
+      return Dialog(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            borderRadius: BorderRadius.circular(kBorderRadius),
+          ),
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              QRCode.withQr(
+                eyeStyle: QREyeStyle(
+                  eyeShape: QREyeShape.square,
+                  color: mainColor,
+                ),
+                dataModuleStyle: QRDataModuleStyle(
+                  dataModuleShape: QRDataModuleShape.square,
+                  color: mainColor,
+                ),
+                qr: QRCodeGenerate.fromUint8List(
+                  data: result.toBin(),
+                  errorCorrectLevel: QRErrorCorrectLevel.L,
+                ),
+              ),
+              Text(
+                "Team ${result.teamNumber} - Match ${result.matchNumber}",
+                style: TextStyle(fontSize: 20),
+              ),
+            ],
+          ),
         ),
+      );
+    },
   );
-
-  Overlay.of(homeKey.currentContext!).insert(overlayEntry);
-
-  return completer.future;
-}
-
-class _QrCodeOverlay extends StatelessWidget {
-  final Function onDismissed;
-  final Uint8List data;
-  const _QrCodeOverlay({required this.onDismissed, required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    final mainColor =
-        (Theme.of(context).brightness == Brightness.light)
-            ? Colors.black
-            : Colors.white;
-    return TapRegion(
-      onTapOutside: (tap) => onDismissed(),
-      child: Container(
-        margin: EdgeInsets.all(40),
-        alignment: Alignment.center,
-
-        child: QRCode.withQr(
-          backgroundColor:
-              Theme.of(context).colorScheme.surfaceContainerHighest,
-          eyeStyle: QREyeStyle(eyeShape: QREyeShape.square, color: mainColor),
-          dataModuleStyle: QRDataModuleStyle(
-            dataModuleShape: QRDataModuleShape.square,
-            color: mainColor,
-          ),
-          qr: QRCodeGenerate.fromUint8List(
-            data: data,
-            errorCorrectLevel: QRErrorCorrectLevel.L,
-          ),
-        ),
-      ),
-    );
-  }
 }

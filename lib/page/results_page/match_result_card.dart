@@ -44,7 +44,7 @@ class MatchResultCard extends StatelessWidget {
           ),
           const Spacer(),
           IconButton(
-            onPressed: () => showQRCodeOverlay(matchResult.toBin()),
+            onPressed: () => showQRCodeOverlay(matchResult),
             icon: Icon(Icons.qr_code),
           ),
           IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
