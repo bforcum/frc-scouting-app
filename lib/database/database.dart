@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -26,14 +27,16 @@ class MatchResults extends Table {
 
 @DriftDatabase(tables: [MatchResults])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase({QueryExecutor? executor}) : super(executor ?? _openConnection());
+  AppDatabase({FutureOr<Directory>? directory})
+    : super(_openConnection(directory));
 
   @override
   int get schemaVersion => 1;
 
-  static QueryExecutor _openConnection() {
+  static QueryExecutor _openConnection(FutureOr<Directory>? dbDirectory) {
     return LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
+      final dbFolder =
+          await dbDirectory ?? await getApplicationSupportDirectory();
       debugPrint(dbFolder.toString());
       final file = File(path.join(dbFolder.path, 'db.sqlite'));
 

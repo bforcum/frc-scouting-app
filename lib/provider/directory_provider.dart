@@ -26,10 +26,7 @@ Future<Directory?> appDirectory(Ref ref) async {
   if (kIsWeb) {
     return null;
   }
-  final dir =
-      kDebugMode
-          ? await getApplicationDocumentsDirectory()
-          : await getApplicationSupportDirectory();
+  final dir = await getApplicationSupportDirectory();
   await dir.create(recursive: true);
   return dir;
 }
