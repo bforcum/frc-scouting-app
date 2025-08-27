@@ -83,7 +83,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                         onPressed: _submit,
                         child: const Text(
                           "Submit",
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(fontSize: 25, color: Colors.white),
                         ),
                       ),
                     ),
@@ -99,7 +99,11 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                         ),
                       ),
                       onPressed: _clear,
-                      child: const Icon(Icons.delete, size: 25),
+                      child: const Icon(
+                        Icons.delete,
+                        size: 25,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

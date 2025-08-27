@@ -12,6 +12,8 @@ final bool incrementMatchNumber = true;
 
 final List<GameFormat> kSupportedGameFormats = [kGame2025];
 
+const Brightness kBrightness = Brightness.dark;
+
 final List<Question> kRequiredQuestions = [
   QuestionNumber(
     key: "teamNumber",

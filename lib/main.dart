@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
@@ -26,9 +27,10 @@ class MyApp extends StatelessWidget {
         ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red,
-          brightness: Brightness.dark,
+          brightness: kBrightness,
           dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
-          contrastLevel: 0.5,
+          // contrastLevel: 1,
+          contrastLevel: (kBrightness == Brightness.light) ? 0.5 : 0,
         ),
         // brightness: Brightness.dark,
       ),

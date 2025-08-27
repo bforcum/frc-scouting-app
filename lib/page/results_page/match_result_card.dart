@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scouting_app/consts.dart';
-import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/results_page/match_result_page.dart';
@@ -17,7 +16,7 @@ class MatchResultCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         if (kSupportedGameFormats.firstWhereOrNull(
-              (gameFormat) => gameFormat!.name == matchResult.gameFormatName,
+              (gameFormat) => gameFormat.name == matchResult.gameFormatName,
             ) ==
             null) {
           await showAlertDialog(
@@ -67,7 +66,21 @@ class MatchResultCard extends StatelessWidget {
             ),
             const Spacer(),
             IconButton(
-              onPressed: () => showQRCodeOverlay(matchResult),
+              onPressed: () async {
+                if (kSupportedGameFormats.firstWhereOrNull(
+                      (gameFormat) =>
+                          gameFormat.name == matchResult.gameFormatName,
+                    ) ==
+                    null) {
+                  await showAlertDialog(
+                    "Unsupported Game Format",
+                    "The game format for this result is not known or supported by the app",
+                    "Okay",
+                  );
+                  return;
+                }
+                showQRCodeOverlay(matchResult);
+              },
               icon: Icon(Icons.qr_code),
             ),
             IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
