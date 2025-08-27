@@ -9,19 +9,35 @@ part 'match_result_provider.g.dart';
 class StoredResults extends _$StoredResults {
   @override
   Future<List<MatchResult>> build() async {
+    return await _fetch();
+  }
+
+  Future<List<MatchResult>> _fetch() async {
     final db = ref.watch(databaseProvider);
 
     var results = await db.managers.matchResults.get();
 
     return results;
   }
-}
 
-@riverpod
-Future<List<MatchResult>> storedMatchResults(Ref ref) async {
-  final db = ref.watch(databaseProvider);
+  Future<void> refresh() async {
+    state = AsyncLoading();
+    ref.notifyListeners();
+    final values = await _fetch();
+    state = AsyncData(values);
+    ref.notifyListeners();
+  }
 
-  // var results = await db.select(db.matchResults).get();
-  var results = await db.managers.matchResults.get();
-  return results;
+  Future<String?> addResult(MatchResult result) async {
+    final db = ref.read(databaseProvider);
+
+    try {
+      await db.into(db.matchResults).insert(result);
+    } catch (error) {
+      return "This match already exists";
+    }
+    await refresh();
+
+    return null;
+  }
 }

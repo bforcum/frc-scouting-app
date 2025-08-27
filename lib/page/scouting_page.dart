@@ -10,6 +10,7 @@ import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/database_provider.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
+import 'package:scouting_app/provider/match_result_provider.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
   const ScoutingPage({super.key});
@@ -154,12 +155,12 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
       return;
     }
 
-    final db = ref.read(databaseProvider);
+    final String? error = await ref
+        .read(storedResultsProvider.notifier)
+        .addResult(matchResult);
 
-    try {
-      await db.into(db.matchResults).insert(matchResult);
-    } catch (error) {
-      showSnackBarMessage("This match already exists");
+    if (error != null) {
+      showSnackBarMessage(error);
       return;
     }
 

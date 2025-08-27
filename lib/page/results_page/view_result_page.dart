@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
-import 'package:scouting_app/page/results_page/match_result_field.dart';
+import 'package:scouting_app/page/results_page/result_field.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 
-class MatchResultPage extends StatefulWidget {
+class ViewResultPage extends StatefulWidget {
   final MatchResult matchResult;
 
-  const MatchResultPage({super.key, required this.matchResult});
+  const ViewResultPage({super.key, required this.matchResult});
 
   @override
-  State<MatchResultPage> createState() => _MatchResultPageState();
+  State<ViewResultPage> createState() => _ViewResultPageState();
 }
 
-class _MatchResultPageState extends State<MatchResultPage> {
+class _ViewResultPageState extends State<ViewResultPage> {
   late final List<FormSection> sections;
 
   @override
@@ -50,8 +50,6 @@ class _MatchResultPageState extends State<MatchResultPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text("View Match Data"),
       ),
       body: SingleChildScrollView(

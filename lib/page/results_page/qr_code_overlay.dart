@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qr_bar_code/qr/qr.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/main.dart';
 import 'package:scouting_app/model/match_result.dart';
@@ -26,18 +26,18 @@ void showQRCodeOverlay(MatchResult result) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              QRCode.withQr(
-                eyeStyle: QREyeStyle(
-                  eyeShape: QREyeShape.square,
+              QrImageView.withQr(
+                eyeStyle: QrEyeStyle(
+                  eyeShape: QrEyeShape.square,
                   color: mainColor,
                 ),
-                dataModuleStyle: QRDataModuleStyle(
-                  dataModuleShape: QRDataModuleShape.square,
+                dataModuleStyle: QrDataModuleStyle(
+                  dataModuleShape: QrDataModuleShape.square,
                   color: mainColor,
                 ),
-                qr: QRCodeGenerate.fromUint8List(
+                qr: QrCode.fromUint8List(
                   data: result.toBin(),
-                  errorCorrectLevel: QRErrorCorrectLevel.L,
+                  errorCorrectLevel: QrErrorCorrectLevel.L,
                 ),
               ),
               Text(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
-import 'package:scouting_app/page/results_page/match_result_page.dart';
+import 'package:scouting_app/page/results_page/view_result_page.dart';
 import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
 
 class MatchResultCard extends StatelessWidget {
@@ -28,7 +28,7 @@ class MatchResultCard extends StatelessWidget {
         }
         (Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => MatchResultPage(matchResult: matchResult),
+            builder: (context) => ViewResultPage(matchResult: matchResult),
           ),
         ));
       },
