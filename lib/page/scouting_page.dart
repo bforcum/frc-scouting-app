@@ -135,7 +135,6 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     data["gameFormatName"] = kGameFormat.name;
     data["dateTime"] = DateTime.now().toUtc();
 
-    // TODO load default values into providers
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
       ...kGameFormat.questions,
@@ -173,6 +172,17 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
   }
 
   void _clear() async {
+    if (!(await showConfirmationDialog(
+          context,
+          ConfirmationInfo(
+            title: "Clear Form",
+            content: "Are you sure you want to clear the form?",
+          ),
+        ) ??
+        false)) {
+      return;
+    }
+
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
       ...kGameFormat.questions,

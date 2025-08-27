@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:buffer/buffer.dart';
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/database/database.dart';
@@ -102,14 +103,12 @@ abstract class MatchResult
     data["matchNumber"] = reader.readUint8();
     data["scoutName"] = utf8.decode(reader.read(30)).trim();
 
-    final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
+    final GameFormat? gameFormat = kSupportedGameFormats.firstWhereOrNull(
       (format) => format.name == data["gameFormatName"],
-      orElse:
-          () =>
-              throw Exception(
-                "Unsupported game format: ${data["gameFormatName"]}",
-              ),
     );
+    if (gameFormat == null) {
+      return MatchResult.fromMap(data);
+    }
 
     for (var question in gameFormat.questions) {
       switch (question.type) {

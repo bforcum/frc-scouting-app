@@ -15,12 +15,6 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     matchResults = ref.watch(storedMatchResultsProvider);
     return SingleChildScrollView(
