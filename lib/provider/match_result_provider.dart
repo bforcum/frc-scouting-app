@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
@@ -48,16 +47,29 @@ class StoredResults extends _$StoredResults {
   ) async {
     final db = ref.read(databaseProvider);
 
-    int result =
+    int deletions =
         await db.managers.matchResults
             .filter((e) => e.eventName(eventName))
             .filter((e) => e.teamNumber(teamNumber))
             .filter((e) => e.matchNumber(matchNumber))
             .delete();
 
-    debugPrint("Num results deleted: $result");
+    if (deletions == 0) {
+      return "Zero succesful deletions";
+    }
 
     await refresh();
+
+    return null;
+  }
+
+  Future<String?> updateResult(MatchResult result) async {
+    final db = ref.read(databaseProvider);
+
+    if (await db.managers.matchResults.replace(result) == false) {
+      return "Replacement failed";
+    }
+    refresh();
 
     return null;
   }

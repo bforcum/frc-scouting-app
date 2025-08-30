@@ -17,24 +17,7 @@ class MatchResultCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () async {
-        if (kSupportedGameFormats.firstWhereOrNull(
-              (gameFormat) => gameFormat.name == result.gameFormatName,
-            ) ==
-            null) {
-          await showAlertDialog(
-            "Unsupported Game Format",
-            "The game format for this result is not known or supported by the app",
-            "Okay",
-          );
-          return;
-        }
-        (Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ViewResultPage(matchResult: result),
-          ),
-        ));
-      },
+      onTap: () async => await _viewResults(context),
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainer,
@@ -91,8 +74,20 @@ class MatchResultCard extends ConsumerWidget {
             PopupMenuButton(
               itemBuilder: (context) {
                 return [
-                  PopupMenuItem(child: Text("View")),
-                  PopupMenuItem(child: Text("Edit")),
+                  PopupMenuItem(
+                    child: Text("View"),
+                    onTap: () async => await _viewResults(context),
+                  ),
+                  PopupMenuItem(
+                    child: Text("Edit"),
+                    onTap: () async {
+                      ref
+                          .read(storedResultsProvider.notifier)
+                          .updateResult(
+                            result.copyWith(timeStamp: DateTime.timestamp()),
+                          );
+                    },
+                  ),
                   PopupMenuItem(
                     child: Text("Delete"),
                     onTap: () async {
@@ -122,5 +117,24 @@ class MatchResultCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future _viewResults(BuildContext context) async {
+    if (kSupportedGameFormats.firstWhereOrNull(
+          (gameFormat) => gameFormat.name == result.gameFormatName,
+        ) ==
+        null) {
+      await showAlertDialog(
+        "Unsupported Game Format",
+        "The game format for this result is not known or supported by the app",
+        "Okay",
+      );
+      return;
+    }
+    (Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ViewResultPage(matchResult: result),
+      ),
+    ));
   }
 }

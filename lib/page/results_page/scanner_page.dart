@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -24,10 +25,28 @@ class _ScannerPageState extends State<ScannerPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isWindows || Platform.isLinux) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("Scan Match Result QR Code"),
+        ),
+        body: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text(
+              "Scanning not supported on Windows and Linux",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 25),
+            ),
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Scan Match Result QR Code"),
+        title: const Text("Scan Match Result QR Code"),
       ),
       body: MobileScanner(
         controller: _controller,
