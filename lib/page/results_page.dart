@@ -50,7 +50,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                     data: (results) {
                       if (results.isEmpty) return [Text("No results yet")];
                       return results
-                          .map((e) => MatchResultCard(matchResult: e))
+                          .map((e) => MatchResultCard(result: e))
                           .toList();
                     },
                   ),
@@ -66,7 +66,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             onPressed: qrScan,
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(CircleBorder()),
-              padding: WidgetStatePropertyAll(EdgeInsets.all(25)),
+              padding: WidgetStatePropertyAll(EdgeInsets.all(20)),
               backgroundColor: WidgetStatePropertyAll(
                 Theme.of(context).colorScheme.primaryContainer,
               ), // <-- Button color
@@ -81,22 +81,37 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   Future<void> qrScan() async {
     Uint8List? data = await Navigator.of(context).push<Uint8List?>(
       MaterialPageRoute(
-        builder: (context) => ScannerPage(onDetect: Navigator.of(context).pop),
+        builder:
+            (context) => ScannerPage(
+              onDetect: (value) {
+                debugPrint(context.widget.toString());
+                Navigator.pop(context, value);
+              },
+            ),
       ),
     );
     if (data == null) {
-      showAlertDialog(
-        "Scanning Failed",
-        "Could not get data from the QR code",
+      return;
+    }
+    late final MatchResult result;
+    try {
+      result = MatchResult.fromBin(data);
+    } catch (error) {
+      await showAlertDialog(
+        "Invalid code",
+        "This QR code probably didn't come from this app",
         "Okay",
       );
       return;
     }
 
-    final result = MatchResult.fromBin(data);
+    final error = await ref
+        .read(storedResultsProvider.notifier)
+        .addResult(result);
 
-    ref.read(storedResultsProvider.notifier).addResult(result);
-
-    // TODO fix random crashing after adding match result
+    if (error != null) {
+      showAlertDialog("Conversion Error", error, "Okay");
+      return;
+    }
   }
 }

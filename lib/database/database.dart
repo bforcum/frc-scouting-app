@@ -14,15 +14,16 @@ part 'database.g.dart';
 
 @UseRowClass(MatchResult, constructor: "fromDb")
 class MatchResults extends Table {
-  TextColumn get gameFormatName => text()();
-  DateTimeColumn get date => dateTime()();
+  TextColumn get eventName => text()();
   IntColumn get teamNumber => integer()();
   IntColumn get matchNumber => integer()();
+  Int64Column get timeStamp => int64()();
   TextColumn get scoutName => text()();
+  TextColumn get gameFormatName => text()();
   BlobColumn get data => blob()();
 
   @override
-  Set<Column> get primaryKey => {date, teamNumber, matchNumber};
+  Set<Column> get primaryKey => {eventName, teamNumber, matchNumber};
 }
 
 @DriftDatabase(tables: [MatchResults])

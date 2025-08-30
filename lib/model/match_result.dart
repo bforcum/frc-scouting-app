@@ -19,45 +19,42 @@ abstract class MatchResult
   const MatchResult._();
 
   const factory MatchResult({
-    required String gameFormatName,
-    required DateTime date,
+    required String eventName,
     required int teamNumber,
     required int matchNumber,
+    required DateTime timeStamp,
     required String scoutName,
+    required String gameFormatName,
     required Map<String, dynamic> data,
   }) = _MatchResultModel;
 
   factory MatchResult.fromMap(Map<String, dynamic> data) {
-    assert(data["gameFormatName"].runtimeType == String);
-    assert(data["dateTime"].runtimeType == DateTime);
+    assert(data["eventName"].runtimeType == String);
     assert(data["teamNumber"].runtimeType == int);
     assert(data["matchNumber"].runtimeType == int);
+    assert(data["timeStamp"].runtimeType == DateTime);
     assert(data["scoutName"].runtimeType == String);
+    assert(data["gameFormatName"].runtimeType == String);
 
     return MatchResult(
-      // Remove time information to get just local date
-      date: (data["dateTime"]! as DateTime).toLocal().copyWith(
-        hour: 0,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-        microsecond: 0,
-      ),
+      eventName: data["eventName"],
       teamNumber: data["teamNumber"]!,
       matchNumber: data["matchNumber"]!,
-      gameFormatName: data["gameFormatName"]!,
+      timeStamp: data["timeStamp"]!,
       scoutName: data["scoutName"]!,
+      gameFormatName: data["gameFormatName"]!,
       data: data,
     );
   }
 
   Uint8List toBin() {
     final writer = ByteDataWriter();
-    writer.write(utf8.encode(gameFormatName.padRight(8, ' ')));
-    writer.writeUint64(data["dateTime"].millisecondsSinceEpoch);
+    writer.write(utf8.encode(eventName.padRight(12)));
     writer.writeUint16(teamNumber);
     writer.writeUint8(matchNumber);
-    writer.write(utf8.encode(scoutName.padRight(30, ' ')));
+    writer.writeUint64(timeStamp.millisecondsSinceEpoch);
+    writer.write(utf8.encode(scoutName.padRight(30)));
+    writer.write(utf8.encode(gameFormatName.padRight(8)));
 
     final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
       (format) => format.name == gameFormatName,
@@ -97,11 +94,14 @@ abstract class MatchResult
 
     final data = <String, dynamic>{};
 
-    data["gameFormatName"] = String.fromCharCodes(reader.read(8)).trim();
-    data["dateTime"] = DateTime.fromMillisecondsSinceEpoch(reader.readUint64());
+    data["eventName"] = utf8.decode(reader.read(12)).trim();
     data["teamNumber"] = reader.readUint16();
     data["matchNumber"] = reader.readUint8();
+    data["timeStamp"] = DateTime.fromMillisecondsSinceEpoch(
+      reader.readUint64(),
+    );
     data["scoutName"] = utf8.decode(reader.read(30)).trim();
+    data["gameFormatName"] = String.fromCharCodes(reader.read(8)).trim();
 
     final GameFormat? gameFormat = kSupportedGameFormats.firstWhereOrNull(
       (format) => format.name == data["gameFormatName"],
@@ -135,11 +135,12 @@ abstract class MatchResult
   }
 
   factory MatchResult.fromDb({
-    required String gameFormatName,
-    required DateTime date,
+    required String eventName,
     required int teamNumber,
     required int matchNumber,
+    required BigInt timeStamp,
     required String scoutName,
+    required String gameFormatName,
     required Uint8List data,
   }) {
     return MatchResult.fromBin(data);
@@ -148,11 +149,14 @@ abstract class MatchResult
   @override
   Map<String, drift.Expression<Object>> toColumns(bool nullToAbsent) {
     return MatchResultsCompanion(
-      gameFormatName: drift.Value<String>(gameFormatName),
-      date: drift.Value<DateTime>(date),
+      eventName: drift.Value<String>(eventName),
       teamNumber: drift.Value<int>(teamNumber),
       matchNumber: drift.Value<int>(matchNumber),
+      timeStamp: drift.Value<BigInt>(
+        BigInt.from(timeStamp.millisecondsSinceEpoch),
+      ),
       scoutName: drift.Value<String>(scoutName),
+      gameFormatName: drift.Value<String>(gameFormatName),
       data: drift.Value<Uint8List>(toBin()),
     ).toColumns(nullToAbsent);
   }

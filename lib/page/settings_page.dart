@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// TODO how to store settings
+// how to store settings:
 // Shared preferences
 
 class SettingsPage extends StatefulWidget {

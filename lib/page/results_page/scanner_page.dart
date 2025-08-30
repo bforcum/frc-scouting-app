@@ -32,6 +32,7 @@ class _ScannerPageState extends State<ScannerPage> {
       body: MobileScanner(
         controller: _controller,
         onDetect: (result) {
+          _controller.pause();
           widget.onDetect(result.barcodes.first.rawBytes);
         },
       ),

@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
@@ -34,8 +34,29 @@ class StoredResults extends _$StoredResults {
     try {
       await db.into(db.matchResults).insert(result);
     } catch (error) {
-      return "This match already exists";
+      return "Error: ${error.toString()}";
     }
+    await refresh();
+
+    return null;
+  }
+
+  Future<String?> deleteResult(
+    String eventName,
+    int teamNumber,
+    int matchNumber,
+  ) async {
+    final db = ref.read(databaseProvider);
+
+    int result =
+        await db.managers.matchResults
+            .filter((e) => e.eventName(eventName))
+            .filter((e) => e.teamNumber(teamNumber))
+            .filter((e) => e.matchNumber(matchNumber))
+            .delete();
+
+    debugPrint("Num results deleted: $result");
+
     await refresh();
 
     return null;

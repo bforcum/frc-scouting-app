@@ -1,22 +1,25 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
+import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/results_page/view_result_page.dart';
 import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
+import 'package:scouting_app/provider/match_result_provider.dart';
 
-class MatchResultCard extends StatelessWidget {
-  final MatchResult matchResult;
+class MatchResultCard extends ConsumerWidget {
+  final MatchResult result;
 
-  const MatchResultCard({super.key, required this.matchResult});
+  const MatchResultCard({super.key, required this.result});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () async {
         if (kSupportedGameFormats.firstWhereOrNull(
-              (gameFormat) => gameFormat.name == matchResult.gameFormatName,
+              (gameFormat) => gameFormat.name == result.gameFormatName,
             ) ==
             null) {
           await showAlertDialog(
@@ -28,7 +31,7 @@ class MatchResultCard extends StatelessWidget {
         }
         (Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => ViewResultPage(matchResult: matchResult),
+            builder: (context) => ViewResultPage(matchResult: result),
           ),
         ));
       },
@@ -45,16 +48,19 @@ class MatchResultCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Team ${matchResult.teamNumber}",
+                  "Team ${result.teamNumber}",
                   style: TextStyle(fontSize: 20),
                 ),
                 Text.rich(
                   TextSpan(
-                    text: "Match ${matchResult.matchNumber}",
+                    text: "Match ${result.matchNumber}, ",
                     children: [
                       TextSpan(
-                        text:
-                            " - ${(matchResult.data["dateTime"] as DateTime).copyWith(second: 0, millisecond: 0).toLocal().toString().substring(0, 16)}",
+                        text: (result.data["timeStamp"] as DateTime)
+                            .copyWith(second: 0, millisecond: 0)
+                            .toLocal()
+                            .toString()
+                            .substring(0, 16), // Exclude granular time info
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -68,8 +74,7 @@ class MatchResultCard extends StatelessWidget {
             IconButton(
               onPressed: () async {
                 if (kSupportedGameFormats.firstWhereOrNull(
-                      (gameFormat) =>
-                          gameFormat.name == matchResult.gameFormatName,
+                      (gameFormat) => gameFormat.name == result.gameFormatName,
                     ) ==
                     null) {
                   await showAlertDialog(
@@ -79,11 +84,40 @@ class MatchResultCard extends StatelessWidget {
                   );
                   return;
                 }
-                showQRCodeOverlay(matchResult);
+                showQRCodeOverlay(result);
               },
               icon: Icon(Icons.qr_code),
             ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+            PopupMenuButton(
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem(child: Text("View")),
+                  PopupMenuItem(child: Text("Edit")),
+                  PopupMenuItem(
+                    child: Text("Delete"),
+                    onTap: () async {
+                      if (!(await showConfirmationDialog(
+                            ConfirmationInfo(
+                              title: "Delete Match Result",
+                              content:
+                                  "Are you sure you want to delete this match result?",
+                            ),
+                          ) ??
+                          false)) {
+                        return;
+                      }
+                      ref
+                          .read(storedResultsProvider.notifier)
+                          .deleteResult(
+                            result.eventName,
+                            result.teamNumber,
+                            result.matchNumber,
+                          );
+                    },
+                  ),
+                ];
+              },
+            ),
           ],
         ),
       ),

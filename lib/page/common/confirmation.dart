@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_app/main.dart';
 
 /// Holds information for showing a confirmation dialog.
 class ConfirmationInfo {
@@ -22,12 +23,12 @@ class ConfirmationInfo {
   });
 }
 
-Future<bool?> showConfirmationDialog(
-  BuildContext context,
-  ConfirmationInfo confirmation,
-) async {
+Future<bool?> showConfirmationDialog(ConfirmationInfo confirmation) async {
+  if (homeKey.currentContext == null) {
+    return false;
+  }
   return await showDialog(
-    context: context,
+    context: homeKey.currentContext!,
     builder:
         (context) => AlertDialog(
           title: Text(confirmation.title),

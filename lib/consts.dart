@@ -6,6 +6,8 @@ const double kBorderRadius = 10;
 
 final kGameFormat = kGame2025;
 
+final String kEventName = "2025W2WASAM";
+
 final String kDbName = "scouting_app";
 
 final bool incrementMatchNumber = true;

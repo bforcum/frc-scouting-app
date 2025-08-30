@@ -14,7 +14,7 @@ abstract class FormDataModel with _$FormDataModel {
     var emptyData = <String, dynamic>{};
 
     emptyData["teamNumber"] = null;
-    emptyData["dateTime"] = null;
+    emptyData["timeStamp"] = null;
     emptyData["matchNumber"] = null;
     emptyData["gameFormatName"] = null;
     emptyData["gameFormatName"] = null;
@@ -27,7 +27,7 @@ abstract class FormDataModel with _$FormDataModel {
 
   MatchResult? toMatchResult() {
     if (data["gameFormatName"] == null) return null;
-    if (data["dateTime"] == null) return null;
+    if (data["timeStamp"] == null) return null;
     for (var key in kRequiredQuestions.map((q) => q.key)) {
       if (!data.containsKey(key) || data[key] == null) {
         return null; // Ensure all questions are included

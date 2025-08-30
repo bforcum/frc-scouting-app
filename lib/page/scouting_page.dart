@@ -8,7 +8,6 @@ import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
-import 'package:scouting_app/provider/database_provider.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
 import 'package:scouting_app/provider/match_result_provider.dart';
 
@@ -123,7 +122,6 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     }
 
     if (!(await showConfirmationDialog(
-          context,
           ConfirmationInfo(
             title: "Submit Form",
             content: "Are you sure you want to submit the form?",
@@ -137,8 +135,9 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
     final data = <String, dynamic>{};
 
+    data["eventName"] = kEventName;
     data["gameFormatName"] = kGameFormat.name;
-    data["dateTime"] = DateTime.now().toUtc();
+    data["timeStamp"] = DateTime.timestamp();
 
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
@@ -178,7 +177,6 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
   void _clear() async {
     if (!(await showConfirmationDialog(
-          context,
           ConfirmationInfo(
             title: "Clear Form",
             content: "Are you sure you want to clear the form?",
