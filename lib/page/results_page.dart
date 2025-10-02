@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
@@ -15,11 +16,27 @@ class ResultsPage extends ConsumerStatefulWidget {
 }
 
 class _ResultsPageState extends ConsumerState<ResultsPage> {
-  late AsyncValue<List<MatchResult>> matchResults;
+  late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
+
+  String filterText = "";
+  bool sortAscending = true;
+  int sortBy = 0;
+
+  List<Widget> get matchResultCards {
+    return matchResults.when(
+      data: (results) {
+        if (results.isEmpty) return [Text("No results yet")];
+        return results.map((e) => MatchResultCard(result: e)).toList();
+      },
+      error: (error, stack) => [Text("Error loading results: $error")],
+      loading: () => [CircularProgressIndicator()],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     matchResults = ref.watch(storedResultsProvider);
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -29,6 +46,64 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             child: Column(
               spacing: 20,
               children: [
+                Row(
+                  children: [
+                    Text("Sort by: ", style: TextStyle(fontSize: 16)),
+                    DropdownButton(
+                      value: sortBy,
+                      items: [
+                        DropdownMenuItem(
+                          value: 0,
+                          child: Text("Time", style: TextStyle(fontSize: 16)),
+                        ),
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text(
+                            "Match Number",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text(
+                            "Team Number",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        sortBy = val ?? 0;
+                        setState(() {});
+                      },
+                    ),
+                    Spacer(),
+                    FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                        foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          )
+                        ),
+
+                      ),
+                      onPressed: () {
+                        sortAscending = !sortAscending;
+                        setState(() {});
+                      },
+                      child: Transform.flip(
+                        flipY: sortAscending,
+                        child: Icon(Icons.filter_list),
+                      ),
+                    ),
+                  ],
+                ),
                 TextField(
                   decoration: InputDecoration(
                     hintText: "Filter team number",
@@ -41,19 +116,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                 Column(
                   spacing: 10,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: matchResults.when(
-                    loading: () => [CircularProgressIndicator()],
-                    error:
-                        (error, stack) => [
-                          Text("Something went wrong: \n$error"),
-                        ],
-                    data: (results) {
-                      if (results.isEmpty) return [Text("No results yet")];
-                      return results
-                          .map((e) => MatchResultCard(result: e))
-                          .toList();
-                    },
-                  ),
+                  children: matchResultCards,
                 ),
               ],
             ),
