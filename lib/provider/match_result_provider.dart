@@ -35,7 +35,6 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-    await refresh();
 
     return null;
   }
@@ -63,13 +62,29 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
+  MatchResult? getResult(int index) {
+    return state.value?[index];
+  }
+
   Future<String?> updateResult(MatchResult result) async {
     final db = ref.read(databaseProvider);
 
     if (await db.managers.matchResults.replace(result) == false) {
       return "Replacement failed";
     }
-    refresh();
+
+    return null;
+  }
+
+  Future<String?> clearAll() async {
+    final db = ref.read(databaseProvider);
+
+    try {
+      await db.delete(db.matchResults).go();
+    } catch (error) {
+      return "Error: ${error.toString()}";
+    }
+    await refresh();
 
     return null;
   }

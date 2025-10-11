@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
@@ -21,105 +20,87 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   String filterText = "";
   bool sortAscending = true;
   int sortBy = 0;
+  List<String> sortOptions = [
+    "New to old",
+    "Old to new",
+    "Match number (ascending)",
+    "Match number (descending)",
+    "Team number (ascending)",
+    "Team number (descending)",
+  ];
 
-  List<Widget> get matchResultCards {
-    return matchResults.when(
-      data: (results) {
-        if (results.isEmpty) return [Text("No results yet")];
-        return results.map((e) => MatchResultCard(result: e)).toList();
-      },
-      error: (error, stack) => [Text("Error loading results: $error")],
-      loading: () => [CircularProgressIndicator()],
-    );
-  }
+  // List<Widget> get matchResultCards {
+  //   return matchResults.when(
+  //     data: (results) {
+  //       if (results.isEmpty) return [Text("No results yet")];
+  //       return results.map((e) => MatchResultCard(result: e)).toList();
+  //     },
+  //     error: (error, stack) => [Text("Error loading results: $error")],
+  //     loading: () => [CircularProgressIndicator()],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    matchResults = ref.watch(storedResultsProvider);
-
+    return ListView.builder(
+      itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
+      itemBuilder: (context, index) {
+        MatchResult? result = ref
+            .read(storedResultsProvider.notifier)
+            .getResult(index);
+        if (result == null) {
+          print("Blank result at index $index");
+          return SizedBox.shrink();
+        }
+        return MatchResultCard(result: result);
+      },
+    );
     return Stack(
       fit: StackFit.expand,
       children: [
-        SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              spacing: 20,
-              children: [
-                Row(
-                  children: [
-                    Text("Sort by: ", style: TextStyle(fontSize: 16)),
-                    DropdownButton(
-                      value: sortBy,
-                      items: [
-                        DropdownMenuItem(
-                          value: 0,
-                          child: Text("Time", style: TextStyle(fontSize: 16)),
-                        ),
-                        DropdownMenuItem(
-                          value: 1,
-                          child: Text(
-                            "Match Number",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: 2,
-                          child: Text(
-                            "Team Number",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
-                      onChanged: (val) {
-                        sortBy = val ?? 0;
-                        setState(() {});
-                      },
-                    ),
-                    Spacer(),
-                    FilledButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                        foregroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )
-                        ),
-
-                      ),
-                      onPressed: () {
-                        sortAscending = !sortAscending;
-                        setState(() {});
-                      },
-                      child: Transform.flip(
-                        flipY: sortAscending,
-                        child: Icon(Icons.filter_list),
-                      ),
-                    ),
-                  ],
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Filter team number",
-                    hintStyle: TextStyle(
-                      fontSize: 20,
-                      color: Theme.of(context).hintColor,
-                    ),
+        Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            spacing: 20,
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Filter team number",
+                  hintStyle: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).hintColor,
                   ),
                 ),
-                Column(
-                  spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: matchResultCards,
+              ),
+              DropdownMenu<int>(
+                width: MediaQuery.of(context).size.width,
+                label: Text("Sort by"),
+                initialSelection: sortBy,
+                dropdownMenuEntries: [
+                  for (int i = 0; i < sortOptions.length; i++)
+                    DropdownMenuEntry(value: i, label: sortOptions[i]),
+                ],
+                onSelected: (val) {
+                  setState(() {
+                    sortBy = val ?? 0;
+                  });
+                },
+              ),
+              SingleChildScrollView(
+                child: ListView.builder(
+                  itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    MatchResult? result = ref
+                        .read(storedResultsProvider.notifier)
+                        .getResult(index);
+                    if (result == null) {
+                      return SizedBox.shrink();
+                    }
+                    return MatchResultCard(result: result);
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         Positioned(

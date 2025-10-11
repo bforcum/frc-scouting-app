@@ -86,6 +86,7 @@ class MatchResultCard extends ConsumerWidget {
                           .updateResult(
                             result.copyWith(timeStamp: DateTime.timestamp()),
                           );
+                      await ref.read(storedResultsProvider.notifier).refresh();
                     },
                   ),
                   PopupMenuItem(
@@ -108,6 +109,7 @@ class MatchResultCard extends ConsumerWidget {
                             result.teamNumber,
                             result.matchNumber,
                           );
+                      await ref.read(storedResultsProvider.notifier).refresh();
                     },
                   ),
                 ];
