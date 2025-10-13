@@ -29,79 +29,69 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
     "Team number (descending)",
   ];
 
-  // List<Widget> get matchResultCards {
-  //   return matchResults.when(
-  //     data: (results) {
-  //       if (results.isEmpty) return [Text("No results yet")];
-  //       return results.map((e) => MatchResultCard(result: e)).toList();
-  //     },
-  //     error: (error, stack) => [Text("Error loading results: $error")],
-  //     loading: () => [CircularProgressIndicator()],
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
-      itemBuilder: (context, index) {
-        MatchResult? result = ref
-            .read(storedResultsProvider.notifier)
-            .getResult(index);
-        if (result == null) {
-          print("Blank result at index $index");
-          return SizedBox.shrink();
-        }
-        return MatchResultCard(result: result);
-      },
-    );
     return Stack(
       fit: StackFit.expand,
       children: [
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            spacing: 20,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Filter team number",
-                  hintStyle: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).hintColor,
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                spacing: 20,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Filter team number",
+                      hintStyle: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              DropdownMenu<int>(
-                width: MediaQuery.of(context).size.width,
-                label: Text("Sort by"),
-                initialSelection: sortBy,
-                dropdownMenuEntries: [
-                  for (int i = 0; i < sortOptions.length; i++)
-                    DropdownMenuEntry(value: i, label: sortOptions[i]),
+                  DropdownMenu<int>(
+                    width: MediaQuery.of(context).size.width,
+                    label: Text("Sort by"),
+                    initialSelection: sortBy,
+                    requestFocusOnTap: false,
+                    keyboardType: TextInputType.none,
+                    enableSearch: false,
+                    dropdownMenuEntries: [
+                      for (int i = 0; i < sortOptions.length; i++)
+                        DropdownMenuEntry(value: i, label: sortOptions[i]),
+                    ],
+
+                    onSelected: (val) {
+                      setState(() {
+                        sortBy = val ?? 0;
+                      });
+                    },
+                  ),
                 ],
-                onSelected: (val) {
-                  setState(() {
-                    sortBy = val ?? 0;
-                  });
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+                itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
+                itemBuilder: (context, index) {
+                  MatchResult? result = ref
+                      .read(storedResultsProvider.notifier)
+                      .getResult(index);
+                  if (result == null) {
+                    return SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: MatchResultCard(result: result)
+                  );
                 },
               ),
-              SingleChildScrollView(
-                child: ListView.builder(
-                  itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    MatchResult? result = ref
-                        .read(storedResultsProvider.notifier)
-                        .getResult(index);
-                    if (result == null) {
-                      return SizedBox.shrink();
-                    }
-                    return MatchResultCard(result: result);
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         Positioned(
           right: 20,

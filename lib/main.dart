@@ -68,6 +68,7 @@ class _AppState extends ConsumerState<App> {
             SettingsPage(key: homeKey),
           ][currentPage],
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         destinations: [
           NavigationDestination(icon: Icon(Icons.search), label: "Scouting"),
           NavigationDestination(icon: Icon(Icons.list), label: "Results"),

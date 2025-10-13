@@ -18,7 +18,7 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         child: Column(
           spacing: 20,
           children: [
@@ -27,7 +27,7 @@ class SettingsPage extends ConsumerWidget {
               onPressed: () async {
                 String? error = await generateDummyData(ref);
                 if (context.mounted) {
-                  if (error == null) {
+                  if (error != null) {
                     showSnackBarMessage("Error generating dummy data: $error");
                   } else {
                     showSnackBarMessage("Dummy data generated");
@@ -64,7 +64,7 @@ Future<String?> generateDummyData(WidgetRef ref) async {
                 (question.min ?? 0);
           } else if (question.type == QuestionType.dropdown) {
             question = question as QuestionDropdown;
-            data[question.key] = rng.nextInt(question.options.length + 1);
+            data[question.key] = rng.nextInt(question.options.length - 1);
           } else if (question.type == QuestionType.text) {
             data[question.key] = "Sample text ${(i + j)}";
           }

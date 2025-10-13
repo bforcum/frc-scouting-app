@@ -76,6 +76,11 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
+  Future<List<int>> getIndices(SortType) async {
+    AsyncValue<List<int>> indices = AsyncValue.loading();
+    List<MatchResult> entries = state.value!;
+  }
+
   Future<String?> clearAll() async {
     final db = ref.read(databaseProvider);
 
@@ -88,4 +93,13 @@ class StoredResults extends _$StoredResults {
 
     return null;
   }
+}
+
+enum SortType {
+  timeAscending,
+  timeDescending,
+  matchNumAscending,
+  matchNumDescending,
+  teamNumAscending,
+  teamNumDescending,
 }
