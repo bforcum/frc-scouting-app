@@ -76,7 +76,7 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
-  Future<List<int>> getIndices(SortType) async {
+  Future<List<int>> getIndices(SortType sort) async {
     AsyncValue<List<int>> indices = AsyncValue.loading();
     List<MatchResult> entries = state.value!;
   }
