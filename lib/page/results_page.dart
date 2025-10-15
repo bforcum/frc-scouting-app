@@ -21,8 +21,6 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   bool sortAscending = true;
   int sortBy = 0;
   List<String> sortOptions = [
-    "New to old",
-    "Old to new",
     "Match number (ascending)",
     "Match number (descending)",
     "Team number (ascending)",
@@ -31,6 +29,9 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    var indices = ref.watch(storedResultsProvider.notifier).getIndices(SortType.values[sortBy], filterText);
+
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -51,6 +52,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                         color: Theme.of(context).hintColor,
                       ),
                     ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) => setState(() => filterText = value),
                   ),
                   DropdownMenu<int>(
                     width: MediaQuery.of(context).size.width,
@@ -74,22 +77,30 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
-                itemCount: ref.read(storedResultsProvider).value?.length ?? 0,
-                itemBuilder: (context, index) {
-                  MatchResult? result = ref
-                      .read(storedResultsProvider.notifier)
-                      .getResult(index);
-                  if (result == null) {
-                    return SizedBox.shrink();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: MatchResultCard(result: result)
+              child: Builder(builder: (context) {
+                if (indices.hasError) {
+                  return Text("Error encountered: ${indices.error}");
+                }
+                if (indices.hasValue) {
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+                    itemCount: indices.value?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      MatchResult? result = ref
+                          .read(storedResultsProvider.notifier)
+                          .getResult(indices.value![index]);
+                      if (result == null) {
+                        return SizedBox.shrink();
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: MatchResultCard(result: result)
+                      );
+                    },
                   );
-                },
-              ),
+                }
+                return SizedBox.shrink(child: CircularProgressIndicator());
+              },)
             ),
           ],
         ),
