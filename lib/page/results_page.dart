@@ -17,7 +17,7 @@ class ResultsPage extends ConsumerStatefulWidget {
 class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
 
-  String filterText = "";
+  String searchText = "";
   bool sortAscending = true;
   int sortBy = 0;
   List<String> sortOptions = [
@@ -30,7 +30,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   @override
   Widget build(BuildContext context) {
 
-    var indices = ref.watch(storedResultsProvider.notifier).getIndices(SortType.values[sortBy], filterText);
+    var indices = ref.watch(storedResultsProvider.notifier).getIndices(SortType.values[sortBy], searchText);
 
     return Stack(
       fit: StackFit.expand,
@@ -46,14 +46,14 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                 children: [
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Filter team number",
+                      hintText: "Search by team number",
                       hintStyle: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).hintColor,
                       ),
                     ),
                     keyboardType: TextInputType.number,
-                    onChanged: (value) => setState(() => filterText = value),
+                    onChanged: (value) => setState(() => searchText = value),
                   ),
                   DropdownMenu<int>(
                     width: MediaQuery.of(context).size.width,
