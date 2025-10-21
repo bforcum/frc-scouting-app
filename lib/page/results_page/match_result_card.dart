@@ -7,7 +7,7 @@ import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/results_page/view_result_page.dart';
 import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
-import 'package:scouting_app/provider/match_result_provider.dart';
+import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class MatchResultCard extends ConsumerWidget {
   final MatchResult result;

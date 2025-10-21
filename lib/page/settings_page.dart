@@ -6,7 +6,7 @@ import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
-import 'package:scouting_app/provider/match_result_provider.dart';
+import 'package:scouting_app/provider/stored_results_provider.dart';
 
 // how to store settings:
 // Shared preferences

@@ -9,7 +9,7 @@ import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
-import 'package:scouting_app/provider/match_result_provider.dart';
+import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
   const ScoutingPage({super.key});

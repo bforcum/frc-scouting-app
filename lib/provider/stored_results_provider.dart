@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
 
-part 'match_result_provider.g.dart';
+part 'stored_results_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class StoredResults extends _$StoredResults {
@@ -78,46 +79,6 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
-  AsyncValue<List<int>> getIndices(SortType sort, String teamFilter) {
-
-    return state.whenData((results) => _sortIndices(sort, results, teamFilter));
-  }
-
-  List<int> _sortIndices(SortType sort, List<MatchResult> results, String teamFilter) {
-    
-    List<int> indices = List<int>.empty(growable: true);
-
-    for (int i = 0; i < results.length; i++) {
-      if (results[i].teamNumber.toString().contains(teamFilter)) {
-        indices.add(i);
-      }
-    }
-
-    switch (sort) {
-      case SortType.matchNumAscending: 
-        indices.sort((a,b) =>
-          results[a].matchNumber - results[b].matchNumber
-        );
-        break;
-      case SortType.matchNumDescending:
-        indices.sort((a,b) =>
-          results[b].matchNumber - results[a].matchNumber
-        );
-        break;
-      case SortType.teamNumAscending:
-        indices.sort((a,b) =>
-          results[a].teamNumber - results[b].teamNumber
-        );
-        break;
-      case SortType.teamNumDescending:
-        indices.sort((a,b) =>
-          results[b].teamNumber - results[a].teamNumber
-        );
-        break;
-    }
-    return indices;
-  }
-
   Future<String?> clearAll() async {
     final db = ref.read(databaseProvider);
 
@@ -130,6 +91,43 @@ class StoredResults extends _$StoredResults {
 
     return null;
   }
+}
+
+@riverpod
+Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async {
+  List<MatchResult> results = await ref.watch(storedResultsProvider.future);
+  
+  List<int> indices = List<int>.empty(growable: true);
+
+  for (int i = 0; i < results.length; i++) {
+    if (results[i].teamNumber.toString().contains(teamFilter)) {
+      indices.add(i);
+    }
+  }
+
+  switch (sort) {
+    case SortType.matchNumAscending: 
+      indices.sort((a,b) =>
+        results[a].matchNumber - results[b].matchNumber
+      );
+      break;
+    case SortType.matchNumDescending:
+      indices.sort((a,b) =>
+        results[b].matchNumber - results[a].matchNumber
+      );
+      break;
+    case SortType.teamNumAscending:
+      indices.sort((a,b) =>
+        results[a].teamNumber - results[b].teamNumber
+      );
+      break;
+    case SortType.teamNumDescending:
+      indices.sort((a,b) =>
+        results[b].teamNumber - results[a].teamNumber
+      );
+      break;
+  }
+  return indices;
 }
 
 enum SortType {

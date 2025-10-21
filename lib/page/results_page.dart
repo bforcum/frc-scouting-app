@@ -5,7 +5,7 @@ import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
 import 'package:scouting_app/page/results_page/scanner_page.dart';
-import 'package:scouting_app/provider/match_result_provider.dart';
+import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class ResultsPage extends ConsumerStatefulWidget {
   const ResultsPage({super.key});
@@ -19,7 +19,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   String searchText = "";
   bool sortAscending = true;
-  int sortBy = 0;
+  SortType sortBy = SortType.values[0];
   List<String> sortOptions = [
     "Match number (ascending)",
     "Match number (descending)",
@@ -30,7 +30,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   @override
   Widget build(BuildContext context) {
 
-    var indices = ref.watch(storedResultsProvider.notifier).getIndices(SortType.values[sortBy], searchText);
+    var indices = ref.watch(ResultIndicesProvider(sortBy, searchText));
 
     return Stack(
       fit: StackFit.expand,
@@ -55,7 +55,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                     keyboardType: TextInputType.number,
                     onChanged: (value) => setState(() => searchText = value),
                   ),
-                  DropdownMenu<int>(
+                  DropdownMenu<SortType>(
                     width: MediaQuery.of(context).size.width,
                     label: Text("Sort by"),
                     initialSelection: sortBy,
@@ -64,25 +64,31 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                     enableSearch: false,
                     dropdownMenuEntries: [
                       for (int i = 0; i < sortOptions.length; i++)
-                        DropdownMenuEntry(value: i, label: sortOptions[i]),
+                        DropdownMenuEntry(value: SortType.values[i], label: sortOptions[i]),
                     ],
 
                     onSelected: (val) {
                       setState(() {
-                        sortBy = val ?? 0;
+                        sortBy = val ?? SortType.values[0];
                       });
                     },
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: Builder(builder: (context) {
-                if (indices.hasError) {
-                  return Text("Error encountered: ${indices.error}");
+            Builder(builder: (context) {
+              if (indices.hasError) {
+                return Text("Error encountered: ${indices.error}");
+              }
+              if (indices.hasValue) {
+                if (indices.value!.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text("No results"),
+                  );
                 }
-                if (indices.hasValue) {
-                  return ListView.builder(
+                return Expanded(
+                  child: ListView.builder(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
                     itemCount: indices.value?.length ?? 0,
                     itemBuilder: (context, index) {
@@ -97,11 +103,14 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                         child: MatchResultCard(result: result)
                       );
                     },
-                  );
-                }
-                return SizedBox.shrink(child: CircularProgressIndicator());
-              },)
-            ),
+                  ),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: CircularProgressIndicator(),
+              );
+            },),
           ],
         ),
         Positioned(
