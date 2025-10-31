@@ -160,4 +160,38 @@ abstract class MatchResult
       data: drift.Value<Uint8List>(toBin()),
     ).toColumns(nullToAbsent);
   }
+
+  int getAutoScore() {
+    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
+      (format) => format.name == gameFormatName,
+    );
+    if (format == null) {
+      return 0;
+    }
+    return format.autoScore(this);
+  }
+
+  int getTeleScore() {
+    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
+      (format) => format.name == gameFormatName,
+    );
+    if (format == null) {
+      return 0;
+    }
+    return format.teleScore(this);
+  }
+
+  int getOtherScore() {
+    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
+      (format) => format.name == gameFormatName,
+    );
+    if (format == null) {
+      return 0;
+    }
+    return format.otherScore(this);
+  }
+
+  int getTotalScore() {
+    return getAutoScore() + getTeleScore() + getOtherScore();
+  }
 }

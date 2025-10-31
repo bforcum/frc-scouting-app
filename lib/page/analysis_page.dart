@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scouting_app/model/match_result.dart';
-import 'package:scouting_app/page/results_page/match_result_card.dart';
+import 'package:scouting_app/model/team_data.dart';
+import 'package:scouting_app/page/analysis_page/team_stats_card.dart';
+import 'package:scouting_app/provider/statistics_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class AnalysisPage extends ConsumerStatefulWidget {
@@ -18,7 +19,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
 
   @override
   Widget build(BuildContext context) {
-    var indices = ref.watch(ResultIndicesProvider(sortBy, searchText));
+    AsyncValue<List<TeamData>> stats = ref.watch(teamStatisticsProvider);
 
     return Stack(
       fit: StackFit.expand,
@@ -52,7 +53,10 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                     enableSearch: false,
                     dropdownMenuEntries: [
                       for (int i = 0; i < sortOptions.length; i++)
-                        DropdownMenuEntry(value: SortType.values[i], label: sortOptions[i]),
+                        DropdownMenuEntry(
+                          value: SortType.values[i],
+                          label: sortOptions[i],
+                        ),
                     ],
 
                     onSelected: (val) {
@@ -64,31 +68,30 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                 ],
               ),
             ),
-            Expanded(
-              child: Builder(builder: (context) {
-                if (indices.hasError) {
-                  return Text("Error encountered: ${indices.error}");
+            Builder(
+              builder: (context) {
+                if (stats.hasError) {
+                  return Text("Error encountered: ${stats.error}");
                 }
-                if (indices.hasValue) {
-                  return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
-                    itemCount: indices.value?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      MatchResult? result = ref
-                          .read(storedResultsProvider.notifier)
-                          .getResult(indices.value![index]);
-                      if (result == null) {
-                        return SizedBox.shrink();
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: MatchResultCard(result: result)
-                      );
-                    },
+                if (stats.isLoading) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: CircularProgressIndicator(),
                   );
                 }
-                return SizedBox.shrink(child: CircularProgressIndicator());
-              },)
+                return Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+                    itemCount: stats.value?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TeamStatsCard(data: stats.value![index]),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ],
         ),
