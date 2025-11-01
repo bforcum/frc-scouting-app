@@ -181,17 +181,17 @@ abstract class MatchResult
     return format.teleScore(this);
   }
 
-  int getOtherScore() {
+  int getEndScore() {
     GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
       (format) => format.name == gameFormatName,
     );
     if (format == null) {
       return 0;
     }
-    return format.otherScore(this);
+    return format.endScore(this);
   }
 
   int getTotalScore() {
-    return getAutoScore() + getTeleScore() + getOtherScore();
+    return getAutoScore() + getTeleScore() + getEndScore();
   }
 }

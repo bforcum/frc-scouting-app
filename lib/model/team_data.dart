@@ -6,7 +6,7 @@ class TeamData {
   int teamNumber;
   List<int> autoScores;
   List<int> teleScores;
-  List<int> otherScores;
+  List<int> endScores;
   List<int> totalScores;
   Map<String, bool> scoringLocations = {};
 
@@ -15,7 +15,7 @@ class TeamData {
 
     required this.autoScores,
     required this.teleScores,
-    required this.otherScores,
+    required this.endScores,
     required this.totalScores,
     required this.scoringLocations,
   });
@@ -23,7 +23,7 @@ class TeamData {
   factory TeamData.fromList(List<MatchResult> results) {
     List<int> autoScores = [];
     List<int> teleScores = [];
-    List<int> otherScores = [];
+    List<int> endScores = [];
     List<int> totalScores = [];
     Map<String, bool> scoringLocations = {};
 
@@ -36,13 +36,9 @@ class TeamData {
       GameFormat gameFormat = kSupportedGameFormats.firstWhere(
         (format) => format.name == result.gameFormatName,
       );
-      assert(
-        result.teamNumber == teamNumber,
-        "Team number was $teamNumber but result #$i was ${result.teamNumber}",
-      );
       autoScores.add(result.getAutoScore());
       teleScores.add(result.getTeleScore());
-      otherScores.add(result.getOtherScore());
+      endScores.add(result.getEndScore());
       totalScores.add(result.getTotalScore());
 
       var locations = gameFormat.getScoringLocations(result);
@@ -60,7 +56,7 @@ class TeamData {
       teamNumber: teamNumber,
       autoScores: autoScores,
       teleScores: teleScores,
-      otherScores: otherScores,
+      endScores: endScores,
       totalScores: totalScores,
       scoringLocations: scoringLocations,
     );

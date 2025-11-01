@@ -55,7 +55,7 @@ final kGame2025 = GameFormat(
           result.data["teleL3"] * 4 +
           result.data["teleL2"] * 3 +
           result.data["teleL1"] * 2,
-  otherScore: (result) {
+  endScore: (result) {
     // Select a point value from the list based on the total value
     return [0, 2, 6, 12][result.data["endResult"]];
   },

@@ -10,7 +10,7 @@ class GameFormat {
 
   final int Function(MatchResult) autoScore;
   final int Function(MatchResult) teleScore;
-  final int Function(MatchResult) otherScore;
+  final int Function(MatchResult) endScore;
 
   final List<String> scoringLocations;
   final Map<String, bool> Function(MatchResult) getScoringLocations;
@@ -21,7 +21,7 @@ class GameFormat {
     required this.questions,
     required this.autoScore,
     required this.teleScore,
-    required this.otherScore,
+    required this.endScore,
     required this.scoringLocations,
     required this.getScoringLocations,
   });
