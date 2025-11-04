@@ -17,9 +17,13 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
   SortType sortBy = SortType.values[0];
   List<String> sortOptions = [];
 
+  AsyncValue<List<TeamData>> stats = AsyncValue.loading();
+
   @override
   Widget build(BuildContext context) {
-    AsyncValue<List<TeamData>> stats = ref.watch(teamStatisticsProvider);
+    setState(() {
+      stats = ref.watch(teamStatisticsProvider);
+    });
 
     return Stack(
       fit: StackFit.expand,
@@ -79,6 +83,13 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                     child: CircularProgressIndicator(),
                   );
                 }
+                if (stats.value!.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text("No results"),
+                  );
+                }
+
                 return Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
@@ -99,3 +110,5 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
     );
   }
 }
+
+// enum SortType { totalPoints, autoPoints, telePoints }
