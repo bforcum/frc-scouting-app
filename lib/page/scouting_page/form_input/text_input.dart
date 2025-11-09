@@ -47,7 +47,7 @@ class _TextInputState extends State<TextInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question.label, style: TextStyle(fontSize: 25)),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium!),
         SizedBox(height: 10),
         Container(
           clipBehavior: Clip.hardEdge,
@@ -75,13 +75,12 @@ class _TextInputState extends State<TextInput> {
               maxLength: question.length,
               autocorrect: false,
               textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 20),
+              style: Theme.of(context).textTheme.bodySmall,
               onTapOutside: (details) => _focusNode.unfocus(),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: _hintText,
-                hintStyle: TextStyle(
-                  fontSize: 20,
+                hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color: Theme.of(context).hintColor,
                 ),
               ),

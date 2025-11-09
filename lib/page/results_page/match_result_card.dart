@@ -32,11 +32,14 @@ class MatchResultCard extends ConsumerWidget {
               children: [
                 Text(
                   "Team ${result.teamNumber}",
-                  style: TextStyle(fontSize: 20),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text.rich(
                   TextSpan(
                     text: "Match ${result.matchNumber}, ",
+                    style: Theme.of(context).textTheme.bodySmall,
                     children: [
                       TextSpan(
                         text: (result.data["timeStamp"] as DateTime)

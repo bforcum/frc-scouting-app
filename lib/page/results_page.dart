@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/match_result.dart';
@@ -38,7 +37,10 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
           return SliverFillRemaining(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text("Error encountered: ${indices.error}"),
+              child: Text(
+                "Error encountered: ${indices.error}",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ),
           );
         }
@@ -57,9 +59,15 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
           );
         }
         if (indices.value!.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Text("No results"),
+          return SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                "No results",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
           );
         }
         return SliverPadding(
@@ -97,10 +105,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                     TextField(
                       decoration: InputDecoration(
                         hintText: "Search by team number",
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(context).hintColor,
-                        ),
+                        hintStyle: Theme.of(context).textTheme.bodySmall!
+                            .copyWith(color: Theme.of(context).hintColor),
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) => setState(() => searchText = value),
@@ -112,6 +118,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                       requestFocusOnTap: false,
                       keyboardType: TextInputType.none,
                       enableSearch: false,
+                      textStyle: Theme.of(context).textTheme.bodyMedium,
                       dropdownMenuEntries: [
                         for (int i = 0; i < sortOptions.length; i++)
                           DropdownMenuEntry(

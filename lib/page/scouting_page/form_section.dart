@@ -11,25 +11,20 @@ class FormSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(kBorderRadius)),
         color: Theme.of(context).colorScheme.surfaceContainer,
       ),
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
-          children: [
-            Text(
-              title,
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            ...children,
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          ...children,
+        ],
       ),
     );
   }

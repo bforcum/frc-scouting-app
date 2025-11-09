@@ -17,12 +17,11 @@ class DropdownInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: TextStyle(fontSize: 25)),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         Container(
-          width: 154,
-          height: 60,
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          width: 144,
+          height: 48,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(
@@ -32,21 +31,25 @@ class DropdownInput extends StatelessWidget {
                       : Theme.of(context).colorScheme.outline,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: DropdownMenu<int>(
-            width: 154,
-            inputDecorationTheme: const InputDecorationTheme(
+            inputDecorationTheme: InputDecorationTheme(
               isCollapsed: true,
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
+                color: Theme.of(context).hintColor,
+              ),
             ),
-            trailingIcon: Icon(Icons.arrow_drop_down, size: 30),
-            selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 30),
+            trailingIcon: Icon(Icons.arrow_drop_down, size: 20),
+            selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 20),
             requestFocusOnTap: false,
             initialSelection: question.preset,
+            hintText: "Select",
             keyboardType: TextInputType.none,
             enableSearch: false,
+            textStyle: Theme.of(context).textTheme.bodySmall,
             dropdownMenuEntries: [
               for (int i = 0; i < question.options.length; i++)
                 DropdownMenuEntry(value: i, label: question.options[i]),

@@ -48,13 +48,14 @@ class _NumberInputState extends State<NumberInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: TextStyle(fontSize: 25)),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         Container(
           clipBehavior: Clip.hardEdge,
-          width: 154,
-          height: 60,
+          width: 120,
+          height: 48,
           alignment: Alignment.center,
+          padding: EdgeInsets.only(bottom: 6),
           decoration: BoxDecoration(
             border: Border.all(
               color:
@@ -63,7 +64,7 @@ class _NumberInputState extends State<NumberInput> {
                       : Theme.of(context).colorScheme.outline,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: TextFormField(
             onChanged:
@@ -96,12 +97,11 @@ class _NumberInputState extends State<NumberInput> {
             keyboardType: TextInputType.number,
             autocorrect: false,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 25),
+            style: Theme.of(context).textTheme.bodyLarge,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: _hintText,
-              hintStyle: TextStyle(
-                fontSize: 25,
+              hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Theme.of(context).hintColor,
               ),
             ),

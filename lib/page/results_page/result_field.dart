@@ -50,7 +50,7 @@ class MatchResultField extends StatelessWidget {
                 child: Text(
                   "$value",
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 20),
+                  style: Theme.of(context).textTheme.bodyMedium!,
                 ),
               ),
             ),

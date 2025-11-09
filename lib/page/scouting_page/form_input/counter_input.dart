@@ -16,38 +16,38 @@ class CounterInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: TextStyle(fontSize: 25)),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         const Spacer(),
         Container(
-          height: 60,
+          height: 48,
           decoration: BoxDecoration(
             border: Border.all(
               color: Theme.of(context).colorScheme.outline,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                iconSize: 40,
+                iconSize: 32,
                 icon: Icon(Icons.horizontal_rule),
 
                 onPressed:
                     (value <= question.min) ? null : () => onChanged(value - 1),
               ),
               Container(
-                width: 40,
+                width: 32,
                 alignment: Alignment.center,
                 child: Text(
                   '$value',
-                  style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
               IconButton(
-                iconSize: 40,
+                iconSize: 32,
                 icon: Icon(Icons.add),
                 onPressed:
                     (value >= question.max) ? null : () => onChanged(value + 1),
