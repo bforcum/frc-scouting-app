@@ -33,7 +33,7 @@ class MatchResultField extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(question.label, style: TextStyle(fontSize: 25)),
+            Text(question.label, style: Theme.of(context).textTheme.bodySmall!),
             SizedBox(height: 10),
             Container(
               clipBehavior: Clip.hardEdge,
@@ -43,14 +43,14 @@ class MatchResultField extends StatelessWidget {
                   color: Theme.of(context).colorScheme.outline,
                   width: 2,
                 ),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                padding: const EdgeInsets.all(10),
                 child: Text(
                   "$value",
                   textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.bodyMedium!,
+                  style: Theme.of(context).textTheme.bodySmall!,
                 ),
               ),
             ),
@@ -69,23 +69,20 @@ class _HorizontalField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(label, style: TextStyle(fontSize: 25)),
+        Text(label, style: Theme.of(context).textTheme.bodyLarge!),
         const Spacer(),
         Container(
-          width: 154,
-          height: 60,
+          width: 120,
+          height: 48,
           decoration: BoxDecoration(
             border: Border.all(
               color: Theme.of(context).colorScheme.outline,
               width: 2,
             ),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(24),
           ),
           alignment: Alignment.center,
-          child: Text(
-            value,
-            style: TextStyle(fontSize: 25, fontFamily: "Roboto"),
-          ),
+          child: Text(value, style: Theme.of(context).textTheme.bodyLarge!),
         ),
       ],
     );

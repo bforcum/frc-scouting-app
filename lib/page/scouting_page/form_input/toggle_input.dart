@@ -17,7 +17,7 @@ class ToggleInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(question.label, style: Theme.of(context).textTheme.bodyLarge),
         Spacer(),
         SizedBox(
           height: 48,

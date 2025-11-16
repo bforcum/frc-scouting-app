@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
           titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
           titleMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
           titleSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-          bodyLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-          bodyMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-          bodySmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          bodyLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          bodyMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
         ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red,

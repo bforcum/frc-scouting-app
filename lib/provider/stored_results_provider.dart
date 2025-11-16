@@ -38,7 +38,7 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-
+    await refresh();
     return null;
   }
 
@@ -94,9 +94,13 @@ class StoredResults extends _$StoredResults {
 }
 
 @riverpod
-Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async {
+Future<List<int>> resultIndices(
+  Ref ref,
+  SortType sort,
+  String teamFilter,
+) async {
   List<MatchResult> results = await ref.watch(storedResultsProvider.future);
-  
+
   List<int> indices = List<int>.empty(growable: true);
 
   for (int i = 0; i < results.length; i++) {
@@ -106,8 +110,8 @@ Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async
   }
 
   switch (sort) {
-    case SortType.matchNumAscending: 
-      indices.sort((a,b) {
+    case SortType.matchNumAscending:
+      indices.sort((a, b) {
         int sort = results[a].matchNumber - results[b].matchNumber;
         if (sort == 0) {
           return results[a].teamNumber - results[b].teamNumber;
@@ -116,7 +120,7 @@ Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async
       });
       break;
     case SortType.matchNumDescending:
-      indices.sort((a,b) {
+      indices.sort((a, b) {
         int sort = results[b].matchNumber - results[a].matchNumber;
         if (sort == 0) {
           return results[b].teamNumber - results[a].teamNumber;
@@ -125,7 +129,7 @@ Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async
       });
       break;
     case SortType.teamNumAscending:
-      indices.sort((a,b) {
+      indices.sort((a, b) {
         int sort = results[a].teamNumber - results[b].teamNumber;
         if (sort == 0) {
           return results[a].matchNumber - results[b].matchNumber;
@@ -134,7 +138,7 @@ Future<List<int>> resultIndices(Ref ref, SortType sort, String teamFilter) async
       });
       break;
     case SortType.teamNumDescending:
-      indices.sort((a,b) {
+      indices.sort((a, b) {
         int sort = results[b].teamNumber - results[a].teamNumber;
         if (sort == 0) {
           return results[a].matchNumber - results[b].matchNumber;

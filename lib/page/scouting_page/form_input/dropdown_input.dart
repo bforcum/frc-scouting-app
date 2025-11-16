@@ -17,31 +17,32 @@ class DropdownInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(question.label, style: Theme.of(context).textTheme.bodyLarge),
         Spacer(),
-        Container(
+        SizedBox(
           width: 144,
           height: 48,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color:
-                  formState.errorText != null
-                      ? Theme.of(context).colorScheme.errorContainer
-                      : Theme.of(context).colorScheme.outline,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(24),
-          ),
           child: DropdownMenu<int>(
             inputDecorationTheme: InputDecorationTheme(
-              isCollapsed: true,
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
+              contentPadding: EdgeInsets.all(10),
+              errorStyle: TextStyle(fontSize: 0),
+              isCollapsed: false,
+              isDense: false,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide(
+                  color:
+                      formState.errorText != null
+                          ? Theme.of(context).colorScheme.errorContainer
+                          : Theme.of(context).colorScheme.outline,
+                  width: 2,
+                ),
+              ),
               hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
                 color: Theme.of(context).hintColor,
               ),
             ),
+
             trailingIcon: Icon(Icons.arrow_drop_down, size: 20),
             selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 20),
             requestFocusOnTap: false,

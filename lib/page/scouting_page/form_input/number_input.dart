@@ -48,30 +48,23 @@ class _NumberInputState extends State<NumberInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(question.label, style: Theme.of(context).textTheme.bodyLarge),
         Spacer(),
         Container(
-          clipBehavior: Clip.hardEdge,
+          // clipBehavior: Clip.hardEdge,
           width: 120,
           height: 48,
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(bottom: 6),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color:
-                  widget.formState.errorText != null
-                      ? Theme.of(context).colorScheme.errorContainer
-                      : Theme.of(context).colorScheme.outline,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(24),
-          ),
+          alignment: Alignment.topCenter,
           child: TextFormField(
+            maxLength: 5,
+            maxLines: 1,
+
             onChanged:
                 (value) =>
                     widget.onChanged((value != "") ? int.parse(value) : null),
             controller: _controller,
             focusNode: _focusNode,
+
             onTap: () {
               _controller.selection = TextSelection(
                 baseOffset: 0,
@@ -98,12 +91,27 @@ class _NumberInputState extends State<NumberInput> {
             autocorrect: false,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
+            textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(10),
+              errorStyle: TextStyle(fontSize: 0),
+              isCollapsed: false,
+              isDense: false,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(24),
+                borderSide: BorderSide(
+                  color:
+                      widget.formState.errorText != null
+                          ? Theme.of(context).colorScheme.errorContainer
+                          : Theme.of(context).colorScheme.outline,
+                  width: 2,
+                ),
+              ),
               hintText: _hintText,
               hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                 color: Theme.of(context).hintColor,
               ),
+              counterText: "",
             ),
           ),
         ),

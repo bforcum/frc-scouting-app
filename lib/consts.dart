@@ -142,13 +142,13 @@ final kGame2025 = GameFormat(
     QuestionDropdown(
       key: "endAttempt",
       section: 2,
-      label: "Endgame attempt",
+      label: "End attempt",
       options: ["None", "Park", "High Cage", "Low Cage"],
     ),
     QuestionDropdown(
       key: "endResult",
       section: 2,
-      label: "Endgame result",
+      label: "End result",
       options: ["None", "Park", "High Cage", "Low Cage"],
     ),
   ],

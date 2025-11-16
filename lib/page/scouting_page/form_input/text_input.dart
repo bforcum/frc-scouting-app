@@ -47,7 +47,7 @@ class _TextInputState extends State<TextInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium!),
+        Text(question.label, style: Theme.of(context).textTheme.bodyLarge!),
         SizedBox(height: 10),
         Container(
           clipBehavior: Clip.hardEdge,
