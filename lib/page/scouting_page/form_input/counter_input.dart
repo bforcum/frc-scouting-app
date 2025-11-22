@@ -16,7 +16,7 @@ class CounterInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyLarge),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         const Spacer(),
         Container(
           height: 48,

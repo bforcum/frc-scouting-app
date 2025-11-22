@@ -69,7 +69,7 @@ class _HorizontalField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.bodyLarge!),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium!),
         const Spacer(),
         Container(
           width: 120,
@@ -82,7 +82,7 @@ class _HorizontalField extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
           ),
           alignment: Alignment.center,
-          child: Text(value, style: Theme.of(context).textTheme.bodyLarge!),
+          child: Text(value, style: Theme.of(context).textTheme.bodyMedium!),
         ),
       ],
     );

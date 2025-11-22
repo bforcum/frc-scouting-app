@@ -31,14 +31,6 @@ final List<Question> kRequiredQuestions = [
     min: 1,
     max: 100,
   ),
-  QuestionText(
-    key: "scoutName",
-    section: 0,
-    label: "Scout name",
-    length: 30,
-    hint: "Full name",
-    requiredField: true,
-  ),
 ];
 
 final kGame2025 = GameFormat(

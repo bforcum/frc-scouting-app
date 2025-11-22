@@ -9,6 +9,7 @@ import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/scouting_page/form_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
@@ -135,7 +136,8 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
     final data = <String, dynamic>{};
 
-    data["eventName"] = kEventName;
+    data["eventName"] = ref.read(settingsProvider).eventName;
+    data["scoutName"] = ref.read(settingsProvider).scoutName;
     data["gameFormatName"] = kGameFormat.name;
     data["timeStamp"] = DateTime.timestamp();
 

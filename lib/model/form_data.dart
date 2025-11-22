@@ -16,7 +16,8 @@ abstract class FormDataModel with _$FormDataModel {
     emptyData["teamNumber"] = null;
     emptyData["timeStamp"] = null;
     emptyData["matchNumber"] = null;
-    emptyData["gameFormatName"] = null;
+    emptyData["eventName"] = null;
+    emptyData["scoutName"] = null;
     emptyData["gameFormatName"] = null;
 
     for (var question in kGameFormat.questions) {
@@ -28,11 +29,10 @@ abstract class FormDataModel with _$FormDataModel {
   MatchResult? toMatchResult() {
     if (data["gameFormatName"] == null) return null;
     if (data["timeStamp"] == null) return null;
-    for (var key in kRequiredQuestions.map((q) => q.key)) {
-      if (!data.containsKey(key) || data[key] == null) {
-        return null; // Ensure all questions are included
-      }
-    }
+    if (data["teamNumber"] == null) return null;
+    if (data["matchNumber"] == null) return null;
+    if (data["eventName"] == null) return null;
+    if (data["scoutName"] == null) return null;
 
     for (var key in kGameFormat.questions.map((q) => q.key)) {
       if (!data.containsKey(key) || data[key] == null) {

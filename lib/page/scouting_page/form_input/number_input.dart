@@ -6,14 +6,14 @@ class NumberInput extends StatefulWidget {
   final Function(int?) onChanged;
   final QuestionNumber question;
   final int? initialValue;
-  final FormFieldState<int> formState;
+  final String? errorText;
 
   const NumberInput({
     super.key,
     required this.question,
     required this.onChanged,
     this.initialValue,
-    required this.formState,
+    this.errorText,
   });
 
   @override
@@ -48,7 +48,7 @@ class _NumberInputState extends State<NumberInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyLarge),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         Container(
           // clipBehavior: Clip.hardEdge,
@@ -90,7 +90,7 @@ class _NumberInputState extends State<NumberInput> {
             keyboardType: TextInputType.number,
             autocorrect: false,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyMedium,
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(10),
@@ -101,14 +101,14 @@ class _NumberInputState extends State<NumberInput> {
                 borderRadius: BorderRadius.circular(24),
                 borderSide: BorderSide(
                   color:
-                      widget.formState.errorText != null
+                      widget.errorText != null
                           ? Theme.of(context).colorScheme.errorContainer
                           : Theme.of(context).colorScheme.outline,
                   width: 2,
                 ),
               ),
               hintText: _hintText,
-              hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Theme.of(context).hintColor,
               ),
               counterText: "",

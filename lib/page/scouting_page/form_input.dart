@@ -96,7 +96,7 @@ class FormInput extends ConsumerWidget {
         builder:
             (formState) => NumberInput(
               initialValue: value,
-              formState: formState,
+              errorText: formState.errorText,
               question: question as QuestionNumber,
               onChanged: (value) {
                 onChanged(value);
@@ -123,7 +123,8 @@ class FormInput extends ConsumerWidget {
         builder:
             (formState) => DropdownInput(
               question: question as QuestionDropdown,
-              formState: formState,
+              errorText: formState.errorText,
+              initialValue: value,
               onChanged: (value) {
                 onChanged(value);
                 formState.didChange(value);
@@ -150,7 +151,7 @@ class FormInput extends ConsumerWidget {
         builder:
             (formState) => TextInput(
               initialValue: value,
-              formState: formState,
+              errorText: formState.errorText,
               question: question as QuestionText,
               onChanged: (value) {
                 onChanged(value);

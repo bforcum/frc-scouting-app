@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/question.dart';
 
 class TextInput extends StatefulWidget {
   final Function(String)? onChanged;
   final QuestionText question;
   final String? initialValue;
-  final FormFieldState<String> formState;
+  final String? errorText;
 
   const TextInput({
     super.key,
     required this.question,
-    required this.formState,
+    this.errorText,
     this.initialValue,
     this.onChanged,
   });
@@ -47,43 +48,40 @@ class _TextInputState extends State<TextInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyLarge!),
+        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
         SizedBox(height: 10),
-        Container(
-          clipBehavior: Clip.hardEdge,
-          alignment: Alignment.topLeft,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color:
-                  widget.formState.errorText != null
-                      ? Theme.of(context).colorScheme.errorContainer
-                      : Theme.of(context).colorScheme.outline,
-              width: 2,
-            ),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: TextFormField(
-              minLines: 1,
-              maxLines: widget.question.multiline ? null : 1,
-              initialValue:
-                  (widget.initialValue != "") ? widget.initialValue : null,
-              onChanged: widget.onChanged,
-              focusNode: _focusNode,
-              keyboardType: TextInputType.text,
-              maxLength: question.length,
-              autocorrect: false,
-              textAlign: TextAlign.left,
-              style: Theme.of(context).textTheme.bodySmall,
-              onTapOutside: (details) => _focusNode.unfocus(),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: _hintText,
-                hintStyle: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: Theme.of(context).hintColor,
-                ),
+        TextFormField(
+          minLines: 1,
+          maxLines: widget.question.multiline ? null : 1,
+          initialValue:
+              (widget.initialValue != "") ? widget.initialValue : null,
+          onChanged: widget.onChanged,
+          focusNode: _focusNode,
+          keyboardType: TextInputType.text,
+          maxLength: question.length,
+          autocorrect: false,
+          textAlign: TextAlign.left,
+          textAlignVertical: TextAlignVertical.top,
+          style: Theme.of(context).textTheme.bodyMedium,
+          onTapOutside: (details) => _focusNode.unfocus(),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.all(kBorderRadius),
+            errorStyle: TextStyle(fontSize: 0),
+            isCollapsed: false,
+            isDense: false,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(kBorderRadius),
+              borderSide: BorderSide(
+                color:
+                    widget.errorText != null
+                        ? Theme.of(context).colorScheme.errorContainer
+                        : Theme.of(context).colorScheme.outline,
+                width: 2,
               ),
+            ),
+            hintText: _hintText,
+            hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: Theme.of(context).hintColor,
             ),
           ),
         ),

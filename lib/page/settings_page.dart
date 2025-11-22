@@ -1,41 +1,100 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scouting_app/consts.dart';
-import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
-import 'package:scouting_app/page/common/snack_bar_message.dart';
-import 'package:scouting_app/provider/stored_results_provider.dart';
-
-// how to store settings:
-// Shared preferences
+import 'package:scouting_app/model/settings.dart';
+import 'package:scouting_app/page/scouting_page/form_input/dropdown_input.dart';
+import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
+import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
+import 'package:scouting_app/page/scouting_page/form_section.dart';
+import 'package:scouting_app/page/settings_page/dummy_data.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SettingsModel settings = ref.watch(settingsProvider);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         child: Column(
           spacing: 20,
           children: [
-            Text("Settings", style: TextStyle(fontSize: 30)),
-            ElevatedButton(
-              onPressed: () async {
-                String? error = await generateDummyData(ref);
-                if (context.mounted) {
-                  if (error != null) {
-                    showSnackBarMessage("Error generating dummy data: $error");
-                  } else {
-                    showSnackBarMessage("Dummy data generated");
-                  }
-                }
-              },
-              child: Text("Generate dummy data"),
+            FormSection(
+              title: "User Info",
+              children: [
+                TextInput(
+                  question: QuestionText(
+                    section: 0,
+                    key: "",
+                    label: "Scout name",
+                    length: 30,
+                  ),
+                  initialValue: settings.scoutName,
+                  onChanged:
+                      (text) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(settings.copyWith(scoutName: text)),
+                ),
+                TextInput(
+                  question: QuestionText(
+                    section: 0,
+                    key: "",
+                    label: "Event name",
+                    length: 12,
+                  ),
+                  initialValue: settings.eventName,
+                  onChanged:
+                      (text) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(settings.copyWith(eventName: text)),
+                ), // Scout name input
+              ],
             ),
+            FormSection(
+              title: "Visual",
+              children: [
+                DropdownInput(
+                  question: QuestionDropdown(
+                    section: 0,
+                    key: "",
+                    label: "App theme",
+                    options: ["System", "Light", "Dark"],
+                  ),
+                  initialValue: settings.themeMode.index,
+                  onChanged:
+                      (themeIndex) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(
+                            settings.copyWith(
+                              themeMode: ThemeMode.values[themeIndex ?? 0],
+                            ),
+                          ),
+                ),
+              ],
+            ),
+            FormSection(
+              title: "Preferences",
+              children: [
+                ToggleInput(
+                  question: QuestionToggle(
+                    section: 0,
+                    key: "",
+                    label: "Increment match number",
+                  ),
+                  value: settings.incrementMatchNumber,
+                  onChanged:
+                      (val) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(
+                            settings.copyWith(incrementMatchNumber: val),
+                          ),
+                ),
+                // Increment match number toggle
+              ],
+            ),
+            FormSection(title: "Advanced", children: [GenerateDummyData()]),
           ],
         ),
       ),
@@ -43,53 +102,13 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
-Future<String?> generateDummyData(WidgetRef ref) async {
-  Random rng = Random();
-  try {
-    await ref.read(storedResultsProvider.notifier).clearAll();
-    for (int i = 1; i <= 72; i++) {
-      for (int j = 0; j < 6; j++) {
-        Map<String, dynamic> data = {};
-        for (var question in kGameFormat.questions) {
-          if (question.type == QuestionType.toggle) {
-            data[question.key] = rng.nextBool();
-          } else if (question.type == QuestionType.counter) {
-            question = question as QuestionCounter;
-            data[question.key] =
-                rng.nextInt(question.max - question.min + 1) + question.min;
-          } else if (question.type == QuestionType.number) {
-            question = question as QuestionNumber;
-            data[question.key] =
-                rng.nextInt(question.max ?? 10000 - (question.min ?? 0) + 1) +
-                (question.min ?? 0);
-          } else if (question.type == QuestionType.dropdown) {
-            question = question as QuestionDropdown;
-            data[question.key] = rng.nextInt(question.options.length - 1);
-          } else if (question.type == QuestionType.text) {
-            data[question.key] = "Sample text ${(i + j)}";
-          }
-        }
-        await ref
-            .read(storedResultsProvider.notifier)
-            .addResult(
-              MatchResult(
-                gameFormatName: kGameFormat.name,
-                eventName: "Test Event",
-                teamNumber: 1000 + j,
-                matchNumber: i,
-                scoutName: "Test Scout",
-                timeStamp: DateTime.now().add(
-                  Duration(minutes: i * 6 - 500, seconds: j * 5),
-                ),
-                data: data,
-              ),
-            );
-      }
-    }
-  } catch (error) {
-    return "Error: ${error.toString()}";
-  }
-  await ref.read(storedResultsProvider.notifier).refresh();
+enum ColorTheme {
+  system(label: "System", themeValue: ThemeMode.system),
+  light(label: "Light", themeValue: ThemeMode.light),
+  dark(label: "Dark", themeValue: ThemeMode.dark);
 
-  return null;
+  final String label;
+  final ThemeMode themeValue;
+
+  const ColorTheme({required this.label, required this.themeValue});
 }
