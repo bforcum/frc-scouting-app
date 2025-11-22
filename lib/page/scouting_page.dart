@@ -161,15 +161,28 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
         .addResult(matchResult);
 
     if (error != null) {
-      showSnackBarMessage(error);
+      if (error.startsWith("Error: SqliteException(1555)")) {
+        showSnackBarMessage(
+          "A result for Team ${matchResult.teamNumber} in Match ${matchResult.matchNumber} already exists.",
+        );
+      } else {
+        showSnackBarMessage(error);
+      }
       return;
     }
-
     // Clear form data after submission
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
       ...kGameFormat.questions,
     ])) {
+      // Auto-increment match number if enabled
+      if (question.key == "matchNumber" &&
+          ref.read(settingsProvider).incrementMatchNumber) {
+        ref
+            .read(formFieldNotifierProvider(question.key).notifier)
+            .setValue(matchResult.matchNumber + 1);
+        continue;
+      }
       ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
     }
     ref.read(formResetProvider.notifier).reset();
