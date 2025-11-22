@@ -26,10 +26,14 @@ class DropdownInput extends StatelessWidget {
           height: 48,
           child: DropdownMenu<int>(
             inputDecorationTheme: InputDecorationTheme(
-              contentPadding: EdgeInsets.all(10),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               errorStyle: TextStyle(fontSize: 0),
               isCollapsed: false,
               isDense: false,
+
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(24),
                 borderSide: BorderSide(
@@ -44,7 +48,6 @@ class DropdownInput extends StatelessWidget {
                 color: Theme.of(context).hintColor,
               ),
             ),
-
             trailingIcon: Icon(Icons.arrow_drop_down, size: 20),
             selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 20),
             requestFocusOnTap: false,
