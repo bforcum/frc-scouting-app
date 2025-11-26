@@ -3,8 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'settings_model.freezed.dart';
-part 'settings_model.g.dart';
+part 'settings.freezed.dart';
+part 'settings.g.dart';
 
 @freezed
 sealed class SettingsModel with _$SettingsModel {
