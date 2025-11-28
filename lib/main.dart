@@ -12,6 +12,7 @@ import 'package:scouting_app/provider/settings_provider.dart';
 final GlobalKey homeKey = GlobalKey();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final sharedPrefs = await SharedPreferences.getInstance();
   runApp(
     ProviderScope(

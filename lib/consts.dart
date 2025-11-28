@@ -126,7 +126,7 @@ final kGame2025 = GameFormat(
       key: "notes",
       section: 3,
       label: "Notes",
-      length: 150,
+      length: 50,
       hint: "Enter any additional notes here",
       multiline: true,
     ),

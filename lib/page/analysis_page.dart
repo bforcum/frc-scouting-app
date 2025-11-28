@@ -99,7 +99,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                         spacing: 10,
                         children: [
                           Expanded(
-                            flex: 2,
+                            flex: 1,
                             child: TextField(
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(10),
@@ -124,7 +124,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                             ),
                           ),
                           Expanded(
-                            flex: 3,
+                            flex: 2,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
                                 return DropdownMenu<SortType>(
