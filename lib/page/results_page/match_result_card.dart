@@ -96,13 +96,12 @@ class MatchResultCard extends ConsumerWidget {
                     child: Text("Delete"),
                     onTap: () async {
                       if (!(await showConfirmationDialog(
-                            ConfirmationInfo(
-                              title: "Delete Match Result",
-                              content:
-                                  "Are you sure you want to delete this match result?",
-                            ),
-                          ) ??
-                          false)) {
+                        ConfirmationInfo(
+                          title: "Delete Match Result",
+                          content:
+                              "Are you sure you want to delete this match result?",
+                        ),
+                      ))) {
                         return;
                       }
                       ref

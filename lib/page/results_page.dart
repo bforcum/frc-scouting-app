@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
-import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
-import 'package:scouting_app/page/results_page/scanner_page.dart';
+import 'package:scouting_app/page/results_page/results_buttons.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class ResultsPage extends ConsumerStatefulWidget {
@@ -187,59 +185,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             contentBuilder.build(context),
           ],
         ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: ElevatedButton(
-            onPressed: qrScan,
-            style: ButtonStyle(
-              shape: WidgetStatePropertyAll(CircleBorder()),
-              padding: WidgetStatePropertyAll(EdgeInsets.all(20)),
-              backgroundColor: WidgetStatePropertyAll(
-                Theme.of(context).colorScheme.primaryContainer,
-              ), // <-- Button color
-            ),
-            child: Icon(Icons.qr_code_scanner, size: 30),
-          ),
-        ),
+        ResultsButtons(),
       ],
     );
-  }
-
-  Future<void> qrScan() async {
-    Uint8List? data = await Navigator.of(context).push<Uint8List?>(
-      MaterialPageRoute(
-        builder:
-            (context) => ScannerPage(
-              onDetect: (value) {
-                debugPrint(context.widget.toString());
-                Navigator.pop(context, value);
-              },
-            ),
-      ),
-    );
-    if (data == null) {
-      return;
-    }
-    late final MatchResult result;
-    try {
-      result = MatchResult.fromBin(data);
-    } catch (error) {
-      await showAlertDialog(
-        "Invalid code",
-        "This QR code probably didn't come from this app",
-        "Okay",
-      );
-      return;
-    }
-
-    final error = await ref
-        .read(storedResultsProvider.notifier)
-        .addResult(result);
-
-    if (error != null) {
-      showAlertDialog("Conversion Error", error, "Okay");
-      return;
-    }
   }
 }

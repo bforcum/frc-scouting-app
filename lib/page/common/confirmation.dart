@@ -23,30 +23,31 @@ class ConfirmationInfo {
   });
 }
 
-Future<bool?> showConfirmationDialog(ConfirmationInfo confirmation) async {
+Future<bool> showConfirmationDialog(ConfirmationInfo confirmation) async {
   if (homeKey.currentContext == null) {
     return false;
   }
-  return await showDialog(
-    context: homeKey.currentContext!,
-    builder:
-        (context) => AlertDialog(
-          title: Text(confirmation.title),
-          content: Text(confirmation.content),
-          actions: [
-            TextButton(
-              child: Text(confirmation.negative),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+  return await showDialog<bool>(
+        context: homeKey.currentContext!,
+        builder:
+            (context) => AlertDialog(
+              title: Text(confirmation.title),
+              content: Text(confirmation.content),
+              actions: [
+                TextButton(
+                  child: Text(confirmation.negative),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text(confirmation.affirmative),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
             ),
-            TextButton(
-              child: Text(confirmation.affirmative),
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        ),
-  );
+      ) ??
+      false;
 }

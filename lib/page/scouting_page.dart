@@ -123,12 +123,11 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     }
 
     if (!(await showConfirmationDialog(
-          ConfirmationInfo(
-            title: "Submit Form",
-            content: "Are you sure you want to submit the form?",
-          ),
-        ) ??
-        false)) {
+      ConfirmationInfo(
+        title: "Submit Form",
+        content: "Are you sure you want to submit the form?",
+      ),
+    ))) {
       return null;
     } // Validate and submit the form
 
@@ -202,12 +201,11 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
   void _clear() async {
     if (!(await showConfirmationDialog(
-          ConfirmationInfo(
-            title: "Clear Form",
-            content: "Are you sure you want to clear the form?",
-          ),
-        ) ??
-        false)) {
+      ConfirmationInfo(
+        title: "Clear Form",
+        content: "Are you sure you want to clear the form?",
+      ),
+    ))) {
       return;
     }
 
