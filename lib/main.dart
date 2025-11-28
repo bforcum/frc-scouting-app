@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
@@ -22,37 +21,56 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textTheme = TextTheme(
+      displayLarge: TextStyle(fontSize: 36, fontWeight: FontWeight.w800),
+      displayMedium: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
+      displaySmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
+      headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+      headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+      headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+      titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
+      titleMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+      titleSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+      bodyLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+      bodyMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+      bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+    );
     return MaterialApp(
       title: 'FRC SAASquatch Scouting',
+      themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(
-        textTheme: TextTheme(
-          displayLarge: TextStyle(fontSize: 36, fontWeight: FontWeight.w800),
-          displayMedium: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
-          displaySmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
-          headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-          headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-          headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-          titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-          titleMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-          titleSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-          bodyLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-          bodyMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-          bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-        ),
+        textTheme: textTheme,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red,
-          brightness: kBrightness,
+          brightness: Brightness.light,
           dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
-          // contrastLevel: 1,
-          contrastLevel: (kBrightness == Brightness.light) ? 0.5 : 0,
+          contrastLevel: 0.5,
+        ).copyWith(
+          surface: Colors.grey[300],
+          surfaceContainerLowest: Colors.grey[300],
+          surfaceContainerLow: Colors.grey[300],
+          surfaceContainer: Colors.grey[200],
+          surfaceContainerHigh: Colors.grey[100],
+          surfaceContainerHighest: Colors.white,
         ),
-        // brightness: Brightness.dark,
+
+        brightness: Brightness.light,
+      ),
+      darkTheme: ThemeData(
+        textTheme: textTheme,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red,
+          brightness: Brightness.dark,
+          dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
+          contrastLevel: 0,
+        ),
+        brightness: Brightness.dark,
       ),
       home: const App(),
     );

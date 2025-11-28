@@ -55,7 +55,7 @@ class _ToggleSwitchState extends State<_ToggleSwitch>
     _animationController = AnimationController(
       value: widget.value ? 1.0 : 0.0,
       vsync: this,
-      duration: Duration(milliseconds: 140),
+      duration: Duration(milliseconds: 250),
     );
     _circleAnimation = AlignmentTween(
       begin: Alignment.centerLeft,
@@ -106,8 +106,9 @@ class _ToggleSwitchState extends State<_ToggleSwitch>
               ),
               color:
                   ColorTween(
-                    begin:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    begin: Theme.of(
+                      context,
+                    ).unselectedWidgetColor.withAlpha(32),
                     end: Theme.of(context).colorScheme.primaryContainer,
                   ).evaluate(_animationValue) ??
                   Colors.grey,
@@ -123,7 +124,12 @@ class _ToggleSwitchState extends State<_ToggleSwitch>
                 height: _animationValue.value * 8.0 + 16.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
+                  color:
+                      ColorTween(
+                        begin: Theme.of(context).dividerColor,
+                        end: Colors.grey[200],
+                      ).evaluate(_animationValue) ??
+                      Theme.of(context).dividerColor,
                 ),
               ),
             ),
