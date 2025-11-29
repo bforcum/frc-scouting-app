@@ -175,7 +175,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                       ),
                     ),
                     Text(
-                      "Number of Results: ${indices.value?.length ?? 0}",
+                      "Number of Results: ${indices.hasError ? "error" : indices.value?.length ?? 0}",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],

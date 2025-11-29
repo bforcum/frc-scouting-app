@@ -17,6 +17,9 @@ class StoredResults extends _$StoredResults {
   Future<List<MatchResult>> _fetch() async {
     final db = ref.watch(databaseProvider);
 
+    if (0 == await db.managers.matchResults.count()) {
+      return List<MatchResult>.empty();
+    }
     var results = await db.managers.matchResults.get();
 
     return results;
@@ -83,7 +86,7 @@ class StoredResults extends _$StoredResults {
     final db = ref.read(databaseProvider);
 
     try {
-      await db.delete(db.matchResults).go();
+      await db.managers.matchResults.delete();
     } catch (error) {
       return "Error: ${error.toString()}";
     }

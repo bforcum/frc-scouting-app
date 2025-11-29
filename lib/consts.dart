@@ -56,8 +56,8 @@ final kGame2025 = GameFormat(
       "L3": result.data["teleL4"] + result.data["autoL4"] > 0,
       "L2": result.data["teleL4"] + result.data["autoL4"] > 0,
       "L1": result.data["teleL4"] + result.data["autoL4"] > 0,
-      "deepCage": result.data["endResult"] == 3,
-      "shallowCage": result.data["endResult"] == 2,
+      "highCage": result.data["endResult"] == 2,
+      "lowCage": result.data["endResult"] == 3,
     };
   },
 
@@ -120,14 +120,6 @@ final kGame2025 = GameFormat(
       min: 0,
       max: 12,
     ),
-    QuestionText(
-      key: "notes",
-      section: 3,
-      label: "Notes",
-      length: 50,
-      hint: "Enter any additional notes here",
-      multiline: true,
-    ),
     QuestionToggle(key: "defense", section: 2, label: "Played defense?"),
     QuestionDropdown(
       key: "endAttempt",
@@ -140,6 +132,14 @@ final kGame2025 = GameFormat(
       section: 2,
       label: "End result",
       options: ["None", "Park", "High Cage", "Low Cage"],
+    ),
+    QuestionText(
+      key: "notes",
+      section: 3,
+      label: "Notes",
+      length: 50,
+      hint: "Enter any additional notes here",
+      multiline: true,
     ),
   ],
 );

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:buffer/buffer.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/database/database.dart';
@@ -53,7 +54,8 @@ abstract class MatchResult
     writer.writeUint16(teamNumber);
     writer.writeUint8(matchNumber);
     writer.writeUint64(timeStamp.millisecondsSinceEpoch);
-    writer.write(utf8.encode(scoutName.padRight(30)));
+    writer.writeUint8(scoutName.length);
+    writer.write(utf8.encode(scoutName));
     writer.write(utf8.encode(gameFormatName.padRight(8)));
 
     final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
@@ -76,11 +78,9 @@ abstract class MatchResult
           writer.writeUint8(data[question.key] ?? 0);
           break;
         case QuestionType.text:
-          String text =
-              data[question.key]?.toString() ??
-              ''.padRight((question as QuestionText).length, '0');
+          Uint8List text = utf8.encode(data[question.key]?.toString() ?? "");
           writer.writeUint8(text.length);
-          writer.write(utf8.encode(text));
+          writer.write(text);
           break;
       }
     }
@@ -100,7 +100,8 @@ abstract class MatchResult
     data["timeStamp"] = DateTime.fromMillisecondsSinceEpoch(
       reader.readUint64(),
     );
-    data["scoutName"] = utf8.decode(reader.read(30)).trim();
+    final int nameLength = reader.readUint8();
+    data["scoutName"] = utf8.decode(reader.read(nameLength)).trim();
     data["gameFormatName"] = String.fromCharCodes(reader.read(8)).trim();
 
     final GameFormat? gameFormat = kSupportedGameFormats.firstWhereOrNull(
@@ -109,25 +110,30 @@ abstract class MatchResult
     if (gameFormat == null) {
       return MatchResult.fromMap(data);
     }
-
     for (var question in gameFormat.questions) {
-      switch (question.type) {
-        case QuestionType.counter:
-          data[question.key] = reader.readUint8();
-          break;
-        case QuestionType.toggle:
-          data[question.key] = reader.readUint8() > 0;
-          break;
-        case QuestionType.number:
-          data[question.key] = reader.readUint16();
-          break;
-        case QuestionType.dropdown:
-          data[question.key] = reader.readUint8();
-          break;
-        case QuestionType.text:
-          int length = reader.readUint8();
-          data[question.key] = String.fromCharCodes(reader.read(length)).trim();
-          break;
+      try {
+        switch (question.type) {
+          case QuestionType.counter:
+            data[question.key] = reader.readUint8();
+            break;
+          case QuestionType.toggle:
+            data[question.key] = reader.readUint8() > 0;
+            break;
+          case QuestionType.number:
+            data[question.key] = reader.readUint16();
+            break;
+          case QuestionType.dropdown:
+            data[question.key] = reader.readUint8();
+            break;
+          case QuestionType.text:
+            int length = reader.readUint8();
+            data[question.key] =
+                String.fromCharCodes(reader.read(length)).trim();
+            break;
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+        continue;
       }
     }
 

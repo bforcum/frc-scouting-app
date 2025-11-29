@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
+import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
@@ -22,6 +23,14 @@ class GenerateDummyData extends ConsumerWidget {
         Spacer(),
         ElevatedButton(
           onPressed: () async {
+            if (!await showConfirmationDialog(
+              ConfirmationInfo(
+                title: "Are you sure?",
+                content: "This will clear all existing data",
+              ),
+            )) {
+              return;
+            }
             String? error = await generateDummyData(ref);
             if (context.mounted) {
               if (error != null) {
@@ -59,7 +68,7 @@ Future<String?> generateDummyData(WidgetRef ref) async {
                 (question.min ?? 0);
           } else if (question.type == QuestionType.dropdown) {
             question = question as QuestionDropdown;
-            data[question.key] = rng.nextInt(question.options.length - 1);
+            data[question.key] = rng.nextInt(question.options.length);
           } else if (question.type == QuestionType.text) {
             data[question.key] = "Sample text ${(i + j)}";
           }
