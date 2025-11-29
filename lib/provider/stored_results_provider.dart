@@ -69,7 +69,10 @@ class StoredResults extends _$StoredResults {
   }
 
   MatchResult? getResult(int index) {
-    return state.value?[index];
+    if ((state.value?.length ?? 0) == 0) {
+      return null;
+    }
+    return state.value![index];
   }
 
   Future<String?> updateResult(MatchResult result) async {
