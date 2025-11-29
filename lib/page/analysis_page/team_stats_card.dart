@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
@@ -6,8 +5,13 @@ import 'package:scouting_app/model/team_data.dart';
 
 class TeamStatsCard extends ConsumerWidget {
   final TeamData data;
+  final int Function(TeamData) analysisFunc;
 
-  const TeamStatsCard({super.key, required this.data});
+  const TeamStatsCard({
+    super.key,
+    required this.data,
+    required this.analysisFunc,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,10 +56,7 @@ class TeamStatsCard extends ConsumerWidget {
                 spacing: 10,
                 children: [
                   Icon(Icons.analytics, color: accent),
-                  Text(
-                    "${data.totalScores.average.floor()}",
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  Text("${analysisFunc(data)}", style: TextStyle(fontSize: 20)),
                 ],
               ),
             ),

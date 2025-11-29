@@ -19,6 +19,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   String searchText = "";
   bool sortAscending = true;
   SortType sortBy = SortType.values[0];
+  AsyncValue<List<int>> indices = AsyncValue.loading();
   List<String> sortOptions = [
     "Match (first to last)",
     "Match (last to first)",
@@ -28,7 +29,10 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var indices = ref.watch(ResultIndicesProvider(sortBy, searchText));
+    final tempIndices = ref.watch(ResultIndicesProvider(sortBy, searchText));
+    if (!tempIndices.isLoading) {
+      indices = tempIndices;
+    }
 
     var contentBuilder = Builder(
       builder: (context) {

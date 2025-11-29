@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
+import 'package:statistics/statistics.dart';
 
 const double kBorderRadius = 10;
 
@@ -60,6 +62,24 @@ final kGame2025 = GameFormat(
       "lowCage": result.data["endResult"] == 3,
     };
   },
+  analysisOptions: [
+    AnalysisScore(
+      label: "Total Score",
+      score: (data) => data.totalScores.average.round(),
+    ),
+    AnalysisScore(
+      label: "Pessimistic Score",
+      score:
+          (data) =>
+              (data.totalScores.average.round() -
+                      data.totalScores.standardDeviation)
+                  .round(),
+    ),
+    AnalysisScore(
+      label: "Auto Score",
+      score: (data) => data.autoScores.average.round(),
+    ),
+  ],
 
   sections: ["Autonomous", "Tele-Op", "End Game", "Additional"],
   questions: [

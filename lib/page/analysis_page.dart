@@ -4,7 +4,6 @@ import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/analysis_page/team_stats_card.dart';
 import 'package:scouting_app/provider/statistics_provider.dart';
-import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class AnalysisPage extends ConsumerStatefulWidget {
   const AnalysisPage({super.key});
@@ -14,32 +13,30 @@ class AnalysisPage extends ConsumerStatefulWidget {
 }
 
 class _AnalysisPageState extends ConsumerState<AnalysisPage> {
-  String searchText = "";
-  SortType sortBy = SortType.values[0];
-  List<String> sortOptions = [];
+  int sortBy = 0;
 
-  AsyncValue<List<TeamData>> stats = AsyncValue.loading();
+  AsyncValue<List<TeamData>> asyncStats = AsyncValue.loading();
 
   @override
   Widget build(BuildContext context) {
     setState(() {
-      stats = ref.watch(teamStatisticsProvider);
+      asyncStats = ref.watch(teamStatisticsProvider);
     });
 
     var contentBuilder = Builder(
       builder: (context) {
-        if (stats.hasError) {
+        if (asyncStats.hasError) {
           return SliverFillRemaining(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                "Error encountered: ${stats.error}",
+                "Error encountered: ${asyncStats.error}",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
           );
         }
-        if (stats.isLoading) {
+        if (asyncStats.isLoading) {
           return SliverToBoxAdapter(
             child: Center(
               child: Container(
@@ -50,7 +47,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
             ),
           );
         }
-        if (stats.value!.isEmpty) {
+        if (asyncStats.value!.isEmpty) {
           return SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -62,15 +59,24 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
             ),
           );
         }
+        List<TeamData> stats = asyncStats.value!;
 
+        stats.sort(
+          (a, b) =>
+              kGameFormat.analysisOptions[sortBy].score(b) -
+              kGameFormat.analysisOptions[sortBy].score(a),
+        );
         return SliverPadding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           sliver: SliverList.builder(
-            itemCount: stats.value!.length,
+            itemCount: asyncStats.value!.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.all(10),
-                child: TeamStatsCard(data: stats.value![index]),
+                child: TeamStatsCard(
+                  data: asyncStats.value![index],
+                  analysisFunc: kGameFormat.analysisOptions[sortBy].score,
+                ),
               );
             },
           ),
@@ -99,35 +105,10 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                         spacing: 10,
                         children: [
                           Expanded(
-                            flex: 1,
-                            child: TextField(
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10),
-
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    kBorderRadius,
-                                  ),
-                                ),
-                                hintText: "Search teams",
-                                hintStyle: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color: Theme.of(context).hintColor,
-                                ),
-                              ),
-                              textAlignVertical: TextAlignVertical.center,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              keyboardType: TextInputType.number,
-                              onChanged:
-                                  (value) => setState(() => searchText = value),
-                            ),
-                          ),
-                          Expanded(
                             flex: 2,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
-                                return DropdownMenu<SortType>(
+                                return DropdownMenu<int>(
                                   label: Text("Sort by"),
                                   width: constraints.maxWidth,
                                   initialSelection: sortBy,
@@ -150,16 +131,23 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                                   textStyle:
                                       Theme.of(context).textTheme.bodySmall,
                                   dropdownMenuEntries: [
-                                    for (int i = 0; i < sortOptions.length; i++)
+                                    for (
+                                      int i = 0;
+                                      i < kGameFormat.analysisOptions.length;
+                                      i++
+                                    )
                                       DropdownMenuEntry(
-                                        value: SortType.values[i],
-                                        label: sortOptions[i],
+                                        value: i,
+                                        label:
+                                            kGameFormat
+                                                .analysisOptions[i]
+                                                .label,
                                       ),
                                   ],
 
                                   onSelected: (val) {
                                     setState(() {
-                                      sortBy = val ?? SortType.values[0];
+                                      sortBy = val ?? 0;
                                     });
                                   },
                                 );
