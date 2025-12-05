@@ -90,15 +90,19 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
             onPressed: qrScan,
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(CircleBorder()),
-              padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
+              padding: WidgetStatePropertyAll(EdgeInsets.zero),
               backgroundColor: WidgetStatePropertyAll(
                 Theme.of(context).colorScheme.primaryContainer,
               ),
             ),
-            child: Icon(
-              Icons.qr_code_scanner,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
-              size: 30,
+            child: SizedBox(
+              width: 54,
+              height: 54,
+              child: Icon(
+                Icons.qr_code_scanner,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                size: 30,
+              ),
             ),
           ),
         ],
