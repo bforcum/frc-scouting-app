@@ -43,10 +43,22 @@ class MatchResultCard extends ConsumerWidget {
                     children: [
                       TextSpan(
                         text: (result.data["timeStamp"] as DateTime)
-                            .copyWith(second: 0, millisecond: 0)
                             .toLocal()
                             .toString()
-                            .substring(0, 16), // Exclude granular time info
+                            .substring(0, 11),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      TextSpan(
+                        text: TimeOfDay.fromDateTime(
+                          (result.data["timeStamp"] as DateTime)
+                              .copyWith(
+                                second: 0,
+                                millisecond: 0,
+                              ) // Exclude granular time info
+                              .toLocal(),
+                        ).format(context),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
