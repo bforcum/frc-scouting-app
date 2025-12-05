@@ -28,7 +28,7 @@ class DropdownInput extends StatelessWidget {
           inputDecorationTheme: InputDecorationTheme(
             contentPadding: EdgeInsets.symmetric(horizontal: 16),
             errorStyle: TextStyle(fontSize: 0),
-            isCollapsed: Platform.isAndroid,
+            isCollapsed: !Platform.isWindows,
             isDense: false,
             border: InputBorder.none,
             enabledBorder: OutlineInputBorder(

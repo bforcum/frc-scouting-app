@@ -50,6 +50,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
           SpeedDial(
             childPadding: EdgeInsets.all(0),
             spaceBetweenChildren: 10,
+            buttonSize: Size(54, 54),
             children: [
               // SpeedDialChild(
               //   label: "Export to CSV",
@@ -64,6 +65,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
               SpeedDialChild(
                 label: "Delete all results",
                 shape: CircleBorder(),
+
                 child: Icon(Icons.delete_forever, size: 30),
                 onTap:
                     () => showConfirmationDialog(
@@ -88,7 +90,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
             onPressed: qrScan,
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(CircleBorder()),
-              padding: WidgetStatePropertyAll(EdgeInsets.all(20)),
+              padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
               backgroundColor: WidgetStatePropertyAll(
                 Theme.of(context).colorScheme.primaryContainer,
               ),
