@@ -8,6 +8,7 @@ import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/page/settings_page/dummy_data.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
+import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -15,6 +16,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     SettingsModel settings = ref.watch(settingsProvider);
+    AsyncValue<List<String>> events = ref.watch(resultEventsProvider);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -49,7 +51,26 @@ class SettingsPage extends ConsumerWidget {
                       (text) => ref
                           .read(settingsProvider.notifier)
                           .updateSettings(settings.copyWith(eventName: text)),
-                ), // Scout name input
+                ),
+                DropdownInput(
+                  question: QuestionDropdown(
+                    section: 0,
+                    key: "",
+                    label: "Selected Event",
+                    options: ["All Events", ...(events.valueOrNull ?? [])],
+                  ),
+                  onChanged:
+                      (eventNum) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(
+                            settings.copyWith(
+                              selectedEvent:
+                                  (eventNum ?? 0) == 0
+                                      ? "All Events"
+                                      : events.value![eventNum!],
+                            ),
+                          ),
+                ),
               ],
             ),
             FormSection(

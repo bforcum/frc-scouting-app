@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:buffer/buffer.dart';
 import 'package:collection/collection.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/consts.dart';
@@ -138,6 +139,72 @@ abstract class MatchResult
     }
 
     return MatchResult.fromMap(data);
+  }
+
+  factory MatchResult.fromExcel(List<Data> values, GameFormat gameFormat) {
+    final data = <String, dynamic>{};
+
+    data["eventName"] = values[0].value.toString();
+    data["teamNumber"] = (values[1].value as IntCellValue).value;
+    data["matchNumber"] = (values[2].value as IntCellValue).value;
+    data["timeStamp"] = (values[3].value as DateTimeCellValue).asDateTimeUtc();
+    data["scoutName"] = values[4].value.toString();
+
+    for (int i = 0; i < gameFormat.questions.length; i++) {
+      Question question = gameFormat.questions[i];
+      Data dataVal = values[i + 5];
+      try {
+        switch (question.type) {
+          case QuestionType.counter:
+          case QuestionType.number:
+          case QuestionType.dropdown:
+            data[question.key] = (dataVal.value as IntCellValue).value;
+            break;
+          case QuestionType.toggle:
+            data[question.key] = (dataVal.value as BoolCellValue).value;
+            break;
+          case QuestionType.text:
+            data[question.key] = (dataVal.value as TextCellValue).toString();
+            break;
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+        continue;
+      }
+    }
+
+    return MatchResult.fromMap(data);
+  }
+
+  List<CellValue> toExcel() {
+    List<CellValue> row = List.empty(growable: true);
+
+    row.add(TextCellValue(eventName));
+    row.add(IntCellValue(teamNumber));
+    row.add(IntCellValue(matchNumber));
+    row.add(DateTimeCellValue.fromDateTime(timeStamp));
+    row.add(TextCellValue(scoutName));
+
+    final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
+      (format) => format.name == gameFormatName,
+      orElse: () => throw Exception("Unsupported game format: $gameFormatName"),
+    );
+
+    for (var question in gameFormat.questions) {
+      switch (question.type) {
+        case QuestionType.counter:
+        case QuestionType.number:
+        case QuestionType.dropdown:
+          row.add(IntCellValue(data[question.key]));
+          break;
+        case QuestionType.toggle:
+          row.add(BoolCellValue(data[question.key]));
+        case QuestionType.text:
+          row.add(TextCellValue(data[question.key]));
+          break;
+      }
+    }
+    return row;
   }
 
   factory MatchResult.fromDb({

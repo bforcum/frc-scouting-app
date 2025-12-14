@@ -1,16 +1,23 @@
 import 'dart:typed_data';
 
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/results_page/scanner_page.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ResultsButtons extends ConsumerStatefulWidget {
-  const ResultsButtons({super.key});
+  final SortType sort;
+  final String search;
+
+  const ResultsButtons({super.key, required this.sort, required this.search});
 
   @override
   ConsumerState<ResultsButtons> createState() => _ResultsButtonsState();
@@ -52,11 +59,12 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
             spaceBetweenChildren: 10,
             buttonSize: Size(54, 54),
             children: [
-              // SpeedDialChild(
-              //   label: "Export to CSV",
-              //   shape: CircleBorder(),
-              //   child: Icon(Icons.file_upload, size: 30),
-              // ),
+              SpeedDialChild(
+                label: "Export to CSV",
+                shape: CircleBorder(),
+                child: Icon(Icons.file_upload, size: 30),
+                onTap: () => exportToExcel(),
+              ),
               // SpeedDialChild(
               //   label: "Import from CSV",
               //   shape: CircleBorder(),
@@ -145,5 +153,53 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       showAlertDialog("Saving Error", error, "Okay");
       return;
     }
+  }
+
+  Future<void> exportToExcel() async {
+    List<int> indices = await ref.read(
+      ResultIndicesProvider(widget.sort, widget.search).future,
+    );
+    List<MatchResult> results = await ref.read(storedResultsProvider.future);
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel[kGameFormat.name];
+
+    sheetObject.appendRow([
+      TextCellValue("Event:"),
+      TextCellValue(ref.read(settingsProvider).selectedEvent),
+      TextCellValue("Game format:"),
+      TextCellValue(kGameFormat.name),
+    ]);
+    sheetObject.appendRow([
+      TextCellValue("Event"),
+      TextCellValue("Team #"),
+      TextCellValue("Match #"),
+      TextCellValue("Time"),
+      TextCellValue("Scout name"),
+      ...kGameFormat.questions.map((q) => TextCellValue(q.label)),
+    ]);
+
+    for (int index in indices) {
+      sheetObject.appendRow(results[index].toExcel());
+    }
+
+    String fileName =
+        "Scouting_Results_"
+        "${DateTime.now().year.toString()}_"
+        "${DateTime.now().month.toString().padLeft(2, '0')}_"
+        "${DateTime.now().day.toString().padLeft(2, '0')}_"
+        "${DateTime.now().hour.toString().padLeft(2, '0')}"
+        "${DateTime.now().minute.toString().padLeft(2, '0')}";
+    List<int> data = excel.save(fileName: fileName)!;
+    var fileBytes = Uint8List.fromList(data);
+    var file = XFile.fromData(
+      fileBytes,
+      name: "$fileName.xlsx",
+      mimeType: "xlsx",
+      lastModified: DateTime.now(),
+    );
+
+    await SharePlus.instance.share(
+      ShareParams(files: [file], fileNameOverrides: ["$fileName.xlsx"]),
+    );
   }
 }

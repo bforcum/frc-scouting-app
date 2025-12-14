@@ -162,3 +162,16 @@ enum SortType {
   teamNumAscending,
   teamNumDescending,
 }
+
+@riverpod
+Future<List<String>> resultEvents(Ref ref) async {
+  List<String> events = List.empty(growable: true);
+  List<MatchResult> results = await ref.read(storedResultsProvider.future);
+
+  for (final result in results) {
+    if (!events.contains(result.eventName)) {
+      events.add(result.eventName);
+    }
+  }
+  return events;
+}

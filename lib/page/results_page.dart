@@ -17,7 +17,6 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
 
   String searchText = "";
-  bool sortAscending = true;
   SortType sortBy = SortType.values[0];
   AsyncValue<List<int>> indices = AsyncValue.loading();
   List<String> sortOptions = [
@@ -189,7 +188,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             contentBuilder.build(context),
           ],
         ),
-        ResultsButtons(),
+        ResultsButtons(sort: sortBy, search: searchText),
       ],
     );
   }
