@@ -176,10 +176,10 @@ abstract class MatchResult
     return MatchResult.fromMap(data);
   }
 
-  List<CellValue> toExcel() {
+  List<CellValue> toExcel({bool withEvent = true}) {
     List<CellValue> row = List.empty(growable: true);
 
-    row.add(TextCellValue(eventName));
+    if (withEvent) row.add(TextCellValue(eventName));
     row.add(IntCellValue(teamNumber));
     row.add(IntCellValue(matchNumber));
     row.add(DateTimeCellValue.fromDateTime(timeStamp));

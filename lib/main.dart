@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/results_page.dart';
+import 'package:scouting_app/provider/directory_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 
@@ -13,9 +16,18 @@ final GlobalKey homeKey = GlobalKey();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final sharedPrefs = await SharedPreferences.getInstance();
+
+  final dir = kIsWeb ? null : await getApplicationSupportDirectory();
+  if (dir != null && !await dir.exists()) {
+    await dir.create(recursive: true);
+  }
+
   runApp(
     ProviderScope(
-      overrides: [sharedPreferencesProvider.overrideWithValue(sharedPrefs)],
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+        appDirectoryProvider.overrideWithValue(dir),
+      ],
       child: MyApp(),
     ),
   );

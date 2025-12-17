@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:path/path.dart' as p;
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
@@ -78,9 +81,9 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
                 onTap:
                     () => showConfirmationDialog(
                       ConfirmationInfo(
-                        title: "Delete all results",
+                        title: "Delete visible results",
                         content:
-                            "Are you sure you want to delete all stored match results? This action cannot be undone.",
+                            "Are you sure you want to delete all match results currently on this page? This action cannot be undone.",
                       ),
                     ).then((confirmed) {
                       if (confirmed) {
@@ -159,18 +162,23 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     List<int> indices = await ref.read(
       ResultIndicesProvider(widget.sort, widget.search).future,
     );
+    String? selectedEvent = ref.read(settingsProvider).selectedEvent;
+
     List<MatchResult> results = await ref.read(storedResultsProvider.future);
     Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel[kGameFormat.name];
+    final String sheetName =
+        "${kGameFormat.name}-${selectedEvent ?? "All Events"}";
+    excel.rename("Sheet1", sheetName);
+    Sheet sheetObject = excel[sheetName];
 
     sheetObject.appendRow([
       TextCellValue("Event:"),
-      TextCellValue(ref.read(settingsProvider).selectedEvent),
+      TextCellValue(selectedEvent ?? "All Events"),
       TextCellValue("Game format:"),
       TextCellValue(kGameFormat.name),
     ]);
     sheetObject.appendRow([
-      TextCellValue("Event"),
+      if (selectedEvent == null) TextCellValue("Event"),
       TextCellValue("Team #"),
       TextCellValue("Match #"),
       TextCellValue("Time"),
@@ -179,7 +187,10 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     ]);
 
     for (int index in indices) {
-      sheetObject.appendRow(results[index].toExcel());
+      // Include event if this sheet doesn't correspond to a specific event
+      sheetObject.appendRow(
+        results[index].toExcel(withEvent: selectedEvent == null),
+      );
     }
 
     String fileName =
@@ -189,17 +200,23 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
         "${DateTime.now().day.toString().padLeft(2, '0')}_"
         "${DateTime.now().hour.toString().padLeft(2, '0')}"
         "${DateTime.now().minute.toString().padLeft(2, '0')}";
-    List<int> data = excel.save(fileName: fileName)!;
-    var fileBytes = Uint8List.fromList(data);
-    var file = XFile.fromData(
-      fileBytes,
-      name: "$fileName.xlsx",
-      mimeType: "xlsx",
-      lastModified: DateTime.now(),
-    );
+    List<int> fileBytes = excel.save()!;
 
-    await SharePlus.instance.share(
-      ShareParams(files: [file], fileNameOverrides: ["$fileName.xlsx"]),
+    final Directory dir = await getTemporaryDirectory();
+    String filePath = p.join(dir.path, "$fileName.xlsx");
+    if (Platform.isWindows) filePath = filePath.replaceAll("/", r"\");
+    debugPrint(filePath);
+    var file = File(filePath);
+    file.writeAsBytes(fileBytes);
+    // await xFile.saveTo("${dir.path}/$fileName.xlsx");
+    // XFile savedFile = XFile("${dir.path}/$fileName.xlsx");
+    ShareResult result = await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(filePath)],
+        fileNameOverrides: ["$fileName.xlsx"],
+      ),
     );
+    debugPrint(result.status.toString());
+    debugPrint(result.raw);
   }
 }

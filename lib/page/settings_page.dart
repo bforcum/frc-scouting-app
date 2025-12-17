@@ -17,6 +17,10 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     SettingsModel settings = ref.watch(settingsProvider);
     AsyncValue<List<String>> events = ref.watch(resultEventsProvider);
+    int eventIndex = 0;
+    if (events.hasValue && settings.selectedEvent != null) {
+      eventIndex = events.value!.indexOf(settings.selectedEvent!);
+    }
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -58,6 +62,7 @@ class SettingsPage extends ConsumerWidget {
                     key: "",
                     label: "Selected Event",
                     options: ["All Events", ...(events.valueOrNull ?? [])],
+                    preset: eventIndex,
                   ),
                   onChanged:
                       (eventNum) => ref
@@ -66,7 +71,7 @@ class SettingsPage extends ConsumerWidget {
                             settings.copyWith(
                               selectedEvent:
                                   (eventNum ?? 0) == 0
-                                      ? "All Events"
+                                      ? null
                                       : events.value![eventNum!],
                             ),
                           ),

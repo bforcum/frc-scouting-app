@@ -12,7 +12,7 @@ sealed class SettingsModel with _$SettingsModel {
   const factory SettingsModel({
     @Default("") String scoutName,
     @Default("") String eventName,
-    @Default("") String selectedEvent,
+    String? selectedEvent,
     @Default(true) bool incrementMatchNumber,
     @Default(ThemeMode.system) ThemeMode themeMode,
   }) = _SettingsModel;

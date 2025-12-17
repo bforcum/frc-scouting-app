@@ -11,12 +11,11 @@ part 'database_provider.g.dart';
 class Database extends _$Database {
   @override
   AppDatabase build() {
-    ref.watch(appDirectoryProvider.future);
     return AppDatabase(directory: dbPath());
   }
 
-  Future<Directory> dbPath() async {
-    final Directory? dir = await ref.watch(appDirectoryProvider.future);
+  Directory dbPath() {
+    final Directory? dir = ref.watch(appDirectoryProvider);
     debugPrint(dir.toString());
     return dir!;
   }
