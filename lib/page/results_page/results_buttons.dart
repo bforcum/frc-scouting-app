@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -17,10 +18,9 @@ import 'package:scouting_app/provider/stored_results_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ResultsButtons extends ConsumerStatefulWidget {
-  final SortType sort;
-  final String search;
+  final List<MatchResult>? results;
 
-  const ResultsButtons({super.key, required this.sort, required this.search});
+  const ResultsButtons({super.key, required this.results});
 
   @override
   ConsumerState<ResultsButtons> createState() => _ResultsButtonsState();
@@ -159,12 +159,13 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
   }
 
   Future<void> exportToExcel() async {
-    List<int> indices = await ref.read(
-      ResultIndicesProvider(widget.sort, widget.search).future,
-    );
+    if (widget.results == null) {
+      showAlertDialog("Failed to export", "No results yet", "Ok");
+      return;
+    }
+
     String? selectedEvent = ref.read(settingsProvider).selectedEvent;
 
-    List<MatchResult> results = await ref.read(storedResultsProvider.future);
     Excel excel = Excel.createExcel();
     final String sheetName =
         "${kGameFormat.name}-${selectedEvent ?? "All Events"}";
@@ -186,11 +187,9 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       ...kGameFormat.questions.map((q) => TextCellValue(q.label)),
     ]);
 
-    for (int index in indices) {
+    for (MatchResult result in widget.results!) {
       // Include event if this sheet doesn't correspond to a specific event
-      sheetObject.appendRow(
-        results[index].toExcel(withEvent: selectedEvent == null),
-      );
+      sheetObject.appendRow(result.toExcel(withEvent: selectedEvent == null));
     }
 
     String fileName =

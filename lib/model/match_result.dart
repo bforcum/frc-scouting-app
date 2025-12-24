@@ -11,6 +11,7 @@ import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 import 'dart:convert' show utf8;
 import 'package:drift/drift.dart' as drift;
+import 'package:statistics/statistics.dart';
 
 part 'match_result.freezed.dart';
 
@@ -208,6 +209,7 @@ abstract class MatchResult
   }
 
   factory MatchResult.fromDb({
+    required BigInt uuid,
     required String eventName,
     required int teamNumber,
     required int matchNumber,
@@ -222,6 +224,7 @@ abstract class MatchResult
   @override
   Map<String, drift.Expression<Object>> toColumns(bool nullToAbsent) {
     return MatchResultsCompanion(
+      uuid: drift.Value<BigInt>(id),
       eventName: drift.Value<String>(eventName),
       teamNumber: drift.Value<int>(teamNumber),
       matchNumber: drift.Value<int>(matchNumber),
@@ -232,6 +235,21 @@ abstract class MatchResult
       gameFormatName: drift.Value<String>(gameFormatName),
       data: drift.Value<Uint8List>(toBin()),
     ).toColumns(nullToAbsent);
+  }
+
+  BigInt get id {
+    int uuid = (timeStamp.year - 2025) << 7 * 8;
+    List<int> eventBytes =
+        eventName.toUpperCase().padRight(5, '\x40').encodeUTF8();
+    int eventCode = 0;
+    for (int i = 0; i < 5; i++) {
+      eventCode *= 26;
+      eventCode += eventBytes[i] - 0x40;
+    }
+    uuid |= eventCode << 24;
+    uuid |= teamNumber << 8;
+    uuid |= matchNumber;
+    return uuid.toBigInt();
   }
 
   int getAutoScore() {

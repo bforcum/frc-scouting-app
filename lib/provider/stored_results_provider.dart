@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/match_result.dart';
@@ -33,7 +34,27 @@ class StoredResults extends _$StoredResults {
     ref.notifyListeners();
   }
 
-  Future<String?> addResult(MatchResult result) async {
+  Future<MatchResult?> getResult(BigInt uuid) {
+    final db = ref.read(databaseProvider);
+    return db.managers.matchResults
+        .filter((e) => e.uuid(uuid))
+        .getSingleOrNull();
+  }
+
+  Future<List<MatchResult>> filterResults({
+    String? event,
+    int? teamNumber,
+    int? matchNumber,
+  }) {
+    final db = ref.read(databaseProvider);
+    return db.managers.matchResults
+        .filter((e) => e.eventName(event))
+        .filter((e) => e.teamNumber(teamNumber))
+        .filter((e) => e.matchNumber(matchNumber))
+        .get();
+  }
+
+  Future<String?> addResult(MatchResult result, [bool doRefresh = true]) async {
     final db = ref.read(databaseProvider);
 
     try {
@@ -41,7 +62,26 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-    await refresh();
+    if (doRefresh) {
+      await refresh();
+    }
+    return null;
+  }
+
+  Future<String?> addAllResults(
+    List<MatchResult> results, [
+    bool doRefresh = true,
+  ]) async {
+    final db = ref.read(databaseProvider);
+
+    try {
+      await db.matchResults.insertAll(results);
+    } catch (error) {
+      return "Error: ${error.toString()}";
+    }
+    if (doRefresh) {
+      await refresh();
+    }
     return null;
   }
 
@@ -66,13 +106,6 @@ class StoredResults extends _$StoredResults {
     await refresh();
 
     return null;
-  }
-
-  MatchResult? getResult(int index) {
-    if ((state.value?.length ?? 0) == 0) {
-      return null;
-    }
-    return state.value![index];
   }
 
   Future<String?> updateResult(MatchResult result) async {
@@ -105,7 +138,9 @@ Future<List<int>> resultIndices(
   SortType sort,
   String teamFilter,
 ) async {
-  List<MatchResult> results = await ref.watch(storedResultsProvider.future);
+  final List<MatchResult> results = await ref.watch(
+    storedResultsProvider.future,
+  );
 
   List<int> indices = List<int>.empty(growable: true);
 

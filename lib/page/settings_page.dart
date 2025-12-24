@@ -48,7 +48,7 @@ class SettingsPage extends ConsumerWidget {
                     section: 0,
                     key: "",
                     label: "Event name",
-                    length: 12,
+                    length: 5,
                   ),
                   initialValue: settings.eventName,
                   onChanged:

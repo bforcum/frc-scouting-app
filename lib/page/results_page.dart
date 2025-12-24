@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
 import 'package:scouting_app/page/results_page/results_buttons.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
+import 'package:statistics/statistics.dart';
 
 class ResultsPage extends ConsumerStatefulWidget {
   const ResultsPage({super.key});
@@ -16,6 +19,7 @@ class ResultsPage extends ConsumerStatefulWidget {
 class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
 
+  String? visibleEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
   AsyncValue<List<int>> indices = AsyncValue.loading();
@@ -28,11 +32,12 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
+    visibleEvent = ref.watch(settingsProvider).selectedEvent;
+    matchResults = ref.watch(storedResultsProvider);
     final tempIndices = ref.watch(ResultIndicesProvider(sortBy, searchText));
     if (!tempIndices.isLoading) {
       indices = tempIndices;
     }
-
     var contentBuilder = Builder(
       builder: (context) {
         if (indices.hasError) {
@@ -40,7 +45,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
-                "Error encountered: ${indices.error}",
+                "Error encountered: ${matchResults.error}",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -75,14 +80,10 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
           sliver: SliverList.builder(
-            itemCount: indices.value?.length ?? 0,
+            itemCount: matchResults.value!.length,
             itemBuilder: (context, index) {
-              MatchResult? result = ref
-                  .read(storedResultsProvider.notifier)
-                  .getResult(indices.value![index]);
-              if (result == null) {
-                return SizedBox.shrink();
-              }
+              MatchResult result =
+                  matchResults.requireValue[indices.requireValue[index]];
               return Padding(
                 padding: const EdgeInsets.all(10),
                 child: MatchResultCard(result: result),
@@ -133,6 +134,9 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                               textAlignVertical: TextAlignVertical.center,
                               style: Theme.of(context).textTheme.bodyMedium,
                               keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
                               onChanged:
                                   (value) => setState(() => searchText = value),
                             ),
@@ -188,7 +192,11 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             contentBuilder.build(context),
           ],
         ),
-        ResultsButtons(sort: sortBy, search: searchText),
+        ResultsButtons(
+          results: indices.valueOrNull?.mapToList(
+            (idx) => matchResults.requireValue[idx],
+          ),
+        ),
       ],
     );
   }

@@ -34,7 +34,7 @@ class GenerateDummyData extends ConsumerWidget {
             String? error = await generateDummyData(ref);
             if (context.mounted) {
               if (error != null) {
-                showSnackBarMessage("Error generating dummy data: $error");
+                showSnackBarMessage(error);
               } else {
                 showSnackBarMessage("Dummy data generated");
               }
@@ -51,49 +51,46 @@ Future<String?> generateDummyData(WidgetRef ref) async {
   Random rng = Random();
   try {
     await ref.read(storedResultsProvider.notifier).clearAll();
+    List<MatchResult> results = List.empty(growable: true);
     for (int i = 1; i <= 72; i++) {
       for (int j = 0; j < 6; j++) {
-        Map<String, dynamic> data = {};
+        Map<String, dynamic> data = {
+          "gameFormatName": kGameFormat.name,
+          "eventName": "Test",
+          "teamNumber": 1000 + j,
+          "matchNumber": i,
+          "scoutName": "Test Scout",
+          "timeStamp": DateTime.now().add(
+            Duration(minutes: i * 6 - 500, seconds: j * 5),
+          ),
+        };
         for (var question in kGameFormat.questions) {
-          if (question.type == QuestionType.toggle) {
-            data[question.key] = rng.nextBool();
-          } else if (question.type == QuestionType.counter) {
-            question = question as QuestionCounter;
-            data[question.key] =
-                rng.nextInt(question.max - question.min + 1) + question.min;
-          } else if (question.type == QuestionType.number) {
-            question = question as QuestionNumber;
-            data[question.key] =
-                rng.nextInt(question.max ?? 10000 - (question.min ?? 0) + 1) +
-                (question.min ?? 0);
-          } else if (question.type == QuestionType.dropdown) {
-            question = question as QuestionDropdown;
-            data[question.key] = rng.nextInt(question.options.length);
-          } else if (question.type == QuestionType.text) {
-            data[question.key] = "Sample text ${(i + j)}";
+          switch (question.type) {
+            case QuestionType.toggle:
+              data[question.key] = rng.nextBool();
+            case QuestionType.counter:
+              question = question as QuestionCounter;
+              data[question.key] =
+                  rng.nextInt(question.max - question.min + 1) + question.min;
+            case QuestionType.number:
+              question = question as QuestionNumber;
+              data[question.key] =
+                  rng.nextInt(question.max ?? 10000 - (question.min ?? 0) + 1) +
+                  (question.min ?? 0);
+            case QuestionType.dropdown:
+              question = question as QuestionDropdown;
+              data[question.key] = rng.nextInt(question.options.length);
+            case QuestionType.text:
+              data[question.key] = "Sample text ${(i + j)}";
           }
         }
-        await ref
-            .read(storedResultsProvider.notifier)
-            .addResult(
-              MatchResult(
-                gameFormatName: kGameFormat.name,
-                eventName: "Test Event",
-                teamNumber: 1000 + j,
-                matchNumber: i,
-                scoutName: "Test Scout",
-                timeStamp: DateTime.now().add(
-                  Duration(minutes: i * 6 - 500, seconds: j * 5),
-                ),
-                data: data,
-              ),
-            );
+        results.add(MatchResult.fromMap(data));
       }
     }
+    await ref.read(storedResultsProvider.notifier).addAllResults(results);
   } catch (error) {
     return "Error: ${error.toString()}";
   }
   await ref.read(storedResultsProvider.notifier).refresh();
-
   return null;
 }
