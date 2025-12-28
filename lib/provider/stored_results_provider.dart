@@ -17,21 +17,7 @@ class StoredResults extends _$StoredResults {
 
   Future<List<MatchResult>> _fetch() async {
     final db = ref.watch(databaseProvider);
-
-    if (0 == await db.managers.matchResults.count()) {
-      return List<MatchResult>.empty();
-    }
-    var results = await db.managers.matchResults.get();
-
-    return results;
-  }
-
-  Future<void> refresh() async {
-    state = AsyncLoading();
-    ref.notifyListeners();
-    final values = await _fetch();
-    state = AsyncData(values);
-    ref.notifyListeners();
+    return await db.managers.matchResults.get();
   }
 
   Future<MatchResult?> getResult(BigInt uuid) {
@@ -63,7 +49,7 @@ class StoredResults extends _$StoredResults {
       return "Error: ${error.toString()}";
     }
     if (doRefresh) {
-      await refresh();
+      ref.invalidateSelf();
     }
     return null;
   }
@@ -80,7 +66,7 @@ class StoredResults extends _$StoredResults {
       return "Error: ${error.toString()}";
     }
     if (doRefresh) {
-      await refresh();
+      ref.invalidateSelf();
     }
     return null;
   }
@@ -103,7 +89,7 @@ class StoredResults extends _$StoredResults {
       return "Zero succesful deletions";
     }
 
-    await refresh();
+    ref.invalidateSelf();
 
     return null;
   }
@@ -126,7 +112,7 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-    await refresh();
+    ref.invalidateSelf();
 
     return null;
   }

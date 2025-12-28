@@ -91,6 +91,6 @@ Future<String?> generateDummyData(WidgetRef ref) async {
   } catch (error) {
     return "Error: ${error.toString()}";
   }
-  await ref.read(storedResultsProvider.notifier).refresh();
+  ref.invalidate(storedResultsProvider);
   return null;
 }
