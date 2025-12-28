@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scouting_app/model/question.dart';
 
-class NumberInput extends StatefulWidget {
+class NumberQuestionInput extends StatefulWidget {
   final Function(int?) onChanged;
   final QuestionNumber question;
   final int? initialValue;
   final String? errorText;
 
-  const NumberInput({
+  const NumberQuestionInput({
     super.key,
     required this.question,
     required this.onChanged,
@@ -17,10 +17,10 @@ class NumberInput extends StatefulWidget {
   });
 
   @override
-  State<NumberInput> createState() => _NumberInputState();
+  State<NumberQuestionInput> createState() => _NumberQuestionInputState();
 }
 
-class _NumberInputState extends State<NumberInput> {
+class _NumberQuestionInputState extends State<NumberQuestionInput> {
   late final QuestionNumber question;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();

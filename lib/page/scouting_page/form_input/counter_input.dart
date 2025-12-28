@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class CounterInput extends StatelessWidget {
+class CounterQuestionInput extends StatelessWidget {
   final Function(int) onChanged;
   final int value;
   final QuestionCounter question;
-  const CounterInput({
+  const CounterQuestionInput({
     super.key,
     required this.value,
     required this.onChanged,

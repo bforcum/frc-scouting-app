@@ -38,7 +38,7 @@ class FormInput extends ConsumerWidget {
           return;
         },
         builder:
-            (formState) => ToggleInput(
+            (formState) => ToggleQuestionInput(
               question: question as QuestionToggle,
               value: value ?? (question as QuestionToggle).preset ?? false,
               onChanged: (value) {
@@ -63,7 +63,7 @@ class FormInput extends ConsumerWidget {
           return;
         },
         builder:
-            (formState) => CounterInput(
+            (formState) => CounterQuestionInput(
               question: question as QuestionCounter,
               value:
                   value ??
@@ -94,7 +94,7 @@ class FormInput extends ConsumerWidget {
         },
         initialValue: value,
         builder:
-            (formState) => NumberInput(
+            (formState) => NumberQuestionInput(
               initialValue: value,
               errorText: formState.errorText,
               question: question as QuestionNumber,
@@ -121,7 +121,7 @@ class FormInput extends ConsumerWidget {
         },
         initialValue: value,
         builder:
-            (formState) => DropdownInput(
+            (formState) => DropdownQuestionInput(
               question: question as QuestionDropdown,
               errorText: formState.errorText,
               initialValue: value,
@@ -149,7 +149,7 @@ class FormInput extends ConsumerWidget {
         },
         initialValue: value,
         builder:
-            (formState) => TextInput(
+            (formState) => TextQuestionInput(
               initialValue: value,
               errorText: formState.errorText,
               question: question as QuestionText,

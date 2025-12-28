@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class ToggleInput extends StatelessWidget {
+class ToggleQuestionInput extends StatelessWidget {
   final Function(bool) onChanged;
   final bool? value;
   final QuestionToggle question;
 
-  const ToggleInput({
+  const ToggleQuestionInput({
     super.key,
     required this.question,
     required this.value,

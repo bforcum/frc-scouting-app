@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/model/settings.dart';
@@ -30,7 +31,7 @@ class SettingsPage extends ConsumerWidget {
             FormSection(
               title: "User Info",
               children: [
-                TextInput(
+                TextQuestionInput(
                   question: QuestionText(
                     section: 0,
                     key: "",
@@ -43,7 +44,7 @@ class SettingsPage extends ConsumerWidget {
                           .read(settingsProvider.notifier)
                           .updateSettings(settings.copyWith(scoutName: text)),
                 ),
-                TextInput(
+                TextQuestionInput(
                   question: QuestionText(
                     section: 0,
                     key: "",
@@ -51,12 +52,17 @@ class SettingsPage extends ConsumerWidget {
                     length: 5,
                   ),
                   initialValue: settings.eventName,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r"[A-Z\s]")),
+                  ],
                   onChanged:
                       (text) => ref
                           .read(settingsProvider.notifier)
-                          .updateSettings(settings.copyWith(eventName: text)),
+                          .updateSettings(
+                            settings.copyWith(eventName: text.toUpperCase()),
+                          ),
                 ),
-                DropdownInput(
+                DropdownQuestionInput(
                   question: QuestionDropdown(
                     section: 0,
                     key: "",
@@ -81,7 +87,7 @@ class SettingsPage extends ConsumerWidget {
             FormSection(
               title: "Visual",
               children: [
-                DropdownInput(
+                DropdownQuestionInput(
                   question: QuestionDropdown(
                     section: 0,
                     key: "",
@@ -103,7 +109,7 @@ class SettingsPage extends ConsumerWidget {
             FormSection(
               title: "Preferences",
               children: [
-                ToggleInput(
+                ToggleQuestionInput(
                   question: QuestionToggle(
                     section: 0,
                     key: "",

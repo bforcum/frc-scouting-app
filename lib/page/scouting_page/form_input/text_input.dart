@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/question.dart';
 
-class TextInput extends StatefulWidget {
+class TextQuestionInput extends StatefulWidget {
   final Function(String)? onChanged;
   final QuestionText question;
   final String? initialValue;
   final String? errorText;
+  final List<TextInputFormatter>? inputFormatters;
 
-  const TextInput({
+  const TextQuestionInput({
     super.key,
     required this.question,
     this.errorText,
     this.initialValue,
     this.onChanged,
+    this.inputFormatters,
   });
 
   @override
-  State<TextInput> createState() => _TextInputState();
+  State<TextQuestionInput> createState() => _TextQuestionInputState();
 }
 
-class _TextInputState extends State<TextInput> {
+class _TextQuestionInputState extends State<TextQuestionInput> {
   late final QuestionText question;
 
   final _focusNode = FocusNode();
@@ -64,6 +67,7 @@ class _TextInputState extends State<TextInput> {
           textAlignVertical: TextAlignVertical.top,
           style: Theme.of(context).textTheme.bodyMedium,
           onTapOutside: (details) => _focusNode.unfocus(),
+          inputFormatters: widget.inputFormatters,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(kBorderRadius),
             errorStyle: TextStyle(fontSize: 0),
