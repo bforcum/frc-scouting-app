@@ -8,6 +8,7 @@ import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/page/settings_page/dummy_data.dart';
+import 'package:scouting_app/page/settings_page/reset_database.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
@@ -126,7 +127,10 @@ class SettingsPage extends ConsumerWidget {
                 // Increment match number toggle
               ],
             ),
-            FormSection(title: "Advanced", children: [GenerateDummyData()]),
+            FormSection(
+              title: "⚠️ Advanced ⚠️",
+              children: [GenerateDummyData(), ResetDatabase()],
+            ),
           ],
         ),
       ),
