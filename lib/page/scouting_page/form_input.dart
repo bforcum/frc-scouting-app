@@ -56,7 +56,7 @@ FormField createFormField({
       builder:
           (formState) => ToggleQuestionInput(
             question: question as QuestionToggle,
-            value: value ?? (question as QuestionToggle).preset ?? false,
+            value: value ?? question.preset ?? false,
             onChanged: (value) {
               onChanged(value);
               formState.didChange(value);
@@ -81,10 +81,7 @@ FormField createFormField({
       builder:
           (formState) => CounterQuestionInput(
             question: question as QuestionCounter,
-            value:
-                value ??
-                (question as QuestionCounter).preset ??
-                (question as QuestionCounter).min,
+            value: value ?? question.preset ?? question.min,
             onChanged: (value) {
               onChanged(value);
               formState.didChange(value);
@@ -130,7 +127,7 @@ FormField createFormField({
           if ((question as QuestionDropdown).preset == null) {
             return 'Please select an option';
           } else {
-            onChanged((question as QuestionDropdown).preset);
+            onChanged(question.preset);
           }
         }
         return null;
