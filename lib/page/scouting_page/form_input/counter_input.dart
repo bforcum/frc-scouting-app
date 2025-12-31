@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class CounterQuestionInput extends StatelessWidget {
+class CounterQuestionInput extends StatefulWidget {
   final Function(int) onChanged;
   final int value;
   final QuestionCounter question;
@@ -13,10 +13,26 @@ class CounterQuestionInput extends StatelessWidget {
   });
 
   @override
+  State<CounterQuestionInput> createState() => _CounterQuestionInputState();
+}
+
+class _CounterQuestionInputState extends State<CounterQuestionInput> {
+  late int value;
+
+  @override
+  void initState() {
+    super.initState();
+    value = widget.value;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(
+          widget.question.label,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
         const Spacer(),
         Container(
           height: 48,
@@ -36,7 +52,14 @@ class CounterQuestionInput extends StatelessWidget {
                 icon: Icon(Icons.horizontal_rule),
 
                 onPressed:
-                    (value <= question.min) ? null : () => onChanged(value - 1),
+                    (value <= widget.question.min)
+                        ? null
+                        : () {
+                          setState(() {
+                            --value;
+                            widget.onChanged(value);
+                          });
+                        },
               ),
               Container(
                 width: 32,
@@ -50,7 +73,14 @@ class CounterQuestionInput extends StatelessWidget {
                 iconSize: 32,
                 icon: Icon(Icons.add),
                 onPressed:
-                    (value >= question.max) ? null : () => onChanged(value + 1),
+                    (value >= widget.question.max)
+                        ? null
+                        : () {
+                          setState(() {
+                            value += 1;
+                            widget.onChanged(value);
+                          });
+                        },
               ),
             ],
           ),

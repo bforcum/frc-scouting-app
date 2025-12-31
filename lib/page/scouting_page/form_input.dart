@@ -27,142 +27,156 @@ class FormInput extends ConsumerWidget {
     });
     Key fieldKey = ValueKey(ref.watch(formResetProvider));
 
-    FormField formField = switch (question.type) {
-      QuestionType.toggle => FormField<bool>(
-        key: fieldKey,
-        initialValue: value ?? (question as QuestionToggle).preset ?? false,
-        validator: (value) {
-          // Required because counter has a default value
-          // which is not automatically stored in formFieldProvider
-          onChanged(value);
-          return;
-        },
-        builder:
-            (formState) => ToggleQuestionInput(
-              question: question as QuestionToggle,
-              value: value ?? (question as QuestionToggle).preset ?? false,
-              onChanged: (value) {
-                onChanged(value);
-                formState.didChange(value);
-                if (formState.hasError) {
-                  formState.validate();
-                }
-              },
-            ),
-      ),
-      QuestionType.counter => FormField<int>(
-        key: fieldKey,
-        initialValue:
-            value ??
-            (question as QuestionCounter).preset ??
-            (question as QuestionCounter).min,
-        validator: (value) {
-          // Required because counter has a default value
-          // which is not automatically stored in formFieldProvider
-          onChanged(value);
-          return;
-        },
-        builder:
-            (formState) => CounterQuestionInput(
-              question: question as QuestionCounter,
-              value:
-                  value ??
-                  (question as QuestionCounter).preset ??
-                  (question as QuestionCounter).min,
-              onChanged: (value) {
-                onChanged(value);
-                formState.didChange(value);
-                if (formState.hasError) {
-                  formState.validate();
-                }
-              },
-            ),
-      ),
-      QuestionType.number => FormField<int>(
-        key: fieldKey,
-        validator: (value) {
-          QuestionNumber questionNumber = question as QuestionNumber;
-          if (value == null) {
-            return 'Please answer the question';
-          }
-
-          if ((questionNumber.min != null && value < questionNumber.min!) ||
-              (questionNumber.max != null && value > questionNumber.max!)) {
-            return 'Value must be between ${questionNumber.min} and ${questionNumber.max}';
-          }
-          return null;
-        },
-        initialValue: value,
-        builder:
-            (formState) => NumberQuestionInput(
-              initialValue: value,
-              errorText: formState.errorText,
-              question: question as QuestionNumber,
-              onChanged: (value) {
-                onChanged(value);
-                formState.didChange(value);
-                if (formState.hasError) {
-                  formState.validate();
-                }
-              },
-            ),
-      ),
-      QuestionType.dropdown => FormField<int>(
-        key: fieldKey,
-        validator: (value) {
-          if (value == null) {
-            if ((question as QuestionDropdown).preset == null) {
-              return 'Please select an option';
-            } else {
-              onChanged((question as QuestionDropdown).preset);
-            }
-          }
-          return null;
-        },
-        initialValue: value,
-        builder:
-            (formState) => DropdownQuestionInput(
-              question: question as QuestionDropdown,
-              errorText: formState.errorText,
-              initialValue: value,
-              onChanged: (value) {
-                onChanged(value);
-                formState.didChange(value);
-                if (formState.hasError) {
-                  formState.validate();
-                }
-              },
-            ),
-      ),
-      QuestionType.text => FormField<String>(
-        key: fieldKey,
-        validator: (value) {
-          if ((value == null || value == "") &&
-              (question as QuestionText).requiredField) {
-            return 'Please respond to the question';
-          }
-          // Set value to empty string if this is not a required field
-          if (value == null && !(question as QuestionText).requiredField) {
-            onChanged("");
-          }
-          return null;
-        },
-        initialValue: value,
-        builder:
-            (formState) => TextQuestionInput(
-              initialValue: value,
-              errorText: formState.errorText,
-              question: question as QuestionText,
-              onChanged: (value) {
-                onChanged(value);
-                formState.didChange(value);
-                if (formState.hasError) {
-                  formState.validate();
-                }
-              },
-            ),
-      ),
-    };
+    FormField formField = createFormField(
+      fieldKey: fieldKey,
+      question: question,
+      value: value,
+      onChanged: onChanged,
+    );
     return formField;
   }
+}
+
+FormField createFormField({
+  Key? fieldKey,
+  required Question question,
+  required dynamic value,
+  required Function(dynamic value) onChanged,
+}) {
+  return switch (question.type) {
+    QuestionType.toggle => FormField<bool>(
+      key: fieldKey,
+      initialValue: value ?? (question as QuestionToggle).preset ?? false,
+      validator: (value) {
+        // Required because toggle has a default value
+        // which is not automatically stored in formFieldProvider
+        onChanged(value);
+        return;
+      },
+      builder:
+          (formState) => ToggleQuestionInput(
+            question: question as QuestionToggle,
+            value: value ?? (question as QuestionToggle).preset ?? false,
+            onChanged: (value) {
+              onChanged(value);
+              formState.didChange(value);
+              if (formState.hasError) {
+                formState.validate();
+              }
+            },
+          ),
+    ),
+    QuestionType.counter => FormField<int>(
+      key: fieldKey,
+      initialValue:
+          value ??
+          (question as QuestionCounter).preset ??
+          (question as QuestionCounter).min,
+      validator: (value) {
+        // Required because counter has a default value
+        // which is not automatically stored in formFieldProvider
+        onChanged(value);
+        return;
+      },
+      builder:
+          (formState) => CounterQuestionInput(
+            question: question as QuestionCounter,
+            value:
+                value ??
+                (question as QuestionCounter).preset ??
+                (question as QuestionCounter).min,
+            onChanged: (value) {
+              onChanged(value);
+              formState.didChange(value);
+              if (formState.hasError) {
+                formState.validate();
+              }
+            },
+          ),
+    ),
+    QuestionType.number => FormField<int>(
+      key: fieldKey,
+      validator: (value) {
+        QuestionNumber questionNumber = question as QuestionNumber;
+        if (value == null) {
+          return 'Please answer the question';
+        }
+
+        if ((questionNumber.min != null && value < questionNumber.min!) ||
+            (questionNumber.max != null && value > questionNumber.max!)) {
+          return 'Value must be between ${questionNumber.min} and ${questionNumber.max}';
+        }
+        return null;
+      },
+      initialValue: value,
+      builder:
+          (formState) => NumberQuestionInput(
+            initialValue: value,
+            errorText: formState.errorText,
+            question: question as QuestionNumber,
+            onChanged: (value) {
+              onChanged(value);
+              formState.didChange(value);
+              if (formState.hasError) {
+                formState.validate();
+              }
+            },
+          ),
+    ),
+    QuestionType.dropdown => FormField<int>(
+      key: fieldKey,
+      validator: (value) {
+        if (value == null) {
+          if ((question as QuestionDropdown).preset == null) {
+            return 'Please select an option';
+          } else {
+            onChanged((question as QuestionDropdown).preset);
+          }
+        }
+        return null;
+      },
+      initialValue: value,
+      builder:
+          (formState) => DropdownQuestionInput(
+            question: question as QuestionDropdown,
+            errorText: formState.errorText,
+            initialValue: value,
+            onChanged: (value) {
+              onChanged(value);
+              formState.didChange(value);
+              if (formState.hasError) {
+                formState.validate();
+              }
+            },
+          ),
+    ),
+    QuestionType.text => FormField<String>(
+      key: fieldKey,
+      validator: (value) {
+        if ((value == null || value == "") &&
+            (question as QuestionText).requiredField) {
+          return 'Please respond to the question';
+        }
+        // Set value to empty string if this is not a required field
+        if (value == null && !(question as QuestionText).requiredField) {
+          onChanged("");
+        }
+        return null;
+      },
+      initialValue: value,
+      builder:
+          (formState) => TextQuestionInput(
+            initialValue: value,
+            errorText: formState.errorText,
+            question: question as QuestionText,
+            onChanged: (value) {
+              onChanged(value);
+              formState.didChange(value);
+              if (formState.hasError) {
+                formState.validate();
+              }
+            },
+          ),
+    ),
+  };
 }

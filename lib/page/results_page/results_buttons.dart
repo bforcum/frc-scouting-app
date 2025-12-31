@@ -141,9 +141,9 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       result = MatchResult.fromBin(data);
     } catch (error) {
       await showAlertDialog(
-        "Invalid code",
-        "This QR code probably didn't come from this app",
-        "Okay",
+        title: "Invalid code",
+        content: "This QR code probably didn't come from this app",
+        closeMessage: "Okay",
       );
       return;
     }
@@ -153,14 +153,22 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
         .addResult(result);
 
     if (error != null) {
-      showAlertDialog("Saving Error", error, "Okay");
+      showAlertDialog(
+        title: "Saving Error",
+        content: error,
+        closeMessage: "Okay",
+      );
       return;
     }
   }
 
   Future<void> exportToExcel() async {
     if (widget.results == null) {
-      showAlertDialog("Failed to export", "No results yet", "Ok");
+      showAlertDialog(
+        title: "Failed to export",
+        content: "No results yet",
+        closeMessage: "Ok",
+      );
       return;
     }
 

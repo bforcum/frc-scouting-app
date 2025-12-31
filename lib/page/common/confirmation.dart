@@ -23,12 +23,16 @@ class ConfirmationInfo {
   });
 }
 
-Future<bool> showConfirmationDialog(ConfirmationInfo confirmation) async {
-  if (homeKey.currentContext == null) {
+Future<bool> showConfirmationDialog(
+  ConfirmationInfo confirmation, [
+  BuildContext? context,
+]) async {
+  context = context ?? homeKey.currentContext;
+  if (context == null || !context.mounted) {
     return false;
   }
   return await showDialog<bool>(
-        context: homeKey.currentContext!,
+        context: context,
         builder:
             (context) => AlertDialog(
               title: Text(confirmation.title),

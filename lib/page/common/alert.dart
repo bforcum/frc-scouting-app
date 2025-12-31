@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/main.dart';
 
-Future<void> showAlertDialog(
-  String title,
-  String content,
-  String closeMessage,
-) async {
-  if (homeKey.currentContext == null) {
+Future<void> showAlertDialog({
+  required String title,
+  required String content,
+  required String closeMessage,
+  BuildContext? context,
+}) async {
+  context = context ?? homeKey.currentContext;
+  if (context == null || !context.mounted) {
     return;
   }
   await showDialog(
-    context: homeKey.currentContext!,
+    context: context,
     builder: (context) {
       return AlertDialog(
         title: Text(title),
