@@ -12,7 +12,9 @@ import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
+import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/results_page/scanner_page.dart';
+import 'package:scouting_app/provider/database_provider.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -74,22 +76,33 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
               //   child: Icon(Icons.file_download, size: 30),
               // ),
               SpeedDialChild(
-                label: "Delete all results",
+                label: "Delete selected results",
                 shape: CircleBorder(),
 
                 child: Icon(Icons.delete_forever, size: 30),
-                onTap:
-                    () => showConfirmationDialog(
-                      ConfirmationInfo(
-                        title: "Delete visible results",
-                        content:
-                            "Are you sure you want to delete all match results currently on this page? This action cannot be undone.",
-                      ),
-                    ).then((confirmed) {
-                      if (confirmed) {
-                        ref.read(storedResultsProvider.notifier).clearAll();
-                      }
-                    }),
+                onTap: () async {
+                  if (widget.results == null) {
+                    showSnackBarMessage("Nothing to delete");
+                  }
+                  if (!await showConfirmationDialog(
+                    ConfirmationInfo(
+                      title: "Delete visible results",
+                      content:
+                          "Are you sure you want to delete all match results currently on this page? This action cannot be undone.",
+                    ),
+                  )) {
+                    return;
+                  }
+                  List<BigInt> uuids =
+                      widget.results!.map((e) => e.id).toList();
+                  ref
+                      .read(databaseProvider)
+                      .managers
+                      .matchResults
+                      .filter((e) => e.uuid.isIn(uuids))
+                      .delete();
+                  ref.invalidate(storedResultsProvider);
+                },
               ),
             ],
             animationDuration: Duration(milliseconds: 200),
