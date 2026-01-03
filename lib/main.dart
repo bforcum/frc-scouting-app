@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scouting_app/page/analysis_page.dart';
+import 'package:scouting_app/page/common/custom_navigation_bar.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/results_page.dart';
@@ -59,11 +60,10 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         textTheme: textTheme,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
+          seedColor: Color(0xFF910116),
           brightness: Brightness.light,
-          dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
+          dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
           contrastLevel: 0.5,
-        ).copyWith(
           surface: Colors.grey[300],
           surfaceContainerLowest: Colors.grey[300],
           surfaceContainerLow: Colors.grey[300],
@@ -80,7 +80,7 @@ class MyApp extends ConsumerWidget {
           seedColor: Colors.red,
           brightness: Brightness.dark,
           dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
-          contrastLevel: 0,
+          contrastLevel: 0.0,
         ),
         brightness: Brightness.dark,
       ),
@@ -117,17 +117,21 @@ class _AppState extends ConsumerState<App> {
             AnalysisPage(key: homeKey),
             SettingsPage(key: homeKey),
           ][currentPage],
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-        destinations: [
-          NavigationDestination(icon: Icon(Icons.search), label: "Scouting"),
-          NavigationDestination(icon: Icon(Icons.list), label: "Results"),
-          NavigationDestination(icon: Icon(Icons.bar_chart), label: "Analysis"),
-          NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
+      bottomNavigationBar: CustomNavigationBar(
+        destinationIcons: [
+          Icons.search,
+          Icons.list_alt_rounded,
+          Icons.bar_chart,
+          Icons.settings,
         ],
+        destinationLabels: ["Scouting", "Results", "Analysis", "Settings"],
         selectedIndex: currentPage,
         onDestinationSelected:
             (int index) => setState(() => currentPage = index),
+        // backgroundColor:
+        //     Theme.brightnessOf(context) == Brightness.light
+        //         ? ColorScheme.of(context).inversePrimary
+        //         : null,
       ),
     );
   }

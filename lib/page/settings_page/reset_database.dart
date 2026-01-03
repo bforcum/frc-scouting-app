@@ -14,7 +14,7 @@ class ResetDatabase extends ConsumerWidget {
       children: [
         Text("Reset database", style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
-        ElevatedButton(
+        FilledButton(
           onPressed: () async {
             if (!await showConfirmationDialog(
               ConfirmationInfo(
@@ -30,7 +30,12 @@ class ResetDatabase extends ConsumerWidget {
               showSnackBarMessage("All data cleared");
             }
           },
-          child: Text("RESET"),
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              ColorScheme.of(context).primaryContainer,
+            ),
+          ),
+          child: Text("RESET", style: TextStyle(color: Colors.white)),
         ),
       ],
     );

@@ -66,21 +66,23 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                   const Spacer(),
                   Container(
                     margin: EdgeInsets.all(5),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
                     alignment: Alignment.center,
                     height: 60,
+                    width: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(kBorderRadius),
                       border: Border.all(color: accent),
                       color: accent.withAlpha(32),
                     ),
                     child: Row(
-                      spacing: 10,
+                      spacing: 8,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.analytics, color: accent),
+                        // Icon(Icons.analytics, color: accent),
                         Text(
                           "${widget.analysisFunc(widget.data)}",
-                          style: TextStyle(fontSize: 20),
+                          style: TextTheme.of(context).bodyMedium,
                         ),
                       ],
                     ),

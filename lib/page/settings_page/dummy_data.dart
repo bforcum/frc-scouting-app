@@ -17,11 +17,11 @@ class GenerateDummyData extends ConsumerWidget {
     return Row(
       children: [
         Text(
-          "Generate dummy data",
+          "Generate testing data",
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         Spacer(),
-        ElevatedButton(
+        FilledButton(
           onPressed: () async {
             if (!await showConfirmationDialog(
               ConfirmationInfo(
@@ -36,11 +36,16 @@ class GenerateDummyData extends ConsumerWidget {
               if (error != null) {
                 showSnackBarMessage(error);
               } else {
-                showSnackBarMessage("Dummy data generated");
+                showSnackBarMessage("Test data generated");
               }
             }
           },
-          child: Text("Generate"),
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(
+              ColorScheme.of(context).primaryContainer,
+            ),
+          ),
+          child: Text("Generate", style: TextStyle(color: Colors.white)),
         ),
       ],
     );

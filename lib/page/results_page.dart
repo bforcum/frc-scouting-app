@@ -158,6 +158,11 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                                         kBorderRadius,
                                       ),
                                     ),
+                                    labelStyle: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium!.copyWith(
+                                      color: Theme.of(context).hintColor,
+                                    ),
                                   ),
                                   textStyle:
                                       Theme.of(context).textTheme.bodySmall,
