@@ -85,7 +85,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
                       child: SizedBox(
                         height: 60,
                         child: ElevatedButton(
-                          style: kButtonStyle.copyWith(
+                          style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
                               Theme.of(context).colorScheme.primaryContainer,
                             ),

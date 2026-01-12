@@ -46,6 +46,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
+                spacing: 5,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,17 +76,16 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                       border: Border.all(color: accent),
                       color: accent.withAlpha(32),
                     ),
-                    child: Row(
-                      spacing: 8,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Icon(Icons.analytics, color: accent),
-                        Text(
-                          "${widget.analysisFunc(widget.data)}",
-                          style: TextTheme.of(context).bodyMedium,
-                        ),
-                      ],
+                    child: Text(
+                      "${widget.analysisFunc(widget.data)}",
+                      style: TextTheme.of(context).bodyMedium,
                     ),
+                  ),
+
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.chevron_right),
+                    iconSize: 24,
                   ),
                 ],
               ),

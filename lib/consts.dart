@@ -71,8 +71,7 @@ final kGame2025 = GameFormat(
       label: "Pessimistic Score",
       score:
           (data) =>
-              (data.totalScores.average.round() -
-                      data.totalScores.standardDeviation)
+              (data.totalScores.average - data.totalScores.standardDeviation)
                   .round(),
     ),
     AnalysisScore(

@@ -4,15 +4,18 @@ import 'package:scouting_app/model/match_result.dart';
 
 class TeamData {
   int teamNumber;
+
+  List<MatchResult> results;
   List<int> autoScores;
   List<int> teleScores;
   List<int> endScores;
   List<int> totalScores;
   Map<String, bool> scoringLocations = {};
 
-  TeamData({
+  TeamData._({
     required this.teamNumber,
 
+    required this.results,
     required this.autoScores,
     required this.teleScores,
     required this.endScores,
@@ -20,7 +23,7 @@ class TeamData {
     required this.scoringLocations,
   });
 
-  factory TeamData.fromList(List<MatchResult> results) {
+  factory TeamData(List<MatchResult> results) {
     List<int> autoScores = [];
     List<int> teleScores = [];
     List<int> endScores = [];
@@ -52,7 +55,8 @@ class TeamData {
       }
     }
 
-    return TeamData(
+    return TeamData._(
+      results: results,
       teamNumber: teamNumber,
       autoScores: autoScores,
       teleScores: teleScores,

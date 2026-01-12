@@ -30,7 +30,7 @@ Future<List<TeamData>> teamStatistics(Ref ref) async {
   }
   List<TeamData> stats = [];
   for (int i = 0; i < teamNumbers.length; i++) {
-    stats.add(TeamData.fromList(binnedResults[i]));
+    stats.add(TeamData(binnedResults[i]));
   }
   return stats;
 }

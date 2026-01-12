@@ -32,21 +32,20 @@ class MatchResultCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Team ${result.teamNumber}",
+                  "Team ${result.teamNumber}, Match ${result.matchNumber}",
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text.rich(
                   TextSpan(
-                    text: "Match ${result.matchNumber}, ",
                     style: Theme.of(context).textTheme.bodySmall,
                     children: [
                       TextSpan(
-                        text: (result.data["timeStamp"] as DateTime)
-                            .toLocal()
-                            .toString()
-                            .substring(0, 11),
+                        text: result.timeStamp.toLocal().toString().substring(
+                          0,
+                          11,
+                        ),
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),

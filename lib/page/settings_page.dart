@@ -54,7 +54,7 @@ class SettingsPage extends ConsumerWidget {
                   ),
                   initialValue: settings.eventName,
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r"[A-Z\s]")),
+                    FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s]")),
                   ],
                   onChanged:
                       (text) => ref

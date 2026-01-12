@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/common/custom_navigation_bar.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/results_page.dart';
 import 'package:scouting_app/provider/directory_provider.dart';
+import 'package:scouting_app/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 
@@ -40,49 +42,22 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = TextTheme(
-      displayLarge: TextStyle(fontSize: 36, fontWeight: FontWeight.w800),
-      displayMedium: TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
-      displaySmall: TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
-      headlineLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-      headlineMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-      headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-      titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-      titleMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-      titleSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-      bodyLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-      bodyMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-      bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-    );
     return MaterialApp(
       title: 'FRC SAASquatch Scouting',
       themeMode: ref.watch(settingsProvider).themeMode,
       theme: ThemeData(
-        textTheme: textTheme,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFF910116),
-          brightness: Brightness.light,
-          dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
-          contrastLevel: 0.5,
-          surface: Colors.grey[300],
-          surfaceContainerLowest: Colors.grey[300],
-          surfaceContainerLow: Colors.grey[300],
-          surfaceContainer: Colors.grey[200],
-          surfaceContainerHigh: Colors.grey[100],
-          surfaceContainerHighest: Colors.white,
-        ),
-
+        textTheme: getAppTextTheme(Brightness.light),
+        colorScheme: getAppColorScheme(Brightness.light),
         brightness: Brightness.light,
+        buttonTheme: getAppButtonTheme(Brightness.light),
       ),
       darkTheme: ThemeData(
-        textTheme: textTheme,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
-          brightness: Brightness.dark,
-          dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
-          contrastLevel: 0.0,
-        ),
+        textTheme: getAppTextTheme(Brightness.dark),
+        colorScheme: getAppColorScheme(Brightness.dark),
         brightness: Brightness.dark,
+        // filledButtonTheme: FilledButtonThemeData(style: kButtonStyle),
+        textButtonTheme: TextButtonThemeData(style: kButtonStyle),
+        elevatedButtonTheme: ElevatedButtonThemeData(style: kButtonStyle),
       ),
       home: const App(),
     );

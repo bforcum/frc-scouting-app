@@ -76,7 +76,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                     child: SizedBox(
                       height: 60,
                       child: ElevatedButton(
-                        style: kButtonStyle.copyWith(
+                        style: ButtonStyle(
                           backgroundColor: WidgetStatePropertyAll(
                             Theme.of(context).colorScheme.primaryContainer,
                           ),
@@ -94,7 +94,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                     width: 60,
                     height: 60,
                     child: ElevatedButton(
-                      style: kButtonStyle.copyWith(
+                      style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(
                           Theme.of(context).colorScheme.errorContainer,
                         ),
