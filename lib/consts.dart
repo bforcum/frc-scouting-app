@@ -12,8 +12,6 @@ final String kEventName = "WASAM";
 
 final String kDbName = "scouting_app";
 
-final bool incrementMatchNumber = true;
-
 final List<GameFormat> kSupportedGameFormats = [kGame2025];
 
 final List<Question> kRequiredQuestions = [
@@ -32,6 +30,64 @@ final List<Question> kRequiredQuestions = [
     max: 100,
   ),
 ];
+
+final kGame2026v1 = GameFormat(
+  name: "2026v1",
+  autoScore:
+      (result) => result.data["autoFuel"] + result.data["autoClimb"] * 15,
+  teleScore: (result) => result.data["perCycle"],
+  endScore: (result) => result.data["climb"] * 10,
+  sections: ["Autonomous", "Tele-Op Scoring", "Defense", "End Game", "Other"],
+  analysisOptions: [
+    AnalysisScore(
+      label: "Average Score",
+      score: (data) => data.totalScores.average.round(),
+    ),
+    AnalysisScore(
+      label: "Pessimistic Score",
+      score:
+          (data) =>
+              (data.totalScores.average - data.totalScores.standardDeviation)
+                  .round(),
+    ),
+    AnalysisScore(
+      label: "Score + Defense",
+      score:
+          (data) =>
+              (data.totalScores.average +
+                      (data.results.map((e) => e.data["defense"] * 10).toList()
+                              as List<int>)
+                          .average)
+                  .round(),
+    ),
+  ],
+  scoringLocations: [
+    "groundPickup",
+    "humanPickup",
+    "autoClimb",
+    "climb1",
+    "climb2",
+    "climb3",
+  ],
+  getScoringLocations:
+      (result) => <String, bool>{
+        "groundPickup": result.data["groundPickup"],
+        "humanPickup": result.data["groundPickup"],
+        "autoClimb": result.data["autoClimb"],
+        "climb1": result.data["climb"] >= 1 || result.data["autoClimb"],
+        "climb2": result.data["climb"] >= 2,
+        "climb3": result.data["climb"] == 3,
+      },
+  questions: [
+    /*
+    auto scored (counter)
+    auto climb (bool)
+    climb (dropdown)
+    tele scored per cycle
+
+     */
+  ],
+);
 
 final kGame2025 = GameFormat(
   name: "2025",

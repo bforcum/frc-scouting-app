@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'settings.freezed.dart';
