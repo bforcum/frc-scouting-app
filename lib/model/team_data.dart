@@ -25,7 +25,7 @@ class TeamData {
     int numScoreOptions = format.scoreOptions.length;
     int numCriteriaOptions = format.criteriaOptions.length;
     List<List<int>> scores = List.filled(numScoreOptions, <int>[]);
-    List<bool> criteria = List.filled(numScoreOptions, false);
+    List<bool> criteria = List.filled(numCriteriaOptions, false);
 
     for (int i = 0; i < results.length; i++) {
       assert(results[i].gameFormat == format);

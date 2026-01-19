@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
+import 'package:scouting_app/model/settings.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
@@ -10,10 +11,12 @@ part 'statistics_provider.g.dart';
 
 @riverpod
 Future<List<TeamData>> teamStatistics(Ref ref) async {
-  GameFormat gameFormat = ref.read(settingsProvider).gameFormat;
+  SettingsModel settings = ref.watch(settingsProvider);
+  GameFormat gameFormat = settings.gameFormat;
+  String? selectedEvent = settings.selectedEvent;
   List<MatchResult> results = await ref
       .watch(storedResultsProvider.notifier)
-      .filterResults(gameFormat: gameFormat);
+      .filterResults(event: selectedEvent, gameFormat: gameFormat);
 
   List<int> teamNumbers = [];
   List<List<MatchResult>> binnedResults = [];

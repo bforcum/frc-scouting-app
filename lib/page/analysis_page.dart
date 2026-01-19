@@ -40,9 +40,18 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
           return SliverFillRemaining(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(
-                "Error encountered: ${asyncStats.error}",
-                style: Theme.of(context).textTheme.bodyLarge,
+              child: Column(
+                spacing: 10,
+                children: [
+                  Text(
+                    "Error: ${asyncStats.error}",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Text(
+                    "${asyncStats.stackTrace}",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
           );

@@ -78,7 +78,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                       color: accent.withAlpha(32),
                     ),
                     child: Text(
-                      "${widget.data.scores[widget.scoreOption].average}",
+                      "${widget.data.scores[widget.scoreOption].average.round()}",
                       style: TextTheme.of(context).bodyMedium,
                     ),
                   ),
