@@ -21,6 +21,7 @@ sealed class SettingsModel with _$SettingsModel {
   void persistToSharedPreferences(SharedPreferences prefs) {
     prefs.setString("setting.scoutName", scoutName);
     prefs.setString("setting.eventName", eventName);
+    prefs.setString("setting.selectedEvent", selectedEvent ?? '\u0000');
     prefs.setString("setting.themeMode", themeMode.name);
     prefs.setBool("setting.incrementMatchNumber", incrementMatchNumber);
     prefs.setString("setting.gameFormat", gameFormat.name);
@@ -30,10 +31,13 @@ sealed class SettingsModel with _$SettingsModel {
       _$SettingsModelFromJson(json);
 
   factory SettingsModel.fromSharedPreferences(SharedPreferences prefs) {
-    return SettingsModel.fromJson({
-      for (final key in prefs.getKeys())
-        if (key.startsWith("setting."))
-          key.replaceFirst("setting.", ""): prefs.get(key),
-    });
+    Map<String, dynamic> settings = {};
+    for (final key in prefs.getKeys()) {
+      if (key.startsWith("setting.")) {
+        dynamic value = prefs.get(key) == '\u0000' ? null : prefs.get(key);
+        settings[key.replaceFirst("setting.", "")] = value;
+      }
+    }
+    return SettingsModel.fromJson(settings);
   }
 }

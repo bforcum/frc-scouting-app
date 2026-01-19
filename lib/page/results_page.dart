@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
+import 'package:scouting_app/model/settings.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
 import 'package:scouting_app/page/results_page/results_buttons.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
@@ -21,7 +22,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
 
   late GameFormat gameFormat;
-  String? visibleEvent;
+  String? selectedEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
   AsyncValue<List<int>> indices = AsyncValue.loading();
@@ -34,18 +35,21 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
-    gameFormat = ref.watch(settingsProvider).gameFormat;
-    visibleEvent = ref.watch(settingsProvider).selectedEvent;
+    SettingsModel settings = ref.watch(settingsProvider);
+    gameFormat = settings.gameFormat;
+    selectedEvent = settings.selectedEvent;
+
     matchResults = ref.watch(storedResultsProvider);
     final tempIndices = ref.watch(
       ResultIndicesProvider(
         sort: sortBy,
         teamFilter: searchText,
-        eventName: visibleEvent,
+        eventName: selectedEvent,
         gameFormat: gameFormat,
       ),
     );
     if (!tempIndices.isLoading) {
+      debugPrint(selectedEvent);
       indices = tempIndices;
     }
     var contentBuilder = Builder(
@@ -100,7 +104,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
           sliver: SliverList.builder(
-            itemCount: matchResults.requireValue.length,
+            itemCount: indices.requireValue.length,
             itemBuilder: (context, index) {
               MatchResult result =
                   matchResults.requireValue[indices.requireValue[index]];

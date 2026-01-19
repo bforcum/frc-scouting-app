@@ -22,6 +22,6 @@ class Settings extends _$Settings {
   Future<void> updateSettings(SettingsModel settings) async {
     final prefs = ref.read(sharedPreferencesProvider);
     settings.persistToSharedPreferences(prefs);
-    state = settings;
+    ref.invalidateSelf();
   }
 }

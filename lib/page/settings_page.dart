@@ -20,9 +20,12 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     SettingsModel settings = ref.watch(settingsProvider);
     AsyncValue<List<String>> events = ref.watch(resultEventsProvider);
-    int eventIndex = 0;
-    if (events.hasValue && settings.selectedEvent != null) {
-      eventIndex = events.value!.indexOf(settings.selectedEvent!);
+    int eventIndex = -1;
+    if (events.hasValue) {
+      eventIndex =
+          settings.selectedEvent == null
+              ? 0
+              : events.value!.indexOf(settings.selectedEvent!) + 1;
     }
     return SingleChildScrollView(
       child: Padding(
@@ -80,7 +83,7 @@ class SettingsPage extends ConsumerWidget {
                               selectedEvent:
                                   (eventNum ?? 0) == 0
                                       ? null
-                                      : events.value![eventNum!],
+                                      : events.value![eventNum! - 1],
                             ),
                           ),
                 ),
