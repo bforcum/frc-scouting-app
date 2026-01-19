@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/results_page/result_field.dart';
@@ -20,9 +19,8 @@ class _ViewResultPageState extends State<ViewResultPage> {
   @override
   void initState() {
     super.initState();
-    GameFormat game = kSupportedGameFormats.firstWhere(
-      (gameFormat) => gameFormat.name == widget.matchResult.gameFormatName,
-    );
+
+    GameFormat game = widget.matchResult.gameFormat;
 
     List<List<int>> questionIndices = List.generate(
       game.sections.length,

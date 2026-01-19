@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
 
@@ -29,14 +30,17 @@ class StoredResults extends _$StoredResults {
 
   Future<List<MatchResult>> filterResults({
     String? event,
-    int? teamNumber,
-    int? matchNumber,
+    int? team,
+    int? match,
+    GameFormat? gameFormat,
   }) {
     final db = ref.read(databaseProvider);
+    String? game = gameFormat?.name;
     return db.managers.matchResults
-        .filter((e) => e.eventName(event))
-        .filter((e) => e.teamNumber(teamNumber))
-        .filter((e) => e.matchNumber(matchNumber))
+        .filter((e) => Variable(event).isNull() | e.eventName(event))
+        .filter((e) => Variable(team).isNull() | e.teamNumber(team))
+        .filter((e) => Variable(match).isNull() | e.matchNumber(match))
+        .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
         .get();
   }
 
@@ -71,18 +75,21 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
-  Future<String?> deleteResult(
-    String eventName,
-    int teamNumber,
-    int matchNumber,
-  ) async {
+  Future<String?> deleteResults({
+    String? eventName,
+    int? teamNumber,
+    int? matchNumber,
+    GameFormat? gameFormat,
+  }) async {
     final db = ref.read(databaseProvider);
 
+    String? gameFormatName = gameFormat?.name;
     int deletions =
         await db.managers.matchResults
             .filter((e) => e.eventName(eventName))
             .filter((e) => e.teamNumber(teamNumber))
             .filter((e) => e.matchNumber(matchNumber))
+            .filter((e) => e.gameFormatName(gameFormatName))
             .delete();
 
     if (deletions == 0) {
@@ -120,18 +127,24 @@ class StoredResults extends _$StoredResults {
 
 @riverpod
 Future<List<int>> resultIndices(
-  Ref ref,
-  SortType sort,
-  String teamFilter,
-) async {
-  final List<MatchResult> results = await ref.watch(
-    storedResultsProvider.future,
-  );
+  Ref ref, {
+  SortType sort = SortType.matchNumAscending,
+  String? teamFilter,
+  String? eventName,
+  int? matchNumber,
+  GameFormat? gameFormat,
+}) async {
+  final List<MatchResult> results = await ref
+      .watch(storedResultsProvider.notifier)
+      .filterResults(
+        event: eventName,
+        match: matchNumber,
+        gameFormat: gameFormat,
+      );
 
-  List<int> indices = List<int>.empty(growable: true);
-
+  List<int> indices = [];
   for (int i = 0; i < results.length; i++) {
-    if (results[i].teamNumber.toString().contains(teamFilter)) {
+    if (results[i].teamNumber.toString().startsWith(teamFilter ?? "")) {
       indices.add(i);
     }
   }

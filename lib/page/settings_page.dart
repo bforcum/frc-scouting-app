@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/model/settings.dart';
 import 'package:scouting_app/page/scouting_page/form_input/dropdown_input.dart';
@@ -129,7 +130,32 @@ class SettingsPage extends ConsumerWidget {
             ),
             FormSection(
               title: "⚠️ Advanced ⚠️",
-              children: [GenerateDummyData(), ResetDatabase()],
+              children: [
+                GenerateDummyData(),
+                ResetDatabase(),
+                DropdownQuestionInput(
+                  question: QuestionDropdown(
+                    section: 0,
+                    key: "",
+                    label: "Game Format",
+                    options: List.generate(
+                      GameFormat.values.length,
+                      (i) => GameFormat.values[i].name,
+                    ),
+                  ),
+                  initialValue: settings.gameFormat.index,
+                  onChanged:
+                      (i) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(
+                            settings.copyWith(
+                              gameFormat:
+                                  GameFormat.values[i ??
+                                      settings.gameFormat.index],
+                            ),
+                          ),
+                ),
+              ],
             ),
           ],
         ),

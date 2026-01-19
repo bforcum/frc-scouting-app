@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
 import 'package:scouting_app/page/results_page/results_buttons.dart';
@@ -19,6 +20,7 @@ class ResultsPage extends ConsumerStatefulWidget {
 class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
 
+  late GameFormat gameFormat;
   String? visibleEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
@@ -32,9 +34,17 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
 
   @override
   Widget build(BuildContext context) {
+    gameFormat = ref.watch(settingsProvider).gameFormat;
     visibleEvent = ref.watch(settingsProvider).selectedEvent;
     matchResults = ref.watch(storedResultsProvider);
-    final tempIndices = ref.watch(ResultIndicesProvider(sortBy, searchText));
+    final tempIndices = ref.watch(
+      ResultIndicesProvider(
+        sort: sortBy,
+        teamFilter: searchText,
+        eventName: visibleEvent,
+        gameFormat: gameFormat,
+      ),
+    );
     if (!tempIndices.isLoading) {
       indices = tempIndices;
     }
@@ -42,11 +52,21 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
       builder: (context) {
         if (indices.hasError) {
           return SliverFillRemaining(
+            fillOverscroll: true,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(
-                "Error encountered: ${matchResults.error}",
-                style: Theme.of(context).textTheme.bodyLarge,
+              child: Column(
+                spacing: 10,
+                children: [
+                  Text(
+                    "Error encountered: ${indices.error}",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Text(
+                    "${indices.stackTrace}",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ),
             ),
           );
@@ -80,7 +100,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
           sliver: SliverList.builder(
-            itemCount: matchResults.value!.length,
+            itemCount: matchResults.requireValue.length,
             itemBuilder: (context, index) {
               MatchResult result =
                   matchResults.requireValue[indices.requireValue[index]];
@@ -198,9 +218,12 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
           ],
         ),
         ResultsButtons(
-          results: indices.valueOrNull?.mapToList(
-            (idx) => matchResults.requireValue[idx],
-          ),
+          results:
+              (matchResults.isLoading)
+                  ? null
+                  : indices.valueOrNull?.mapToList(
+                    (idx) => matchResults.requireValue[idx],
+                  ),
         ),
       ],
     );

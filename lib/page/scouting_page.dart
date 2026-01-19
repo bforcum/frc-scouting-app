@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/form_data.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
@@ -11,6 +12,7 @@ import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
+import 'package:statistics/statistics.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
   const ScoutingPage({super.key});
@@ -20,14 +22,16 @@ class ScoutingPage extends ConsumerStatefulWidget {
 }
 
 class ScoutingPageState extends ConsumerState<ScoutingPage> {
+  late GameFormat gameFormat;
   late FormSection matchInfoSection;
   late List<FormSection> sections;
   final _formKey = GlobalKey<FormState>();
   final _scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    gameFormat = ref.watch(settingsProvider).gameFormat;
     matchInfoSection = FormSection(
       title: "Match Information",
       children:
@@ -36,27 +40,26 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
           }).toList(),
     );
 
+    // Must be generated or the same list reference is duplicated for each section
     List<List<int>> questionIndices = List.generate(
-      kGameFormat.sections.length,
+      gameFormat.sections.length,
       (i) => [],
     );
-    for (int i = 0; i < kGameFormat.questions.length; i++) {
-      questionIndices[kGameFormat.questions[i].section].add(i);
+    for (int i = 0; i < gameFormat.questions.length; i++) {
+      questionIndices[gameFormat.questions[i].section].add(i);
     }
-    sections = List.generate(kGameFormat.sections.length, (section) {
+    sections = List.generate(gameFormat.sections.length, (section) {
       return FormSection(
-        title: kGameFormat.sections[section],
-        children:
-            questionIndices[section].map((index) {
-              return FormInput(question: kGameFormat.questions[index]);
-            }).toList(),
+        title: gameFormat.sections[section],
+        children: questionIndices[section].mapToList((index) {
+          return FormInput(question: gameFormat.questions[index]);
+        }),
       );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Unique key for the form
     return SingleChildScrollView(
       controller: _scrollController,
       child: Padding(
@@ -135,7 +138,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
     final data = <String, dynamic>{};
 
-    data["gameFormatName"] = kGameFormat.name;
+    data["gameFormat"] = gameFormat;
     data["timeStamp"] = DateTime.timestamp();
 
     data["eventName"] = ref.read(settingsProvider).eventName;
@@ -150,10 +153,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
       return;
     }
 
-    for (var question in List<Question>.from([
-      ...kRequiredQuestions,
-      ...kGameFormat.questions,
-    ])) {
+    for (var question in [...kRequiredQuestions, ...gameFormat.questions]) {
       dynamic value = ref.read(formFieldNotifierProvider(question.key));
       data[question.key] = value;
     }
@@ -182,7 +182,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     // Clear form data after submission
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
-      ...kGameFormat.questions,
+      ...gameFormat.questions,
     ])) {
       // Auto-increment match number if enabled
       if (question.key == "matchNumber" &&
@@ -211,7 +211,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
 
     for (var question in List<Question>.from([
       ...kRequiredQuestions,
-      ...kGameFormat.questions,
+      ...gameFormat.questions,
     ])) {
       ref.read(formFieldNotifierProvider(question.key).notifier).setValue(null);
     }

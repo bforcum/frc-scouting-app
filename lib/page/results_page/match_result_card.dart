@@ -1,13 +1,12 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
-import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/results_page/edit_result_page.dart';
 import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
 import 'package:scouting_app/page/results_page/view_result_page.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class MatchResultCard extends ConsumerWidget {
@@ -52,7 +51,7 @@ class MatchResultCard extends ConsumerWidget {
                       ),
                       TextSpan(
                         text: TimeOfDay.fromDateTime(
-                          (result.data["timeStamp"] as DateTime)
+                          result.timeStamp
                               .copyWith(
                                 second: 0,
                                 millisecond: 0,
@@ -70,21 +69,7 @@ class MatchResultCard extends ConsumerWidget {
             ),
             const Spacer(),
             IconButton(
-              onPressed: () async {
-                if (kSupportedGameFormats.firstWhereOrNull(
-                      (gameFormat) => gameFormat.name == result.gameFormatName,
-                    ) ==
-                    null) {
-                  await showAlertDialog(
-                    title: "Unsupported Game Format",
-                    content:
-                        "The game format for this result is not known or supported by the app",
-                    closeMessage: "Okay",
-                  );
-                  return;
-                }
-                showQRCodeOverlay(result);
-              },
+              onPressed: () async => showQRCodeOverlay(result),
               icon: Icon(Icons.qr_code),
             ),
             PopupMenuButton(
@@ -114,10 +99,11 @@ class MatchResultCard extends ConsumerWidget {
                       }
                       ref
                           .read(storedResultsProvider.notifier)
-                          .deleteResult(
-                            result.eventName,
-                            result.teamNumber,
-                            result.matchNumber,
+                          .deleteResults(
+                            eventName: result.eventName,
+                            teamNumber: result.teamNumber,
+                            matchNumber: result.matchNumber,
+                            gameFormat: ref.read(settingsProvider).gameFormat,
                           );
                       ref.invalidate(storedResultsProvider);
                     },
@@ -132,18 +118,6 @@ class MatchResultCard extends ConsumerWidget {
   }
 
   Future _viewResults(BuildContext context) async {
-    if (kSupportedGameFormats.firstWhereOrNull(
-          (gameFormat) => gameFormat.name == result.gameFormatName,
-        ) ==
-        null) {
-      await showAlertDialog(
-        title: "Unsupported Game Format",
-        content:
-            "The game format for this result is not known or supported by the app",
-        closeMessage: "Okay",
-      );
-      return;
-    }
     (Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ViewResultPage(matchResult: result),
@@ -152,18 +126,6 @@ class MatchResultCard extends ConsumerWidget {
   }
 
   Future _editResults(BuildContext context) async {
-    if (kSupportedGameFormats.firstWhereOrNull(
-          (gameFormat) => gameFormat.name == result.gameFormatName,
-        ) ==
-        null) {
-      await showAlertDialog(
-        title: "Unsupported Game Format",
-        content:
-            "The game format for this result is not known or supported by the app",
-        closeMessage: "Okay",
-      );
-      return;
-    }
     (Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => EditResultPage(matchResult: result),

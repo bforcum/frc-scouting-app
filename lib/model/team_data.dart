@@ -1,4 +1,4 @@
-import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 
@@ -6,63 +6,45 @@ class TeamData {
   int teamNumber;
 
   List<MatchResult> results;
-  List<int> autoScores;
-  List<int> teleScores;
-  List<int> endScores;
-  List<int> totalScores;
-  Map<String, bool> scoringLocations = {};
+  List<List<int>> scores;
+  List<bool> criteria;
 
   TeamData._({
     required this.teamNumber,
 
     required this.results,
-    required this.autoScores,
-    required this.teleScores,
-    required this.endScores,
-    required this.totalScores,
-    required this.scoringLocations,
+    required this.scores,
+    required this.criteria,
   });
 
   factory TeamData(List<MatchResult> results) {
-    List<int> autoScores = [];
-    List<int> teleScores = [];
-    List<int> endScores = [];
-    List<int> totalScores = [];
-    Map<String, bool> scoringLocations = {};
-
     assert(results.isNotEmpty, "The MatchResult list must contain results");
 
     int teamNumber = results[0].teamNumber;
+    GameFormat format = results[0].gameFormat;
+    int numScoreOptions = format.scoreOptions.length;
+    int numCriteriaOptions = format.criteriaOptions.length;
+    List<List<int>> scores = List.filled(numScoreOptions, <int>[]);
+    List<bool> criteria = List.filled(numScoreOptions, false);
 
     for (int i = 0; i < results.length; i++) {
-      MatchResult result = results[i];
-      GameFormat gameFormat = kSupportedGameFormats.firstWhere(
-        (format) => format.name == result.gameFormatName,
-      );
-      autoScores.add(result.getAutoScore());
-      teleScores.add(result.getTeleScore());
-      endScores.add(result.getEndScore());
-      totalScores.add(result.getTotalScore());
+      assert(results[i].gameFormat == format);
 
-      var locations = gameFormat.getScoringLocations(result);
+      MatchAnalysis analysis = results[i].analysis;
 
-      for (var location in locations.entries) {
-        scoringLocations.update(
-          location.key,
-          (current) => current || location.value,
-          ifAbsent: () => location.value,
-        );
+      for (int j = 0; i < numScoreOptions; i++) {
+        scores[i].add(analysis.getScore(j));
+      }
+      for (int j = 0; i < numCriteriaOptions; i++) {
+        criteria[i] |= analysis.getCriterion(j);
       }
     }
 
     return TeamData._(
       results: results,
       teamNumber: teamNumber,
-      autoScores: autoScores,
-      teleScores: teleScores,
-      endScores: endScores,
-      totalScores: totalScores,
-      scoringLocations: scoringLocations,
+      scores: scores,
+      criteria: criteria,
     );
   }
 }

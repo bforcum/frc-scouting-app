@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
@@ -149,10 +149,8 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     if (data == null) {
       return;
     }
-    late final MatchResult result;
-    try {
-      result = MatchResult.fromBin(data);
-    } catch (error) {
+    final MatchResult? result = MatchResult.fromBin(data);
+    if (result == null) {
       await showAlertDialog(
         title: "Invalid code",
         content: "This QR code probably didn't come from this app",
@@ -167,7 +165,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
 
     if (error != null) {
       showAlertDialog(
-        title: "Saving Error",
+        title: "Error with Saving",
         content: error,
         closeMessage: "Okay",
       );
@@ -186,10 +184,11 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     }
 
     String? selectedEvent = ref.read(settingsProvider).selectedEvent;
+    GameFormat gameFormat = ref.read(settingsProvider).gameFormat;
 
     Excel excel = Excel.createExcel();
     final String sheetName =
-        "${kGameFormat.name}-${selectedEvent ?? "All Events"}";
+        "${gameFormat.name}-${selectedEvent ?? "All Events"}";
     excel.rename("Sheet1", sheetName);
     Sheet sheetObject = excel[sheetName];
 
@@ -197,7 +196,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       TextCellValue("Event:"),
       TextCellValue(selectedEvent ?? "All Events"),
       TextCellValue("Game format:"),
-      TextCellValue(kGameFormat.name),
+      TextCellValue(gameFormat.name),
     ]);
     sheetObject.appendRow([
       if (selectedEvent == null) TextCellValue("Event"),
@@ -205,7 +204,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       TextCellValue("Match #"),
       TextCellValue("Time"),
       TextCellValue("Scout name"),
-      ...kGameFormat.questions.map((q) => TextCellValue(q.label)),
+      ...gameFormat.questions.map((q) => TextCellValue(q.label)),
     ]);
 
     for (MatchResult result in widget.results!) {

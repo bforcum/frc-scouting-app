@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/analysis_page/team_stats_card.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/statistics_provider.dart';
 
 class AnalysisPage extends ConsumerStatefulWidget {
@@ -15,7 +18,15 @@ class AnalysisPage extends ConsumerStatefulWidget {
 class _AnalysisPageState extends ConsumerState<AnalysisPage> {
   int sortBy = 0;
 
+  late GameFormat gameFormat;
+
   AsyncValue<List<TeamData>> asyncStats = AsyncValue.loading();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    gameFormat = ref.watch(settingsProvider).gameFormat;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +71,11 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
           );
         }
         List<TeamData> stats = asyncStats.value!;
-
-        stats.sort(
-          (a, b) =>
-              kGameFormat.analysisOptions[sortBy].score(b) -
-              kGameFormat.analysisOptions[sortBy].score(a),
-        );
+        stats.sort((a, b) {
+          double diff = b.scores[sortBy].average - a.scores[sortBy].average;
+          // Convert to int without missing edge cases if the diff is small
+          return diff > 0 ? 1 : diff.floor();
+        });
         return SliverPadding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           sliver: SliverList.builder(
@@ -75,7 +85,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                 padding: const EdgeInsets.all(10),
                 child: TeamStatsCard(
                   data: asyncStats.value![index],
-                  analysisFunc: kGameFormat.analysisOptions[sortBy].score,
+                  scoreOption: sortBy,
                 ),
               );
             },
@@ -133,15 +143,12 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                                   dropdownMenuEntries: [
                                     for (
                                       int i = 0;
-                                      i < kGameFormat.analysisOptions.length;
+                                      i < gameFormat.scoreOptions.length;
                                       i++
                                     )
                                       DropdownMenuEntry(
                                         value: i,
-                                        label:
-                                            kGameFormat
-                                                .analysisOptions[i]
-                                                .label,
+                                        label: gameFormat.scoreOptions[i],
                                       ),
                                   ],
 

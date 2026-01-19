@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
@@ -29,9 +28,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
     super.initState();
     // Make a copy of the data so it can be modified
     resultData = widget.matchResult.data.map((k, v) => MapEntry(k, v));
-    GameFormat game = kSupportedGameFormats.firstWhere(
-      (gameFormat) => gameFormat.name == widget.matchResult.gameFormatName,
-    );
+    GameFormat game = widget.matchResult.gameFormat;
 
     List<List<int>> questionIndices = List.generate(
       game.sections.length,

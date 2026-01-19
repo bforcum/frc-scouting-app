@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
@@ -5,12 +6,12 @@ import 'package:scouting_app/model/team_data.dart';
 
 class TeamStatsCard extends ConsumerStatefulWidget {
   final TeamData data;
-  final int Function(TeamData) analysisFunc;
+  final int scoreOption;
 
   const TeamStatsCard({
     super.key,
     required this.data,
-    required this.analysisFunc,
+    required this.scoreOption,
   });
 
   @override
@@ -22,7 +23,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
   @override
   Widget build(BuildContext context) {
     Color accent =
-        (widget.data.totalScores.length) < 12
+        (widget.data.results.length) < 12
             ? Color(0xFFFFCC00)
             : Color(0xFF009900);
     return Container(
@@ -59,7 +60,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                         ),
                       ),
                       Text(
-                        "Match count: ${widget.data.totalScores.length}",
+                        "Match count: ${widget.data.results.length}",
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
@@ -77,7 +78,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                       color: accent.withAlpha(32),
                     ),
                     child: Text(
-                      "${widget.analysisFunc(widget.data)}",
+                      "${widget.data.scores[widget.scoreOption].average}",
                       style: TextTheme.of(context).bodyMedium,
                     ),
                   ),

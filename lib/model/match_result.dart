@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scouting_app/consts.dart';
+import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
@@ -27,7 +27,7 @@ abstract class MatchResult
     required int matchNumber,
     required DateTime timeStamp,
     required String scoutName,
-    required String gameFormatName,
+    required GameFormat gameFormat,
     required Map<String, dynamic> data,
   }) = _MatchResultModel;
 
@@ -37,7 +37,7 @@ abstract class MatchResult
     assert(data["matchNumber"].runtimeType == int);
     assert(data["timeStamp"].runtimeType == DateTime);
     assert(data["scoutName"].runtimeType == String);
-    assert(data["gameFormatName"].runtimeType == String);
+    assert(data["gameFormat"].runtimeType == GameFormat);
 
     return MatchResult(
       eventName: data["eventName"],
@@ -45,7 +45,7 @@ abstract class MatchResult
       matchNumber: data["matchNumber"]!,
       timeStamp: data["timeStamp"]!,
       scoutName: data["scoutName"]!,
-      gameFormatName: data["gameFormatName"]!,
+      gameFormat: data["gameFormat"],
       data: data,
     );
   }
@@ -58,12 +58,7 @@ abstract class MatchResult
     writer.writeUint64(timeStamp.millisecondsSinceEpoch);
     writer.writeUint8(scoutName.length);
     writer.write(utf8.encode(scoutName));
-    writer.write(utf8.encode(gameFormatName.padRight(8)));
-
-    final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
-      (format) => format.name == gameFormatName,
-      orElse: () => throw Exception("Unsupported game format: $gameFormatName"),
-    );
+    writer.write(utf8.encode(gameFormat.name.padRight(8)));
 
     for (var question in gameFormat.questions) {
       switch (question.type) {
@@ -90,27 +85,27 @@ abstract class MatchResult
     return writer.toBytes();
   }
 
-  factory MatchResult.fromBin(Uint8List bytes) {
+  static MatchResult? fromBin(Uint8List bytes) {
     final reader = ByteDataReader();
     reader.add(bytes);
 
     final data = <String, dynamic>{};
 
-    data["eventName"] = utf8.decode(reader.read(12)).trim();
-    data["teamNumber"] = reader.readUint16();
-    data["matchNumber"] = reader.readUint8();
-    data["timeStamp"] = DateTime.fromMillisecondsSinceEpoch(
+    String eventName = utf8.decode(reader.read(12)).trim();
+    int teamNumber = reader.readUint16();
+    int matchNumber = reader.readUint8();
+    DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(
       reader.readUint64(),
     );
     final int nameLength = reader.readUint8();
-    data["scoutName"] = utf8.decode(reader.read(nameLength)).trim();
-    data["gameFormatName"] = String.fromCharCodes(reader.read(8)).trim();
+    String scoutName = utf8.decode(reader.read(nameLength)).trim();
+    String gameFormatName = String.fromCharCodes(reader.read(8)).trim();
 
-    final GameFormat? gameFormat = kSupportedGameFormats.firstWhereOrNull(
-      (format) => format.name == data["gameFormatName"],
+    final GameFormat? gameFormat = GameFormat.values.firstWhereOrNull(
+      (format) => format.name == gameFormatName,
     );
     if (gameFormat == null) {
-      return MatchResult.fromMap(data);
+      return null;
     }
     for (var question in gameFormat.questions) {
       try {
@@ -139,17 +134,25 @@ abstract class MatchResult
       }
     }
 
-    return MatchResult.fromMap(data);
+    return MatchResult(
+      eventName: eventName,
+      teamNumber: teamNumber,
+      matchNumber: matchNumber,
+      timeStamp: timeStamp,
+      scoutName: scoutName,
+      gameFormat: gameFormat,
+      data: data,
+    );
   }
 
   factory MatchResult.fromExcel(List<Data> values, GameFormat gameFormat) {
     final data = <String, dynamic>{};
 
-    data["eventName"] = values[0].value.toString();
-    data["teamNumber"] = (values[1].value as IntCellValue).value;
-    data["matchNumber"] = (values[2].value as IntCellValue).value;
-    data["timeStamp"] = (values[3].value as DateTimeCellValue).asDateTimeUtc();
-    data["scoutName"] = values[4].value.toString();
+    String eventName = values[0].value.toString();
+    int teamNumber = (values[1].value as IntCellValue).value;
+    int matchNumber = (values[2].value as IntCellValue).value;
+    DateTime timeStamp = (values[3].value as DateTimeCellValue).asDateTimeUtc();
+    String scoutName = values[4].value.toString();
 
     for (int i = 0; i < gameFormat.questions.length; i++) {
       Question question = gameFormat.questions[i];
@@ -174,7 +177,15 @@ abstract class MatchResult
       }
     }
 
-    return MatchResult.fromMap(data);
+    return MatchResult(
+      gameFormat: gameFormat,
+      eventName: eventName,
+      teamNumber: teamNumber,
+      matchNumber: matchNumber,
+      timeStamp: timeStamp,
+      scoutName: scoutName,
+      data: data,
+    );
   }
 
   List<CellValue> toExcel({bool withEvent = true}) {
@@ -185,11 +196,6 @@ abstract class MatchResult
     row.add(IntCellValue(matchNumber));
     row.add(DateTimeCellValue.fromDateTime(timeStamp));
     row.add(TextCellValue(scoutName));
-
-    final GameFormat gameFormat = kSupportedGameFormats.firstWhere(
-      (format) => format.name == gameFormatName,
-      orElse: () => throw Exception("Unsupported game format: $gameFormatName"),
-    );
 
     for (var question in gameFormat.questions) {
       switch (question.type) {
@@ -218,7 +224,7 @@ abstract class MatchResult
     required String gameFormatName,
     required Uint8List data,
   }) {
-    return MatchResult.fromBin(data);
+    return MatchResult.fromBin(data)!;
   }
 
   @override
@@ -232,13 +238,13 @@ abstract class MatchResult
         BigInt.from(timeStamp.millisecondsSinceEpoch),
       ),
       scoutName: drift.Value<String>(scoutName),
-      gameFormatName: drift.Value<String>(gameFormatName),
+      gameFormatName: drift.Value<String>(gameFormat.name),
       data: drift.Value<Uint8List>(toBin()),
     ).toColumns(nullToAbsent);
   }
 
   BigInt get id {
-    int uuid = (timeStamp.year - 2025) << 7 * 8;
+    int uuid = (timeStamp.year - 2000) << (7 * 8);
     List<int> eventBytes =
         eventName.toUpperCase().padRight(5, '\x40').encodeUTF8();
     int eventCode = 0;
@@ -252,37 +258,5 @@ abstract class MatchResult
     return uuid.toBigInt();
   }
 
-  int getAutoScore() {
-    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
-      (format) => format.name == gameFormatName,
-    );
-    if (format == null) {
-      return 0;
-    }
-    return format.autoScore(this);
-  }
-
-  int getTeleScore() {
-    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
-      (format) => format.name == gameFormatName,
-    );
-    if (format == null) {
-      return 0;
-    }
-    return format.teleScore(this);
-  }
-
-  int getEndScore() {
-    GameFormat? format = kSupportedGameFormats.firstWhereOrNull(
-      (format) => format.name == gameFormatName,
-    );
-    if (format == null) {
-      return 0;
-    }
-    return format.endScore(this);
-  }
-
-  int getTotalScore() {
-    return getAutoScore() + getTeleScore() + getEndScore();
-  }
+  MatchAnalysis get analysis => gameFormat.analysis(this);
 }
