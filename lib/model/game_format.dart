@@ -77,6 +77,57 @@ class AnalysisScore {
   const AnalysisScore({required this.label, required this.score});
 }
 
+const List<String> _sections2026 = [
+  "Autonomous",
+  "Offense",
+  "Defense",
+  "End-Game, Additional",
+];
+const List<Question> _questions2026 = [
+  QuestionCounter(section: 0, key: "autoFuel", label: "Auto Fuel"),
+  QuestionToggle(section: 0, key: "autoClimbAttempt", label: "Climb Attempted"),
+  QuestionToggle(section: 0, key: "autoClimb", label: "Climb Success"),
+  QuestionCounter(section: 1, key: "cycleSize", label: "Fuel per cycle"),
+  QuestionCounter(section: 1, key: "cycles", label: "Number of cycles"),
+  QuestionDropdown(
+    section: 1,
+    key: "accuracy",
+    label: "Accuracy",
+    options: [
+      "Most miss",
+      "Majority miss",
+      "Half and half",
+      "Majority succeed",
+      "Most succeed",
+    ],
+  ),
+  QuestionDropdown(
+    section: 1,
+    key: "offPass",
+    label: "Passing",
+    options: ["None", "Some", "Lots"],
+  ),
+  QuestionDropdown(
+    section: 2,
+    key: "aggression",
+    label: "Aggression",
+    options: ["None", "Blocking", "Pushing", "Ramming"],
+  ),
+  QuestionDropdown(
+    section: 2,
+    key: "defPass",
+    label: "Passing",
+    options: ["None", "Some", "Lots"],
+  ),
+  QuestionCounter(
+    section: 3,
+    key: "climb",
+    label: "Climb level",
+    min: 0,
+    max: 3,
+  ),
+];
+
 const List<String> _sections2025 = [
   "Autonomous",
   "Tele-Op",
@@ -160,14 +211,6 @@ const List<Question> _questions2025 = [
     label: "Notes",
     length: 50,
     hint: "Additional notes",
-    multiline: true,
+    big: true,
   ),
 ];
-
-const List<String> _sections2026 = [
-  "Autonomous",
-  "Offense",
-  "Defense",
-  "End-Game, Additional",
-];
-const List<Question> _questions2026 = [];

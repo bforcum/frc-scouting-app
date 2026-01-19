@@ -55,7 +55,7 @@ class _TextQuestionInputState extends State<TextQuestionInput> {
         SizedBox(height: 10),
         TextFormField(
           minLines: 1,
-          maxLines: widget.question.multiline ? null : 1,
+          maxLines: widget.question.big ? null : 1,
           initialValue:
               (widget.initialValue != "") ? widget.initialValue : null,
           onChanged: widget.onChanged,

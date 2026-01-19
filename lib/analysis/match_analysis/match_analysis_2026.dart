@@ -30,7 +30,7 @@ class MatchAnalysis2026 implements MatchAnalysis {
                 (result.data["accuracy"] * 0.2 + 0.1)
             as int,
       2 => result.data["autoFuel"] + getScore(1),
-      3 => result.data["aggression"] * 5 + result.data["defPass"],
+      3 => result.data["aggression"] * 10 + result.data["defPass"] * 10,
       4 => (result.data["autoClimb"] ? 15 : 0) + result.data["climb"] * 10,
       _ => 0,
     };

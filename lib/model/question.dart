@@ -19,14 +19,11 @@ abstract class Question {
 
   final String label;
 
-  final Function(int)? pointVal;
-
   const Question._({
     required this.type,
     required this.section,
     required this.key,
     required this.label,
-    this.pointVal,
   });
 }
 
@@ -39,7 +36,6 @@ class QuestionToggle extends Question {
     required super.key,
     required super.label,
     this.preset,
-    super.pointVal,
   }) : super._(type: QuestionType.toggle);
 }
 
@@ -52,9 +48,8 @@ class QuestionCounter extends Question {
     required super.section,
     required super.key,
     required super.label,
-    super.pointVal,
-    required this.min,
-    required this.max,
+    this.min = 0,
+    this.max = 255,
     this.preset,
   }) : assert(max - min < 256, "Counter range must be less than 256"),
        super._(type: QuestionType.counter);
@@ -70,7 +65,6 @@ class QuestionNumber extends Question {
     required super.section,
     required super.key,
     required super.label,
-    super.pointVal,
     this.min = 0,
     this.max = 65535,
     this.hint,
@@ -91,7 +85,6 @@ class QuestionDropdown extends Question {
     required super.section,
     required super.key,
     required super.label,
-    super.pointVal,
     required this.options,
     this.preset,
   }) : super._(type: QuestionType.dropdown);
@@ -101,16 +94,15 @@ class QuestionText extends Question {
   final int length;
   final String? hint;
   final bool requiredField;
-  final bool multiline;
+  final bool big;
   @override
   const QuestionText({
     required super.section,
     required super.key,
     required super.label,
-    super.pointVal,
     required this.length,
     this.requiredField = false,
-    this.multiline = false,
+    this.big = false,
     this.hint,
   }) : super._(type: QuestionType.text);
 }
