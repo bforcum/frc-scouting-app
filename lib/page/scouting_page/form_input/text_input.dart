@@ -27,7 +27,7 @@ class _TextQuestionInputState extends State<TextQuestionInput> {
   late final QuestionText question;
 
   final _focusNode = FocusNode();
-  String _hintText = "";
+  String? _hintText = "";
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _TextQuestionInputState extends State<TextQuestionInput> {
       if (_focusNode.hasFocus) {
         _hintText = "";
       } else {
-        _hintText = question.hint ?? "";
+        _hintText = question.hint;
       }
       setState(() {});
     });

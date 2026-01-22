@@ -79,18 +79,18 @@ class AnalysisScore {
 
 const List<String> _sections2026 = [
   "Autonomous",
-  "Offense",
   "Defense",
+  "Offense",
   "End-Game, Additional",
 ];
 const List<Question> _questions2026 = [
   QuestionCounter(section: 0, key: "autoFuel", label: "Auto Fuel"),
   QuestionToggle(section: 0, key: "autoClimbAttempt", label: "Climb Attempted"),
   QuestionToggle(section: 0, key: "autoClimb", label: "Climb Success"),
-  QuestionCounter(section: 1, key: "cycleSize", label: "Fuel per cycle"),
-  QuestionCounter(section: 1, key: "cycles", label: "Number of cycles"),
+  QuestionCounter(section: 2, key: "cycleSize", label: "Fuel per cycle"),
+  QuestionCounter(section: 2, key: "cycles", label: "Number of cycles"),
   QuestionDropdown(
-    section: 1,
+    section: 2,
     key: "accuracy",
     label: "Accuracy",
     options: [
@@ -102,19 +102,19 @@ const List<Question> _questions2026 = [
     ],
   ),
   QuestionDropdown(
-    section: 1,
+    section: 2,
     key: "offPass",
     label: "Passing",
     options: ["None", "Some", "Lots"],
   ),
   QuestionDropdown(
-    section: 2,
+    section: 1,
     key: "aggression",
     label: "Aggression",
     options: ["None", "Blocking", "Pushing", "Ramming"],
   ),
   QuestionDropdown(
-    section: 2,
+    section: 1,
     key: "defPass",
     label: "Passing",
     options: ["None", "Some", "Lots"],
@@ -126,6 +126,7 @@ const List<Question> _questions2026 = [
     min: 0,
     max: 3,
   ),
+  QuestionText(section: 3, key: "notes", label: "Notes", length: 100),
 ];
 
 const List<String> _sections2025 = [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/model/settings.dart';
@@ -10,6 +11,7 @@ import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/page/settings_page/dummy_data.dart';
 import 'package:scouting_app/page/settings_page/reset_database.dart';
+import 'package:scouting_app/provider/form_field_provider.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
@@ -147,16 +149,27 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ),
                   initialValue: settings.gameFormat.index,
-                  onChanged:
-                      (i) => ref
-                          .read(settingsProvider.notifier)
-                          .updateSettings(
-                            settings.copyWith(
-                              gameFormat:
-                                  GameFormat.values[i ??
-                                      settings.gameFormat.index],
-                            ),
+                  onChanged: (i) {
+                    for (var question in List<Question>.from([
+                      ...kRequiredQuestions,
+                      ...settings.gameFormat.questions,
+                    ])) {
+                      ref
+                          .read(
+                            formFieldNotifierProvider(question.key).notifier,
+                          )
+                          .setValue(null);
+                    }
+                    ref
+                        .read(settingsProvider.notifier)
+                        .updateSettings(
+                          settings.copyWith(
+                            gameFormat:
+                                GameFormat.values[i ??
+                                    settings.gameFormat.index],
                           ),
+                        );
+                  },
                 ),
               ],
             ),
