@@ -3,78 +3,47 @@ import 'package:scouting_app/analysis/match_analysis/match_analysis_2025.dart';
 import 'package:scouting_app/analysis/match_analysis/match_analysis_2026.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
-import 'package:scouting_app/model/team_data.dart';
 
 enum GameFormat {
+  v2024,
   v2025,
   v2026;
 
   const GameFormat();
 
   List<String> get sections => switch (this) {
-    v2025 => _sections2025,
+    v2024 => _sections2024,
     v2026 => _sections2026,
+    v2025 => _sections2025,
   };
 
   List<Question> get questions => switch (this) {
+    v2024 => _questions2024,
     v2025 => _questions2025,
     v2026 => _questions2026,
   };
 
-  MatchAnalysis analysis(MatchResult result) => switch (this) {
+  MatchAnalysis? analysis(MatchResult result) => switch (this) {
     GameFormat.v2025 => MatchAnalysis2025(result),
     GameFormat.v2026 => MatchAnalysis2026(result),
+    _ => null,
   };
 
-  List<String> get scoreOptions {
+  List<String>? get scoreOptions {
     return switch (this) {
       GameFormat.v2025 => MatchAnalysis2025.scoreOptions,
       GameFormat.v2026 => MatchAnalysis2026.scoreOptions,
+      _ => null,
     };
   }
 
-  List<String> get criteriaOptions {
+  List<String>? get criteriaOptions {
     return switch (this) {
       GameFormat.v2025 => MatchAnalysis2025.criteriaOptions,
       GameFormat.v2026 => MatchAnalysis2026.criteriaOptions,
+      _ => null,
     };
   }
-}
-
-class GameQuestions {
-  final GameFormat gameFormat;
-
-  final List<String> sections;
-
-  final List<Question> questions;
-
-  final int Function(MatchResult) autoScore;
-  final int Function(MatchResult) teleScore;
-  final int Function(MatchResult) endScore;
-
-  final List<String> scoringLocations;
-  final Map<String, bool> Function(MatchResult) getScoringLocations;
-
-  final List<AnalysisScore> analysisOptions;
-  GameQuestions({
-    required this.gameFormat,
-    required this.sections,
-    required this.questions,
-    required this.autoScore,
-    required this.teleScore,
-    required this.endScore,
-    required this.scoringLocations,
-    required this.getScoringLocations,
-    required this.analysisOptions,
-  });
-}
-
-class AnalysisScore {
-  final String label;
-
-  final int Function(TeamData) score;
-
-  const AnalysisScore({required this.label, required this.score});
 }
 
 const List<String> _sections2026 = [
@@ -214,4 +183,40 @@ const List<Question> _questions2025 = [
     hint: "Additional notes",
     big: true,
   ),
+];
+
+const List<String> _sections2024 = [
+  "Autonomous",
+  "Tele-Op",
+  "End-Game",
+  "Additional",
+];
+
+const List<Question> _questions2024 = [
+  QuestionToggle(key: "autoMove", section: 0, label: "Movement"),
+  QuestionCounter(key: "autoSpeaker", section: 0, label: "Speaker Success"),
+  QuestionCounter(key: "autoSpeakerMiss", section: 0, label: "Speaker Miss"),
+  QuestionCounter(key: "autoPickup", section: 0, label: "Pickup Success"),
+  QuestionCounter(key: "autoPickupMiss", section: 0, label: "Pickup Fail"),
+  QuestionCounter(key: "autoAmp", section: 0, label: "Amp Success"),
+  QuestionCounter(key: "autoAmpMiss", section: 0, label: "Amp Fail"),
+  QuestionCounter(key: "speaker", section: 1, label: "Speaker Success"),
+  QuestionCounter(key: "speakerMiss", section: 1, label: "Speaker Miss"),
+  QuestionCounter(key: "amp", section: 1, label: "Amp Success"),
+  QuestionCounter(key: "ampMiss", section: 1, label: "Amp Miss"),
+  QuestionDropdown(
+    section: 2,
+    key: "end",
+    label: "End Position",
+    options: ["Park", "Hang", "Partner Hang"],
+  ),
+  QuestionCounter(
+    section: 2,
+    key: "human",
+    label: "Spotlights (by this team)",
+    min: 0,
+    max: 3,
+  ),
+  QuestionToggle(section: 2, key: "trap", label: "Scored note in trap"),
+  QuestionText(section: 3, key: "notes", label: "Notes", length: 100),
 ];

@@ -30,6 +30,16 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (gameFormat.scoreOptions == null) {
+      return Center(
+        child: Text(
+          "Analysis not supported for ${gameFormat.name}",
+          style: TextTheme.of(context).titleSmall,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
     setState(() {
       asyncStats = ref.watch(teamStatisticsProvider);
     });
@@ -152,12 +162,12 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                                   dropdownMenuEntries: [
                                     for (
                                       int i = 0;
-                                      i < gameFormat.scoreOptions.length;
+                                      i < gameFormat.scoreOptions!.length;
                                       i++
                                     )
                                       DropdownMenuEntry(
                                         value: i,
-                                        label: gameFormat.scoreOptions[i],
+                                        label: gameFormat.scoreOptions![i],
                                       ),
                                   ],
 

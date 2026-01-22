@@ -22,21 +22,21 @@ class TeamData {
 
     int teamNumber = results[0].teamNumber;
     GameFormat format = results[0].gameFormat;
-    int numScoreOptions = format.scoreOptions.length;
-    int numCriteriaOptions = format.criteriaOptions.length;
+    int numScoreOptions = format.scoreOptions!.length;
+    int numCriteriaOptions = format.criteriaOptions!.length;
     List<List<int>> scores = List.filled(numScoreOptions, <int>[]);
     List<bool> criteria = List.filled(numCriteriaOptions, false);
 
     for (int i = 0; i < results.length; i++) {
       assert(results[i].gameFormat == format);
 
-      MatchAnalysis analysis = results[i].analysis;
+      MatchAnalysis? analysis = results[i].analysis;
 
       for (int j = 0; i < numScoreOptions; i++) {
-        scores[i].add(analysis.getScore(j));
+        scores[i].add(analysis!.getScore(j));
       }
       for (int j = 0; i < numCriteriaOptions; i++) {
-        criteria[i] |= analysis.getCriterion(j);
+        criteria[i] |= analysis!.getCriterion(j);
       }
     }
 
