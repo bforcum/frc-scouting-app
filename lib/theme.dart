@@ -1,66 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 TextTheme getAppTextTheme(Brightness brightness) {
   final Color color =
       brightness == Brightness.light ? Colors.black : Colors.grey.shade200;
   return TextTheme(
-    displayLarge: TextStyle(
+    displayLarge: GoogleFonts.barlow(
       fontSize: 36,
       fontWeight: FontWeight.w800,
       color: color,
     ),
-    displayMedium: TextStyle(
+    displayMedium: GoogleFonts.barlow(
       fontSize: 32,
       fontWeight: FontWeight.w800,
       color: color,
     ),
-    displaySmall: TextStyle(
+    displaySmall: GoogleFonts.barlow(
       fontSize: 28,
       fontWeight: FontWeight.w800,
       color: color,
     ),
-    headlineLarge: TextStyle(
+    headlineLarge: GoogleFonts.barlow(
       fontSize: 32,
       fontWeight: FontWeight.w700,
       color: color,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: GoogleFonts.barlow(
       fontSize: 28,
       fontWeight: FontWeight.w700,
       color: color,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: GoogleFonts.barlow(
       fontSize: 24,
       fontWeight: FontWeight.w700,
       color: color,
     ),
-    titleLarge: TextStyle(
+    titleLarge: GoogleFonts.barlow(
       fontSize: 28,
       fontWeight: FontWeight.w700,
       color: color,
     ),
-    titleMedium: TextStyle(
+    titleMedium: GoogleFonts.barlow(
       fontSize: 28,
       fontWeight: FontWeight.w600,
       color: color,
     ),
-    titleSmall: TextStyle(
+    titleSmall: GoogleFonts.barlow(
       fontSize: 24,
       fontWeight: FontWeight.w600,
       color: color,
     ),
-    bodyLarge: TextStyle(
-      fontSize: 20,
+    bodyLarge: GoogleFonts.barlow(
+      fontSize: 22,
       fontWeight: FontWeight.w500,
       color: color,
     ),
-    bodyMedium: TextStyle(
+    bodyMedium: GoogleFonts.barlow(
       fontSize: 18,
       fontWeight: FontWeight.w400,
       color: color,
     ),
-    bodySmall: TextStyle(
-      fontSize: 14,
+    bodySmall: GoogleFonts.barlow(
+      fontSize: 16,
       fontWeight: FontWeight.w400,
       color: color,
     ),
