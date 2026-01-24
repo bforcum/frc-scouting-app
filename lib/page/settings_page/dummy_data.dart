@@ -56,10 +56,11 @@ class GenerateDummyData extends ConsumerWidget {
 Future<String?> generateDummyData(WidgetRef ref) async {
   Random rng = Random();
   try {
-    await ref
-        .read(storedResultsProvider.notifier)
-        .deleteResults(eventName: "Test");
     GameFormat gameFormat = ref.read(settingsProvider).gameFormat;
+    int deletions = await ref
+        .read(storedResultsProvider.notifier)
+        .deleteResults(event: "Test", gameFormat: gameFormat);
+    debugPrint(deletions.toString());
     List<MatchResult> results = List.empty(growable: true);
     for (int i = 1; i <= 72; i++) {
       for (int j = 0; j < 6; j++) {

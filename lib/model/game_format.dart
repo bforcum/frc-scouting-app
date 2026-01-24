@@ -5,42 +5,42 @@ import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 
 enum GameFormat {
-  v2024,
+  v2026,
   v2025,
-  v2026;
+  v2024;
 
   const GameFormat();
 
   List<String> get sections => switch (this) {
-    v2024 => _sections2024,
     v2026 => _sections2026,
     v2025 => _sections2025,
+    v2024 => _sections2024,
   };
 
   List<Question> get questions => switch (this) {
-    v2024 => _questions2024,
-    v2025 => _questions2025,
     v2026 => _questions2026,
+    v2025 => _questions2025,
+    v2024 => _questions2024,
   };
 
   MatchAnalysis? analysis(MatchResult result) => switch (this) {
-    GameFormat.v2025 => MatchAnalysis2025(result),
     GameFormat.v2026 => MatchAnalysis2026(result),
+    GameFormat.v2025 => MatchAnalysis2025(result),
     _ => null,
   };
 
   List<String>? get scoreOptions {
     return switch (this) {
-      GameFormat.v2025 => MatchAnalysis2025.scoreOptions,
       GameFormat.v2026 => MatchAnalysis2026.scoreOptions,
+      GameFormat.v2025 => MatchAnalysis2025.scoreOptions,
       _ => null,
     };
   }
 
   List<String>? get criteriaOptions {
     return switch (this) {
-      GameFormat.v2025 => MatchAnalysis2025.criteriaOptions,
       GameFormat.v2026 => MatchAnalysis2026.criteriaOptions,
+      GameFormat.v2025 => MatchAnalysis2025.criteriaOptions,
       _ => null,
     };
   }

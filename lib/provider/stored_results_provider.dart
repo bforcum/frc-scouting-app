@@ -75,30 +75,26 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
-  Future<String?> deleteResults({
-    String? eventName,
-    int? teamNumber,
-    int? matchNumber,
+  Future<int> deleteResults({
+    String? event,
+    int? team,
+    int? match,
     GameFormat? gameFormat,
   }) async {
     final db = ref.read(databaseProvider);
 
-    String? gameFormatName = gameFormat?.name;
+    String? game = gameFormat?.name;
     int deletions =
         await db.managers.matchResults
-            .filter((e) => e.eventName(eventName))
-            .filter((e) => e.teamNumber(teamNumber))
-            .filter((e) => e.matchNumber(matchNumber))
-            .filter((e) => e.gameFormatName(gameFormatName))
+            .filter((e) => Variable(event).isNull() | e.eventName(event))
+            .filter((e) => Variable(team).isNull() | e.teamNumber(team))
+            .filter((e) => Variable(match).isNull() | e.matchNumber(match))
+            .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
             .delete();
-
-    if (deletions == 0) {
-      return "Zero succesful deletions";
-    }
 
     ref.invalidateSelf();
 
-    return null;
+    return deletions;
   }
 
   Future<String?> updateResult(MatchResult result) async {

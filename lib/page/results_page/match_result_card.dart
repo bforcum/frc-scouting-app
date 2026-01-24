@@ -100,9 +100,9 @@ class MatchResultCard extends ConsumerWidget {
                       ref
                           .read(storedResultsProvider.notifier)
                           .deleteResults(
-                            eventName: result.eventName,
-                            teamNumber: result.teamNumber,
-                            matchNumber: result.matchNumber,
+                            event: result.eventName,
+                            team: result.teamNumber,
+                            match: result.matchNumber,
                             gameFormat: ref.read(settingsProvider).gameFormat,
                           );
                       ref.invalidate(storedResultsProvider);

@@ -25,10 +25,10 @@ class MatchAnalysis2026 implements MatchAnalysis {
     return switch (scoreOption) {
       0 => result.data["autoFuel"] + (result.data["autoClimb"] ? 15 : 0),
       1 =>
-        result.data["cycles"] *
-                result.data["cycleSize"] *
-                (result.data["accuracy"] * 0.2 + 0.1)
-            as int,
+        ((result.data["cycles"] as int) *
+                (result.data["cycleSize"] as int) *
+                (result.data["accuracy"] * 0.2 + 0.1))
+            .round(),
       2 => result.data["autoFuel"] + getScore(1),
       3 => result.data["aggression"] * 10 + result.data["defPass"] * 10,
       4 => (result.data["autoClimb"] ? 15 : 0) + result.data["climb"] * 10,
@@ -51,6 +51,7 @@ class MatchAnalysis2026 implements MatchAnalysis {
 
   @override
   bool getCriterion(int criterion) {
+    return false;
     return switch (criterion) {
       0 => result.data["groundPickup"],
       1 => result.data["hubShot"],

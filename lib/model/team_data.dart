@@ -24,7 +24,10 @@ class TeamData {
     GameFormat format = results[0].gameFormat;
     int numScoreOptions = format.scoreOptions!.length;
     int numCriteriaOptions = format.criteriaOptions!.length;
-    List<List<int>> scores = List.filled(numScoreOptions, <int>[]);
+    List<List<int>> scores = List.generate(
+      numScoreOptions,
+      (idx) => List<int>.empty(growable: true),
+    );
     List<bool> criteria = List.filled(numCriteriaOptions, false);
 
     for (int i = 0; i < results.length; i++) {
@@ -32,11 +35,11 @@ class TeamData {
 
       MatchAnalysis? analysis = results[i].analysis;
 
-      for (int j = 0; i < numScoreOptions; i++) {
-        scores[i].add(analysis!.getScore(j));
+      for (int j = 0; j < numScoreOptions; j++) {
+        scores[j].add(analysis!.getScore(j));
       }
-      for (int j = 0; i < numCriteriaOptions; i++) {
-        criteria[i] |= analysis!.getCriterion(j);
+      for (int j = 0; j < numCriteriaOptions; j++) {
+        criteria[j] |= analysis!.getCriterion(j);
       }
     }
 

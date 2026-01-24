@@ -109,7 +109,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
               MatchResult result =
                   matchResults.requireValue[indices.requireValue[index]];
               return Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(5),
                 child: MatchResultCard(result: result),
               );
             },

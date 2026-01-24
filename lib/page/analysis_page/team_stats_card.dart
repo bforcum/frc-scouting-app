@@ -6,13 +6,9 @@ import 'package:scouting_app/model/team_data.dart';
 
 class TeamStatsCard extends ConsumerStatefulWidget {
   final TeamData data;
-  final int scoreOption;
+  final int criterion;
 
-  const TeamStatsCard({
-    super.key,
-    required this.data,
-    required this.scoreOption,
-  });
+  const TeamStatsCard({super.key, required this.data, required this.criterion});
 
   @override
   ConsumerState<TeamStatsCard> createState() => _TeamStatsCardState();
@@ -54,31 +50,29 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                     children: [
                       Text(
                         "Team ${widget.data.teamNumber}",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextTheme.of(
+                          context,
+                        ).bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "Match count: ${widget.data.results.length}",
-                        style: TextStyle(fontSize: 16),
+                        style: TextTheme.of(context).bodySmall,
                       ),
                     ],
                   ),
                   const Spacer(),
                   Container(
-                    margin: EdgeInsets.all(5),
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     alignment: Alignment.center,
-                    height: 60,
-                    width: 60,
+                    height: 48,
+                    width: 48,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(kBorderRadius),
                       border: Border.all(color: accent),
                       color: accent.withAlpha(32),
                     ),
                     child: Text(
-                      "${widget.data.scores[widget.scoreOption].average.round()}",
+                      "${widget.data.scores[widget.criterion].average.round()}",
                       style: TextTheme.of(context).bodyMedium,
                     ),
                   ),

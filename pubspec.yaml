@@ -55,6 +55,8 @@ dependencies:
   excel: ^4.0.6
   share_plus: ^12.0.1
   google_fonts: ^7.1.0
+  custom_sliding_segmented_control: ^1.8.5
+  fl_chart: ^1.1.1
 
 dev_dependencies:
   flutter_test:

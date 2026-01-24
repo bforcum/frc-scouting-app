@@ -42,3 +42,29 @@ Future<List<TeamData>> teamStatistics(Ref ref) async {
   }
   return stats;
 }
+
+@riverpod
+class AnalysisCriterion extends _$AnalysisCriterion {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void set(int criterion) {
+    state = criterion;
+    ref.notifyListeners();
+  }
+}
+
+@Riverpod(keepAlive: true)
+class AnalysisView extends _$AnalysisView {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void set(int criterion) {
+    state = criterion;
+    ref.notifyListeners();
+  }
+}
