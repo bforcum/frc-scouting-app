@@ -142,7 +142,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                             child: TextField(
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(10),
-
+                                fillColor:
+                                    ColorScheme.of(context).surfaceContainerLow,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
                                     kBorderRadius,

@@ -98,6 +98,12 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                     height: 60,
                     child: ElevatedButton(
                       style: ButtonStyle(
+                        padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(12),
+                          ),
+                        ),
                         backgroundColor: WidgetStatePropertyAll(
                           Theme.of(context).colorScheme.errorContainer,
                         ),

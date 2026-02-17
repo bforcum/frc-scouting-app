@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/team_data.dart';
+import 'package:scouting_app/page/analysis_page/analysis_graph.dart';
 import 'package:scouting_app/provider/statistics_provider.dart';
 
 class AnalysisGraphView extends ConsumerWidget {
@@ -61,64 +62,8 @@ class AnalysisGraphView extends ConsumerWidget {
       // Convert to int without missing edge cases if the diff is small
       return diff > 0 ? 1 : diff.floor();
     });
-
-    final double max = stats[0].scores[criterion].average;
     return SliverToBoxAdapter(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: ColorScheme.of(context).surfaceContainer,
-        ),
-        margin: EdgeInsets.all(15),
-        padding: EdgeInsets.all(20),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...stats.map((e) {
-                  double score = e.scores[criterion].average;
-                  double fraction = score / max;
-                  return Row(
-                    children: [
-                      SizedBox(
-                        width: 50,
-                        child: Text(
-                          e.teamNumber.toString(),
-                          style: TextStyle(fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                      Container(
-                        alignment: AlignmentGeometry.centerRight,
-                        height: 30,
-                        width: (constraints.maxWidth - 50.0) * fraction,
-                        color:
-                            Theme.of(context).brightness == Brightness.light
-                                ? Colors.blue.shade300
-                                : Colors.blue.shade700,
-                        child:
-                            (fraction > 0.5)
-                                ? Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Text(score.round().toString()),
-                                )
-                                : null,
-                      ),
-                      if (fraction < 0.5)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(score.round().toString()),
-                        ),
-                    ],
-                  );
-                }),
-              ],
-            );
-          },
-        ),
-      ),
+      child: AnalysisGraph(stats: stats, criterion: criterion),
     );
   }
 }

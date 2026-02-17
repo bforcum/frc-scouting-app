@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scouting_app/consts.dart';
 
 TextTheme getAppTextTheme(Brightness brightness) {
   final Color color =
@@ -70,8 +71,10 @@ TextTheme getAppTextTheme(Brightness brightness) {
 
 ButtonThemeData getAppButtonTheme(Brightness brightness) {
   return ButtonThemeData(
-    // padding: const EdgeInsets.all(0),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    padding: const EdgeInsets.all(0),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(kBorderRadius),
+    ),
   );
 }
 

@@ -36,7 +36,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                 }),
 
             child: Container(
-              padding: const EdgeInsets.all(kBorderRadius),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(kBorderRadius),

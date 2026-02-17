@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-const double kBorderRadius = 10;
+const double kBorderRadius = 8;
 
 final String kDbName = "scouting_app";
 
