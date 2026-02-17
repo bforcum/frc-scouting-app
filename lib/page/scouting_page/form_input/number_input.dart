@@ -102,8 +102,8 @@ class _NumberQuestionInputState extends State<NumberQuestionInput> {
                 borderSide: BorderSide(
                   color:
                       widget.errorText != null
-                          ? Theme.of(context).colorScheme.errorContainer
-                          : Theme.of(context).colorScheme.outline,
+                          ? ColorScheme.of(context).errorContainer
+                          : ColorScheme.of(context).outline,
                   width: 2,
                 ),
               ),

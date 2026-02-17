@@ -20,7 +20,7 @@ class MatchResultCard extends ConsumerWidget {
       onTap: () async => await _viewResults(context),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainer,
+          color: ColorScheme.of(context).surfaceContainer,
           borderRadius: BorderRadius.circular(kBorderRadius),
         ),
         padding: const EdgeInsets.all(kBorderRadius),
@@ -46,7 +46,7 @@ class MatchResultCard extends ConsumerWidget {
                           11,
                         ),
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
                       TextSpan(
@@ -59,7 +59,7 @@ class MatchResultCard extends ConsumerWidget {
                               .toLocal(),
                         ).format(context),
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
                     ],

@@ -47,7 +47,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
       slivers: [
         SliverFloatingHeader(
           child: Container(
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            color: ColorScheme.of(context).surfaceContainerHigh,
             padding: const EdgeInsets.all(20),
             child: Column(
               spacing: 20,
@@ -64,7 +64,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   thumbDecoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: ColorScheme.of(context).inversePrimary,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(

@@ -63,7 +63,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorScheme.of(context).inversePrimary,
         title: Text("Edit Match Data"),
       ),
       body: SingleChildScrollView(
@@ -84,7 +84,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
-                              Theme.of(context).colorScheme.primaryContainer,
+                              ColorScheme.of(context).primaryContainer,
                             ),
                           ),
                           onPressed: complete ? null : _save,

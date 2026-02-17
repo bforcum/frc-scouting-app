@@ -19,7 +19,7 @@ void showQRCodeOverlay(MatchResult result) {
       return Dialog(
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            color: ColorScheme.of(context).surfaceContainerHigh,
             borderRadius: BorderRadius.circular(kBorderRadius),
           ),
           padding: const EdgeInsets.all(10.0),

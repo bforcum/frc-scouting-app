@@ -38,7 +38,7 @@ class _CounterQuestionInputState extends State<CounterQuestionInput> {
           height: 48,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color: ColorScheme.of(context).outline,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(24),

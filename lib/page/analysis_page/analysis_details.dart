@@ -16,7 +16,7 @@ class _AnalysisDetailsPageState extends State<AnalysisDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Team ${widget.data.teamNumber}"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorScheme.of(context).inversePrimary,
       ),
     );
   }

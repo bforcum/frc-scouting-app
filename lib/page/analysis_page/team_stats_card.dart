@@ -24,7 +24,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
             : Color(0xFF009900);
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: ColorScheme.of(context).surfaceContainer,
         borderRadius: BorderRadius.circular(kBorderRadius),
       ),
       child: Column(
@@ -38,7 +38,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
+                color: ColorScheme.of(context).surfaceContainer,
                 borderRadius: BorderRadius.circular(kBorderRadius),
               ),
               child: Row(

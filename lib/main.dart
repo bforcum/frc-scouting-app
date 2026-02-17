@@ -90,7 +90,7 @@ class _AppState extends ConsumerState<App> {
     );
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorScheme.of(context).inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(PageState.values[currentPage].title),

@@ -106,7 +106,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
               ),
             ],
             animationDuration: Duration(milliseconds: 200),
-            overlayColor: Theme.of(context).colorScheme.surfaceDim,
+            overlayColor: ColorScheme.of(context).surfaceDim,
             activeChild: Icon(Icons.close, size: 30),
             child: Icon(Icons.more_horiz, size: 30),
           ),
@@ -116,7 +116,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
               shape: WidgetStatePropertyAll(CircleBorder()),
               padding: WidgetStatePropertyAll(EdgeInsets.zero),
               backgroundColor: WidgetStatePropertyAll(
-                Theme.of(context).colorScheme.primaryContainer,
+                ColorScheme.of(context).primaryContainer,
               ),
             ),
             child: SizedBox(
@@ -124,7 +124,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
               height: 54,
               child: Icon(
                 Icons.qr_code_scanner,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                color: ColorScheme.of(context).onPrimaryContainer,
                 size: 30,
               ),
             ),

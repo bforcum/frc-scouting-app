@@ -81,7 +81,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStatePropertyAll(
-                            Theme.of(context).colorScheme.primaryContainer,
+                            ColorScheme.of(context).primaryContainer,
                           ),
                         ),
                         onPressed: _submit,
@@ -105,7 +105,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
                           ),
                         ),
                         backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.errorContainer,
+                          ColorScheme.of(context).errorContainer,
                         ),
                       ),
                       onPressed: _clear,

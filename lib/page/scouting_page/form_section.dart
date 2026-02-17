@@ -23,7 +23,7 @@ class FormSection extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(kBorderRadius)),
-            color: Theme.of(context).colorScheme.surfaceContainer,
+            color: ColorScheme.of(context).surfaceContainer,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

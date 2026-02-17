@@ -36,8 +36,8 @@ class DropdownQuestionInput extends StatelessWidget {
               borderSide: BorderSide(
                 color:
                     errorText != null
-                        ? Theme.of(context).colorScheme.errorContainer
-                        : Theme.of(context).colorScheme.outline,
+                        ? ColorScheme.of(context).errorContainer
+                        : ColorScheme.of(context).outline,
                 width: 2,
               ),
             ),

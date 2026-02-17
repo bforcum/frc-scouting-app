@@ -28,7 +28,7 @@ class _ScannerPageState extends State<ScannerPage> {
     if (Platform.isWindows || Platform.isLinux) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          backgroundColor: ColorScheme.of(context).inversePrimary,
           title: const Text("Scan Match Result QR Code"),
         ),
         body: const Center(
@@ -45,7 +45,7 @@ class _ScannerPageState extends State<ScannerPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: ColorScheme.of(context).inversePrimary,
         title: const Text("Scan Match Result QR Code"),
       ),
       body: MobileScanner(

@@ -124,7 +124,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
           slivers: [
             SliverFloatingHeader(
               child: Container(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                color: ColorScheme.of(context).surfaceContainerHigh,
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   spacing: 10,

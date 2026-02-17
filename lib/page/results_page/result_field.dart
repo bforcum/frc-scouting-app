@@ -40,7 +40,7 @@ class MatchResultField extends StatelessWidget {
               alignment: Alignment.topLeft,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline,
+                  color: ColorScheme.of(context).outline,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(24),
@@ -76,7 +76,7 @@ class _HorizontalField extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
+              color: ColorScheme.of(context).outline,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(24),

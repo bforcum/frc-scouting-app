@@ -109,7 +109,7 @@ class _ToggleSwitchState extends State<_ToggleSwitch>
                     begin: Theme.of(
                       context,
                     ).unselectedWidgetColor.withAlpha(32),
-                    end: Theme.of(context).colorScheme.primaryContainer,
+                    end: ColorScheme.of(context).primaryContainer,
                   ).evaluate(_animationValue) ??
                   Colors.grey,
             ),
