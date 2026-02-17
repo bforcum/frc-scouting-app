@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scouting_app/model/team_data.dart';
 
 class AnalysisDetailsPage extends StatefulWidget {
-  const AnalysisDetailsPage({super.key});
+  final TeamData data;
+
+  const AnalysisDetailsPage({super.key, required this.data});
 
   @override
   State<AnalysisDetailsPage> createState() => _AnalysisDetailsPageState();
@@ -10,6 +13,11 @@ class AnalysisDetailsPage extends StatefulWidget {
 class _AnalysisDetailsPageState extends State<AnalysisDetailsPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Team ${widget.data.teamNumber}"),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+    );
   }
 }
