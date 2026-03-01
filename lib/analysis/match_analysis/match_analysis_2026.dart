@@ -40,26 +40,24 @@ class MatchAnalysis2026 implements MatchAnalysis {
   // ignore: override_on_non_overriding_member
   static const List<String> criteriaOptions = [
     "Ground Pickup",
-    "Hub Shot",
     "Moving Shot",
-    "Alliance Wall Shot",
     "Auto Climb",
     "Climb 1+",
     "Climb 2+",
     "Climb 3",
+    "Stayed enabled",
   ];
 
   @override
   bool getCriterion(int criterion) {
     return switch (criterion) {
       0 => result.data["groundPickup"],
-      1 => result.data["hubShot"],
-      2 => result.data["moveShot"],
-      3 => result.data["wallShot"],
-      4 => result.data["autoClimb"],
-      5 => result.data["climb"] >= 1 || result.data["autoClimb"],
-      6 => result.data["climb"] >= 2,
-      7 => result.data["climb"] == 3,
+      1 => result.data["moveShot"],
+      2 => result.data["autoClimb"],
+      3 => result.data["climb"] >= 1 || result.data["autoClimb"],
+      4 => result.data["climb"] >= 2,
+      5 => result.data["climb"] == 3,
+      6 => !result.data["disabled"],
       _ => false,
     };
   }

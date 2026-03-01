@@ -7,17 +7,17 @@ TextTheme getAppTextTheme(Brightness brightness) {
       brightness == Brightness.light ? Colors.black : Colors.grey.shade200;
   return TextTheme(
     displayLarge: GoogleFonts.barlow(
-      fontSize: 36,
+      fontSize: 48,
       fontWeight: FontWeight.w800,
       color: color,
     ),
     displayMedium: GoogleFonts.barlow(
-      fontSize: 32,
+      fontSize: 40,
       fontWeight: FontWeight.w800,
       color: color,
     ),
     displaySmall: GoogleFonts.barlow(
-      fontSize: 28,
+      fontSize: 36,
       fontWeight: FontWeight.w800,
       color: color,
     ),

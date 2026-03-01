@@ -95,6 +95,9 @@ const List<Question> _questions2026 = [
     min: 0,
     max: 3,
   ),
+  QuestionToggle(section: 3, key: "groundPickup", label: "Ground Pickup"),
+  QuestionToggle(section: 3, key: "moveShot", label: "Can shoot while moving"),
+  QuestionToggle(section: 3, key: "disabled", label: "Disabled during match"),
   QuestionText(section: 3, key: "notes", label: "Notes", length: 100),
 ];
 

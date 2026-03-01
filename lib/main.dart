@@ -79,15 +79,6 @@ class _AppState extends ConsumerState<App> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-    debugPrint(
-      ColorScheme.of(context).inversePrimary.toARGB32().toRadixString(16),
-    );
-    debugPrint(
-      ColorScheme.of(context).primaryContainer.toARGB32().toRadixString(16),
-    );
-    debugPrint(
-      ColorScheme.of(context).primaryFixedDim.toARGB32().toRadixString(16),
-    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorScheme.of(context).inversePrimary,

@@ -43,8 +43,8 @@ class MatchAnalysis2025 implements MatchAnalysis {
     "L4",
     "Shallow Cage",
     "Deep Cage",
-    "Auto Score",
     "Auto Move",
+    "Auto Score",
   ];
 
   @override
@@ -62,10 +62,10 @@ class MatchAnalysis2025 implements MatchAnalysis {
       5 => result.data["endResult"] == 3,
       6 => result.data["autoMove"],
       7 =>
-        result.data["autoL1"] ||
-            result.data["autoL3"] ||
-            result.data["autoL3"] ||
-            result.data["autoL4"],
+        result.data["autoL1"] > 0 ||
+            result.data["autoL3"] > 0 ||
+            result.data["autoL3"] > 0 ||
+            result.data["autoL4"] > 0,
       _ => false,
     };
   }
