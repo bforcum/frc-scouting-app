@@ -14,10 +14,6 @@ class FormSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0),
-          child: Text(title, style: Theme.of(context).textTheme.titleSmall),
-        ),
         Container(
           padding: EdgeInsets.all(15),
           width: MediaQuery.of(context).size.width,
@@ -29,7 +25,10 @@ class FormSection extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 10,
-            children: children,
+            children: [
+              Text(title, style: Theme.of(context).textTheme.titleSmall),
+              ...children,
+            ],
           ),
         ),
       ],
