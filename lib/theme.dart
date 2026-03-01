@@ -81,11 +81,11 @@ ButtonThemeData getAppButtonTheme(Brightness brightness) {
 ColorScheme getAppColorScheme(Brightness brightness) {
   return switch (brightness) {
     Brightness.light => ColorScheme.fromSeed(
-      seedColor: Color(0xFF910116),
+      seedColor: Color(0xFFCC5264),
       brightness: Brightness.light,
       dynamicSchemeVariant: DynamicSchemeVariant.rainbow,
       contrastLevel: 0.5,
-      surface: Color(0xFFFFB3AE),
+      surface: Colors.grey[300],
       surfaceContainerLowest: Color(0xFFA44F4C),
       surfaceContainerLow: Colors.grey[300],
       surfaceContainer: Colors.grey[200],
