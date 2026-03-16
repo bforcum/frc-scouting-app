@@ -252,6 +252,7 @@ abstract class MatchResult
       eventCode *= 26;
       eventCode += eventBytes[i] - 0x40;
     }
+    uuid |= gameFormat.id << 48;
     uuid |= eventCode << 24;
     uuid |= teamNumber << 8;
     uuid |= matchNumber;

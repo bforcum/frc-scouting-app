@@ -5,11 +5,12 @@ import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 
 enum GameFormat {
-  v2026,
-  v2025,
-  v2024;
+  v2026(2),
+  v2025(1),
+  v2024(0);
 
-  const GameFormat();
+  final int id;
+  const GameFormat(this.id);
 
   List<String> get sections => switch (this) {
     v2026 => _sections2026,

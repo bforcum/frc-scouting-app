@@ -14,7 +14,6 @@ import 'package:scouting_app/page/common/alert.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/results_page/scanner_page.dart';
-import 'package:scouting_app/provider/database_provider.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -95,13 +94,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
                   }
                   List<BigInt> uuids =
                       widget.results!.map((e) => e.id).toList();
-                  ref
-                      .read(databaseProvider)
-                      .managers
-                      .matchResults
-                      .filter((e) => e.uuid.isIn(uuids))
-                      .delete();
-                  ref.invalidate(storedResultsProvider);
+                  ref.read(storedResultsProvider.notifier).deleteByUuid(uuids);
                 },
               ),
             ],

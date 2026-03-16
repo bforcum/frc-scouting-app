@@ -75,6 +75,18 @@ class StoredResults extends _$StoredResults {
     return null;
   }
 
+  Future<bool> deleteByUuid(List<BigInt> uuids) async {
+    int successes =
+        await ref
+            .read(databaseProvider)
+            .managers
+            .matchResults
+            .filter((e) => e.uuid.isIn(uuids))
+            .delete();
+    ref.invalidateSelf();
+    return successes == uuids.length;
+  }
+
   Future<int> deleteResults({
     String? event,
     int? team,

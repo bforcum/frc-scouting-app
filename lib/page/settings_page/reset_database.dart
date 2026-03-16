@@ -1,9 +1,7 @@
-import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
-import 'package:scouting_app/provider/database_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class ResetDatabase extends ConsumerWidget {
@@ -25,7 +23,7 @@ class ResetDatabase extends ConsumerWidget {
             )) {
               return;
             }
-            await ref.read(databaseProvider).matchResults.deleteAll();
+            await ref.read(storedResultsProvider.notifier).deleteResults();
             ref.invalidate(storedResultsProvider);
             if (context.mounted) {
               showSnackBarMessage("All data cleared");
