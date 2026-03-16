@@ -3,7 +3,7 @@ import 'package:scouting_app/model/question.dart';
 
 const double kBorderRadius = 8;
 
-final String kDbName = "scouting_app";
+final String kDbName = "scouting_data";
 
 final List<Question> kRequiredQuestions = [
   QuestionNumber(

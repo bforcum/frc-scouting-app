@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqlite3/sqlite3.dart';
@@ -27,7 +28,17 @@ class MatchResults extends Table {
   Set<Column> get primaryKey => {uuid};
 }
 
-@DriftDatabase(tables: [MatchResults])
+class Teams extends Table {
+  IntColumn get teamNumber => integer()();
+  TextColumn get eventName => text()();
+  TextColumn get gameFormatName => text()();
+  IntColumn get pickListPosition => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {teamNumber, eventName, gameFormatName};
+}
+
+@DriftDatabase(tables: [MatchResults, Teams])
 class AppDatabase extends _$AppDatabase {
   AppDatabase({FutureOr<Directory>? directory})
     : super(_openConnection(directory));
@@ -40,7 +51,7 @@ class AppDatabase extends _$AppDatabase {
       final dbFolder =
           await dbDirectory ?? await getApplicationSupportDirectory();
       debugPrint(dbFolder.toString());
-      final file = File(path.join(dbFolder.path, 'db.sqlite'));
+      final file = File(path.join(dbFolder.path, kDbName));
 
       // Also work around limitations on old Android versions
       if (Platform.isAndroid) {
