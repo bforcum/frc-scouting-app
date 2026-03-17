@@ -3,21 +3,24 @@ import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 
 class TeamData {
-  int teamNumber;
+  final int teamNumber;
+  final GameFormat gameFormat;
+  final int? position;
 
-  List<MatchResult> results;
-  List<List<int>> scores;
-  List<bool> criteria;
+  final List<MatchResult> results;
+  final List<List<int>> scores;
+  final List<bool> criteria;
 
   TeamData._({
     required this.teamNumber,
-
+    required this.gameFormat,
+    this.position,
     required this.results,
     required this.scores,
     required this.criteria,
   });
 
-  factory TeamData(List<MatchResult> results) {
+  factory TeamData({int? position, required List<MatchResult> results}) {
     assert(results.isNotEmpty, "The MatchResult list must contain results");
 
     int teamNumber = results[0].teamNumber;
@@ -46,6 +49,8 @@ class TeamData {
     return TeamData._(
       results: results,
       teamNumber: teamNumber,
+      gameFormat: format,
+      position: position,
       scores: scores,
       criteria: criteria,
     );

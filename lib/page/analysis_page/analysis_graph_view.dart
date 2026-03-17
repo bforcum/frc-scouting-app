@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/analysis_page/analysis_graph.dart';
-import 'package:scouting_app/provider/statistics_provider.dart';
+import 'package:scouting_app/provider/teams_provider.dart';
 
 class AnalysisGraphView extends ConsumerWidget {
   const AnalysisGraphView({super.key});
@@ -11,7 +11,7 @@ class AnalysisGraphView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int criterion = ref.watch(analysisCriterionProvider);
-    AsyncValue<List<TeamData>> asyncStats = ref.watch(teamStatisticsProvider);
+    AsyncValue<List<TeamData>> asyncStats = ref.watch(teamsListProvider);
 
     if (asyncStats.hasError) {
       return SliverFillRemaining(

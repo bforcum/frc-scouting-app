@@ -8,7 +8,7 @@ import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/analysis_page/analysis_graph_view.dart';
 import 'package:scouting_app/page/analysis_page/analysis_list_view.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
-import 'package:scouting_app/provider/statistics_provider.dart';
+import 'package:scouting_app/provider/teams_provider.dart';
 
 class AnalysisPage extends ConsumerStatefulWidget {
   const AnalysisPage({super.key});

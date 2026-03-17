@@ -30,12 +30,11 @@ class MatchResults extends Table {
 
 class Teams extends Table {
   IntColumn get teamNumber => integer()();
-  TextColumn get eventName => text()();
   TextColumn get gameFormatName => text()();
   IntColumn get pickListPosition => integer().nullable()();
 
   @override
-  Set<Column> get primaryKey => {teamNumber, eventName, gameFormatName};
+  Set<Column> get primaryKey => {teamNumber, gameFormatName};
 }
 
 @DriftDatabase(tables: [MatchResults, Teams])

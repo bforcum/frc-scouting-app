@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
+import 'package:scouting_app/provider/teams_provider.dart';
 
 part 'stored_results_provider.g.dart';
 
@@ -44,7 +45,7 @@ class StoredResults extends _$StoredResults {
         .get();
   }
 
-  Future<String?> addResult(MatchResult result, [bool doRefresh = true]) async {
+  Future<String?> addResult(MatchResult result) async {
     final db = ref.read(databaseProvider);
 
     try {
@@ -52,9 +53,9 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-    if (doRefresh) {
-      ref.invalidateSelf();
-    }
+    ref.invalidateSelf();
+    ref.invalidate(teamsListProvider);
+
     return null;
   }
 
@@ -84,6 +85,7 @@ class StoredResults extends _$StoredResults {
             .filter((e) => e.uuid.isIn(uuids))
             .delete();
     ref.invalidateSelf();
+    ref.invalidate(teamsListProvider);
     return successes == uuids.length;
   }
 
@@ -105,6 +107,7 @@ class StoredResults extends _$StoredResults {
             .delete();
 
     ref.invalidateSelf();
+    ref.invalidate(teamsListProvider);
 
     return deletions;
   }
@@ -128,6 +131,7 @@ class StoredResults extends _$StoredResults {
       return "Error: ${error.toString()}";
     }
     ref.invalidateSelf();
+    ref.invalidate(teamsListProvider);
 
     return null;
   }
