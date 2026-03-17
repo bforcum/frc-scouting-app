@@ -77,6 +77,72 @@ class TeamsList extends _$TeamsList {
             .toList();
     return stats;
   }
+
+  Future move(Team team) async {
+    AppDatabase db = await ref.read(databaseProvider);
+    Team previous =
+        await db.managers.teams
+            .filter((e) => e.gameFormatName.equals(team.gameFormatName))
+            .filter((e) => e.teamNumber.equals(team.teamNumber))
+            .getSingle();
+
+    if (previous.pickListPosition == team.pickListPosition) return;
+
+    final updateStatement = db.update(db.teams);
+    if (previous.pickListPosition == null) {
+      updateStatement.where(
+        (e) =>
+            e.gameFormatName.equals(team.gameFormatName) &
+            e.pickListPosition.isBiggerOrEqualValue(team.pickListPosition!) &
+            e.pickListPosition.isNotNull(),
+      );
+      await updateStatement.write(
+        TeamsCompanion.custom(
+          pickListPosition: db.teams.pickListPosition + Variable(1),
+        ),
+      );
+    } else if (team.pickListPosition == null) {
+      updateStatement.where(
+        (e) =>
+            e.gameFormatName.equals(team.gameFormatName) &
+            e.pickListPosition.isBiggerThanValue(previous.pickListPosition!) &
+            e.pickListPosition.isNotNull(),
+      );
+      await updateStatement.write(
+        TeamsCompanion.custom(
+          pickListPosition: db.teams.pickListPosition - Variable(1),
+        ),
+      );
+    } else if (team.pickListPosition! < previous.pickListPosition!) {
+      updateStatement.where(
+        (e) =>
+            e.gameFormatName.equals(team.gameFormatName) &
+            e.pickListPosition.isBiggerOrEqualValue(team.pickListPosition!) &
+            e.pickListPosition.isSmallerThanValue(previous.pickListPosition!) &
+            e.pickListPosition.isNotNull(),
+      );
+      await updateStatement.write(
+        TeamsCompanion.custom(
+          pickListPosition: db.teams.pickListPosition + Variable(1),
+        ),
+      );
+    } else if (team.pickListPosition! > previous.pickListPosition!) {
+      updateStatement.where(
+        (e) =>
+            e.gameFormatName.equals(team.gameFormatName) &
+            e.pickListPosition.isSmallerOrEqualValue(team.pickListPosition!) &
+            e.pickListPosition.isBiggerThanValue(previous.pickListPosition!) &
+            e.pickListPosition.isNotNull(),
+      );
+      await updateStatement.write(
+        TeamsCompanion.custom(
+          pickListPosition: db.teams.pickListPosition - Variable(1),
+        ),
+      );
+    }
+
+    db.update(db.teams).replace(team);
+  }
 }
 
 @riverpod
