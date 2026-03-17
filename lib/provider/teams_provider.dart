@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
@@ -172,6 +171,17 @@ class TeamsList extends _$TeamsList {
         ),
       ),
     );
+  }
+
+  Future clear(GameFormat? gameFormat) async {
+    AppDatabase db = ref.read(databaseProvider);
+    if (gameFormat == null) {
+      await db.managers.teams.delete();
+      return;
+    }
+    await db.managers.teams
+        .filter((e) => e.gameFormatName.equals(gameFormat.name))
+        .delete();
   }
 }
 
