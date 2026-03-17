@@ -9,7 +9,6 @@ import 'package:scouting_app/page/results_page/match_result_card.dart';
 import 'package:scouting_app/page/results_page/results_buttons.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
-import 'package:statistics/statistics.dart';
 
 class ResultsPage extends ConsumerStatefulWidget {
   const ResultsPage({super.key});
@@ -222,14 +221,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             contentBuilder.build(context),
           ],
         ),
-        ResultsButtons(
-          results:
-              (matchResults.isLoading)
-                  ? null
-                  : indices.valueOrNull?.mapToList(
-                    (idx) => matchResults.requireValue[idx],
-                  ),
-        ),
+        ResultsButtons(results: matchResults.valueOrNull),
       ],
     );
   }

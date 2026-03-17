@@ -12,7 +12,7 @@ import 'package:scouting_app/provider/stored_results_provider.dart';
 
 part 'teams_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class TeamsList extends _$TeamsList {
   @override
   Future<List<TeamData>> build() async {
