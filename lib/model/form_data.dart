@@ -19,7 +19,7 @@ abstract class FormDataModel with _$FormDataModel {
     if (data["scoutName"] is! String) return null;
     GameFormat gameFormat = data["gameFormat"];
     for (var key in gameFormat.questions.map((q) => q.key)) {
-      if (!data.containsKey(key) || data[key] == null) {
+      if (!data.containsKey(key)) {
         return null; // Ensure all questions are included
       }
     }

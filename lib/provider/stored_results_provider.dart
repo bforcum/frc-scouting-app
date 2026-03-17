@@ -53,8 +53,8 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-    ref.invalidateSelf();
     ref.invalidate(teamsListProvider);
+    ref.invalidateSelf();
 
     return null;
   }
