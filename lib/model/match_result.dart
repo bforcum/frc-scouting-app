@@ -259,5 +259,6 @@ abstract class MatchResult
     return uuid.toBigInt();
   }
 
-  MatchAnalysis? get analysis => gameFormat.analysis(this);
+  MatchAnalysis? get analysis =>
+      gameFormat.analysis != null ? gameFormat.analysis!(this) : null;
 }

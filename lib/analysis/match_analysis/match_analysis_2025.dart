@@ -10,7 +10,11 @@ class MatchAnalysis2025 implements MatchAnalysis {
 
   @override
   // ignore: override_on_non_overriding_member
-  static List<String> scoreOptions = ["Auto Score", "Tele Score", "End Score"];
+  static const List<String> scoreOptions = [
+    "Auto Score",
+    "Tele Score",
+    "End Score",
+  ];
 
   @override
   int getScore(int scoreOption) {
