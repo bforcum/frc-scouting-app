@@ -32,8 +32,8 @@ enum GameFormat {
 
   final int id;
   final List<String> sections;
-  final List<Question> questions;
-  final QuestionText comments;
+  final List<Question> _questions;
+  final QuestionText _comments;
   final MatchAnalysis Function(MatchResult)? analysis;
   final List<String>? scoreOptions;
   final List<String>? criteriaOptions;
@@ -41,12 +41,15 @@ enum GameFormat {
   const GameFormat({
     required this.id,
     required this.sections,
-    required this.questions,
-    required this.comments,
+    required List<Question> questions,
+    required QuestionText comments,
     this.analysis,
     this.scoreOptions,
     this.criteriaOptions,
-  });
+  }) : _questions = questions,
+       _comments = comments;
+
+  List<Question> get questions => [..._questions, _comments];
 }
 
 const List<String> _sections2026 = [

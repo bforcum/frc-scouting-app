@@ -47,9 +47,7 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     for (Question question in gameFormat.questions) {
       groupedQuestions[question.section].add(FormInput(question: question));
     }
-    groupedQuestions[gameFormat.comments.section].add(
-      FormInput(question: gameFormat.comments),
-    );
+
     sections = List.generate(gameFormat.sections.length, (section) {
       return FormSection(
         title: gameFormat.sections[section],
