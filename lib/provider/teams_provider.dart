@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -142,6 +143,35 @@ class TeamsList extends _$TeamsList {
     }
 
     db.update(db.teams).replace(team);
+    ref.invalidateSelf();
+  }
+
+  /// Orders team numbers based on a new pick list order
+  Future order(GameFormat gameFormat, List<int> teamNumbers) async {
+    AppDatabase db = ref.read(databaseProvider);
+    // Clear existing positions
+    final clearPositions = db.update(db.teams);
+    clearPositions.where((e) => e.gameFormatName.equals(gameFormat.name));
+    clearPositions.write(TeamsCompanion(pickListPosition: Value(null)));
+    // get team numbers that actually exist
+    Iterable<int> realTeamNumbers = (await db.managers.teams
+            .filter((e) => e.gameFormatName.equals(gameFormat.name))
+            .get())
+        .map((team) => team.teamNumber);
+    // Filter provided teamNumbers to only those with data and assign it to realTeamNumbers
+    realTeamNumbers = teamNumbers.where(
+      (team) => realTeamNumbers.contains(team),
+    );
+    // Update teams table
+    await db.managers.teams.bulkReplace(
+      teamNumbers.mapIndexed(
+        (int i, int team) => Team(
+          gameFormatName: gameFormat.name,
+          teamNumber: team,
+          pickListPosition: i,
+        ),
+      ),
+    );
   }
 }
 
