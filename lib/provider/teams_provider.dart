@@ -13,67 +13,70 @@ import 'package:scouting_app/provider/stored_results_provider.dart';
 part 'teams_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<List<TeamData>> teamsList(Ref ref) async {
-  SettingsModel settings = ref.watch(settingsProvider);
-  GameFormat gameFormat = settings.gameFormat;
-  List<MatchResult> results = await ref
-      .watch(storedResultsProvider.notifier)
-      .filterResults(gameFormat: gameFormat);
-  Map<int, List<MatchResult>> binnedResults = {};
+class TeamsList extends _$TeamsList {
+  @override
+  Future<List<TeamData>> build() async {
+    SettingsModel settings = ref.watch(settingsProvider);
+    GameFormat gameFormat = settings.gameFormat;
+    List<MatchResult> results = await ref
+        .watch(storedResultsProvider.notifier)
+        .filterResults(gameFormat: gameFormat);
+    Map<int, List<MatchResult>> binnedResults = {};
 
-  for (MatchResult result in results) {
-    int teamNumber = result.teamNumber;
+    for (MatchResult result in results) {
+      int teamNumber = result.teamNumber;
 
-    // If the binned list doesn't contain this team number yet, add it
-    if (!binnedResults.containsKey(teamNumber)) {
-      binnedResults[teamNumber] = [result];
-      continue;
+      // If the binned list doesn't contain this team number yet, add it
+      if (!binnedResults.containsKey(teamNumber)) {
+        binnedResults[teamNumber] = [result];
+        continue;
+      }
+      // Add the match result to its respective bin
+      binnedResults[teamNumber]!.add(result);
     }
-    // Add the match result to its respective bin
-    binnedResults[teamNumber]!.add(result);
-  }
-  final teamNumbers = binnedResults.keys;
+    final teamNumbers = binnedResults.keys;
 
-  // Delete all teams not in teamNumbers list
-  await ref
-      .read(databaseProvider)
-      .managers
-      .teams
-      .filter((e) => e.gameFormatName.equals(gameFormat.name))
-      .filter((e) => e.teamNumber.not.isIn(teamNumbers))
-      .delete();
+    // Delete all teams not in teamNumbers list
+    await ref
+        .read(databaseProvider)
+        .managers
+        .teams
+        .filter((e) => e.gameFormatName.equals(gameFormat.name))
+        .filter((e) => e.teamNumber.not.isIn(teamNumbers))
+        .delete();
 
-  // Add all teams not in database list
-  await ref
-      .read(databaseProvider)
-      .managers
-      .teams
-      .bulkCreate(
-        (o) => teamNumbers.map(
-          (val) => TeamsCompanion(
-            teamNumber: Value(val),
-            gameFormatName: Value(gameFormat.name),
-          ),
-        ),
-        mode: InsertMode.insertOrIgnore,
-      );
-
-  // Filter results and map them to TeamData
-  List<TeamData> stats =
-      (await ref
-              .read(databaseProvider)
-              .managers
-              .teams
-              .filter((e) => e.gameFormatName.equals(gameFormat.name))
-              .get())
-          .map(
-            (team) => TeamData(
-              position: team.pickListPosition,
-              results: binnedResults[team.teamNumber]!,
+    // Add all teams not in database list
+    await ref
+        .read(databaseProvider)
+        .managers
+        .teams
+        .bulkCreate(
+          (o) => teamNumbers.map(
+            (val) => TeamsCompanion(
+              teamNumber: Value(val),
+              gameFormatName: Value(gameFormat.name),
             ),
-          )
-          .toList();
-  return stats;
+          ),
+          mode: InsertMode.insertOrIgnore,
+        );
+
+    // Filter results and map them to TeamData
+    List<TeamData> stats =
+        (await ref
+                .read(databaseProvider)
+                .managers
+                .teams
+                .filter((e) => e.gameFormatName.equals(gameFormat.name))
+                .get())
+            .map(
+              (team) => TeamData(
+                position: team.pickListPosition,
+                results: binnedResults[team.teamNumber]!,
+              ),
+            )
+            .toList();
+    return stats;
+  }
 }
 
 @riverpod
