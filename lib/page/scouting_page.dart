@@ -12,7 +12,6 @@ import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/form_field_provider.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
-import 'package:statistics/statistics.dart';
 
 class ScoutingPage extends ConsumerStatefulWidget {
   const ScoutingPage({super.key});
@@ -41,19 +40,20 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     );
 
     // Must be generated or the same list reference is duplicated for each section
-    List<List<int>> questionIndices = List.generate(
+    List<List<Widget>> groupedQuestions = List.generate(
       gameFormat.sections.length,
       (i) => [],
     );
-    for (int i = 0; i < gameFormat.questions.length; i++) {
-      questionIndices[gameFormat.questions[i].section].add(i);
+    for (Question question in gameFormat.questions) {
+      groupedQuestions[question.section].add(FormInput(question: question));
     }
+    groupedQuestions[gameFormat.comments.section].add(
+      FormInput(question: gameFormat.comments),
+    );
     sections = List.generate(gameFormat.sections.length, (section) {
       return FormSection(
         title: gameFormat.sections[section],
-        children: questionIndices[section].mapToList((index) {
-          return FormInput(question: gameFormat.questions[index]);
-        }),
+        children: groupedQuestions[section],
       );
     });
   }

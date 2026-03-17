@@ -9,6 +9,7 @@ enum GameFormat {
     id: 2,
     sections: _sections2026,
     questions: _questions2026,
+    comments: _comments2026,
     analysis: MatchAnalysis2026.new,
     scoreOptions: MatchAnalysis2026.scoreOptions,
     criteriaOptions: MatchAnalysis2026.criteriaOptions,
@@ -17,15 +18,22 @@ enum GameFormat {
     id: 1,
     sections: _sections2025,
     questions: _questions2025,
+    comments: _comments2025,
     analysis: MatchAnalysis2025.new,
     scoreOptions: MatchAnalysis2025.scoreOptions,
     criteriaOptions: MatchAnalysis2025.criteriaOptions,
   ),
-  v2024(id: 0, sections: _sections2024, questions: _questions2024);
+  v2024(
+    id: 0,
+    sections: _sections2024,
+    questions: _questions2024,
+    comments: _comments2024,
+  );
 
   final int id;
   final List<String> sections;
   final List<Question> questions;
+  final QuestionText comments;
   final MatchAnalysis Function(MatchResult)? analysis;
   final List<String>? scoreOptions;
   final List<String>? criteriaOptions;
@@ -34,6 +42,7 @@ enum GameFormat {
     required this.id,
     required this.sections,
     required this.questions,
+    required this.comments,
     this.analysis,
     this.scoreOptions,
     this.criteriaOptions,
@@ -92,8 +101,15 @@ const List<Question> _questions2026 = [
   QuestionToggle(section: 3, key: "groundPickup", label: "Ground Pickup"),
   QuestionToggle(section: 3, key: "moveShot", label: "Can shoot while moving"),
   QuestionToggle(section: 3, key: "disabled", label: "Disabled during match"),
-  QuestionText(section: 3, key: "notes", label: "Notes", length: 100),
 ];
+const QuestionText _comments2026 = QuestionText(
+  section: 3,
+  key: "notes",
+  label: "Notes",
+  hint: "Additional Notes",
+  length: 100,
+  big: true,
+);
 
 const List<String> _sections2025 = [
   "Autonomous",
@@ -172,15 +188,16 @@ const List<Question> _questions2025 = [
     label: "End result",
     options: ["None", "Park", "High Cage", "Low Cage"],
   ),
-  QuestionText(
-    key: "notes",
-    section: 3,
-    label: "Notes",
-    length: 50,
-    hint: "Additional notes",
-    big: true,
-  ),
 ];
+
+const QuestionText _comments2025 = QuestionText(
+  section: 3,
+  key: "notes",
+  label: "Notes",
+  hint: "Additional Notes",
+  length: 100,
+  big: true,
+);
 
 const List<String> _sections2024 = [
   "Autonomous",
@@ -215,5 +232,13 @@ const List<Question> _questions2024 = [
     max: 3,
   ),
   QuestionToggle(section: 2, key: "trap", label: "Scored note in trap"),
-  QuestionText(section: 3, key: "notes", label: "Notes", length: 100),
 ];
+
+const QuestionText _comments2024 = QuestionText(
+  section: 3,
+  key: "notes",
+  label: "Notes",
+  hint: "Additional Notes",
+  length: 100,
+  big: true,
+);
