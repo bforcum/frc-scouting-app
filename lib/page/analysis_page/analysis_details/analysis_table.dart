@@ -52,7 +52,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
               children: [
                 DataTable(
                   columns: [DataColumn(label: Text("Teams"))],
-                  columnSpacing: 20,
+                  columnSpacing: 0,
                   headingRowColor: WidgetStatePropertyAll(
                     ColorScheme.of(context).surfaceContainer,
                   ),
@@ -63,7 +63,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                     controller: _scKey,
                     child: DataTable(
                       columns: [DataColumn(label: Text("Teams"))],
-                      columnSpacing: 20,
+                      columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
                           asyncStats.requireValue
