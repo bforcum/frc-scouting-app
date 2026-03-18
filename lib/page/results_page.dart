@@ -24,11 +24,31 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   String? selectedEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
-  List<String> sortOptions = [
-    "Match (first to last)",
-    "Match (last to first)",
-    "Team Num (low to high)",
-    "Team Num (high to low)",
+  final List<DropdownMenuEntry<SortType>> sortOptions = [
+    DropdownMenuEntry(
+      value: SortType.matchNumAscending,
+      label: "Match (ascending)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.matchNumDescending,
+      label: "Match (descending)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.teamNumAscending,
+      label: "Team Num (ascending)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.teamNumDescending,
+      label: "Team Num (descending)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.timeDescending,
+      label: "Time (new to old)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.timeAscending,
+      label: "Time (old to new)",
+    ),
   ];
 
   @override
@@ -187,13 +207,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                                   ),
                                   textStyle:
                                       Theme.of(context).textTheme.bodySmall,
-                                  dropdownMenuEntries: [
-                                    for (int i = 0; i < sortOptions.length; i++)
-                                      DropdownMenuEntry(
-                                        value: SortType.values[i],
-                                        label: sortOptions[i],
-                                      ),
-                                  ],
+                                  dropdownMenuEntries: sortOptions,
 
                                   onSelected: (val) {
                                     setState(() {

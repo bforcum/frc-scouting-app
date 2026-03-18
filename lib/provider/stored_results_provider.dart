@@ -177,6 +177,10 @@ Future<List<MatchResult>> filteredResults(
       return resultsQuery
           .orderBy((o) => o.teamNumber.desc() & o.matchNumber.asc())
           .get();
+    case SortType.timeAscending:
+      return resultsQuery.orderBy((o) => o.timeStamp.asc()).get();
+    case SortType.timeDescending:
+      return resultsQuery.orderBy((o) => o.timeStamp.desc()).get();
   }
 }
 
@@ -185,6 +189,8 @@ enum SortType {
   matchNumDescending,
   teamNumAscending,
   teamNumDescending,
+  timeAscending,
+  timeDescending,
 }
 
 @Riverpod(keepAlive: true)
