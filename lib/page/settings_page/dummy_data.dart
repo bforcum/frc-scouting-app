@@ -62,10 +62,12 @@ Future<String?> generateDummyData(WidgetRef ref) async {
         .deleteResults(event: "Test", gameFormat: gameFormat);
     debugPrint(deletions.toString());
     List<MatchResult> results = List.empty(growable: true);
+    int teamNumberOffset = 0;
     for (int i = 1; i <= 72; i++) {
       for (int j = 0; j < 6; j++) {
         String eventName = "Test";
-        int teamNumber = 1000 + j;
+        int teamNumber = 1000 + teamNumberOffset;
+        teamNumberOffset = (teamNumberOffset + 1) % 36;
         int matchNumber = i;
         String scoutName = "Test Scout";
         DateTime timeStamp = DateTime.now().add(

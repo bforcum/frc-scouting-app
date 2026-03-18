@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/page/analysis_page.dart';
 import 'package:scouting_app/page/common/custom_navigation_bar.dart';
+import 'package:scouting_app/page/list_page.dart';
 import 'package:scouting_app/page/scouting_page.dart';
 import 'package:scouting_app/page/settings_page.dart';
 import 'package:scouting_app/page/results_page.dart';
@@ -94,16 +95,24 @@ class _AppState extends ConsumerState<App> {
             ScoutingPage(key: homeKey),
             ResultsPage(key: homeKey),
             AnalysisPage(key: homeKey),
+            ListPage(key: homeKey),
             SettingsPage(key: homeKey),
           ][currentPage],
       bottomNavigationBar: CustomNavigationBar(
         destinationIcons: [
           Icons.search,
-          Icons.list_alt_rounded,
+          Icons.book_outlined,
           Icons.bar_chart,
+          Icons.assignment_outlined,
           Icons.settings,
         ],
-        destinationLabels: ["Scouting", "Results", "Analysis", "Settings"],
+        destinationLabels: [
+          "Scouting",
+          "Results",
+          "Analysis",
+          "List",
+          "Settings",
+        ],
         selectedIndex: currentPage,
         onDestinationSelected:
             (int index) => setState(() => currentPage = index),
@@ -120,6 +129,7 @@ enum PageState {
   scouting(title: "Scouting"),
   results(title: "Results"),
   analysis(title: "Analysis"),
+  list(title: "List"),
   settings(title: "Settings");
 
   const PageState({required this.title});

@@ -10,7 +10,7 @@ class MatchAnalysis2026 implements MatchAnalysis {
   // ignore: override_on_non_overriding_member
   static const List<String> scoreOptions = [
     "Auto",
-    "Approx Hub",
+    "Hub",
     "Offense",
     "Defense",
     "Climb",

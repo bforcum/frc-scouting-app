@@ -15,7 +15,7 @@ part 'teams_provider.g.dart';
 @riverpod
 class TeamsList extends _$TeamsList {
   @override
-  Future<List<TeamData>> build() async {
+  Future<List<TeamData>> build(bool pickList) async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
     List<MatchResult> results = await ref.watch(
@@ -67,6 +67,12 @@ class TeamsList extends _$TeamsList {
                 .managers
                 .teams
                 .filter((e) => e.gameFormatName.equals(gameFormat.name))
+                .filter(
+                  (e) =>
+                      Variable(pickList).equals(false) |
+                      e.pickListPosition.isNotNull(),
+                )
+                .orderBy((o) => o.pickListPosition.asc(nulls: NullsOrder.last))
                 .get())
             .map(
               (team) => TeamData(
@@ -171,42 +177,5 @@ class TeamsList extends _$TeamsList {
         ),
       ),
     );
-  }
-
-  Future clear(GameFormat? gameFormat) async {
-    AppDatabase db = ref.read(databaseProvider);
-    if (gameFormat == null) {
-      await db.managers.teams.delete();
-      return;
-    }
-    await db.managers.teams
-        .filter((e) => e.gameFormatName.equals(gameFormat.name))
-        .delete();
-  }
-}
-
-@riverpod
-class AnalysisCriterion extends _$AnalysisCriterion {
-  @override
-  int build() {
-    return 0;
-  }
-
-  void set(int criterion) {
-    state = criterion;
-    ref.notifyListeners();
-  }
-}
-
-@Riverpod(keepAlive: true)
-class AnalysisView extends _$AnalysisView {
-  @override
-  int build() {
-    return 0;
-  }
-
-  void set(int criterion) {
-    state = criterion;
-    ref.notifyListeners();
   }
 }
