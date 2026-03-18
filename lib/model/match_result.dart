@@ -55,7 +55,7 @@ abstract class MatchResult
 
   Uint8List toBin() {
     final writer = ByteDataWriter();
-    writer.write(utf8.encode(eventName.padRight(12)));
+    writer.write(utf8.encode(eventName.padRight(6)));
     writer.writeUint16(teamNumber);
     writer.writeUint8(matchNumber);
     writer.writeUint64(timeStamp.millisecondsSinceEpoch);
@@ -88,13 +88,30 @@ abstract class MatchResult
     return writer.toBytes();
   }
 
+  static List<MatchResult>? fromQR(Uint8List bytes) {
+    final reader = ByteDataReader();
+    reader.add(bytes);
+    final int count = reader.readUint8();
+    List<MatchResult> results = [];
+    for (int i = 0; i < count; i++) {
+      MatchResult? result = _fromByteData(reader);
+      if (result == null) {
+        return null;
+      }
+      results.add(result);
+    }
+    return results;
+  }
+
   static MatchResult? fromBin(Uint8List bytes) {
     final reader = ByteDataReader();
     reader.add(bytes);
 
-    final data = <String, dynamic>{};
+    return _fromByteData(reader);
+  }
 
-    String eventName = utf8.decode(reader.read(12)).trim();
+  static MatchResult? _fromByteData(ByteDataReader reader) {
+    String eventName = utf8.decode(reader.read(6)).trim();
     int teamNumber = reader.readUint16();
     int matchNumber = reader.readUint8();
     DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(
@@ -110,6 +127,7 @@ abstract class MatchResult
     if (gameFormat == null) {
       return null;
     }
+    final data = <String, dynamic>{};
     for (var question in gameFormat.questions) {
       try {
         switch (question.type) {

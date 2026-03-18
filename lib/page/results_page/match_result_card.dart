@@ -11,16 +11,32 @@ import 'package:scouting_app/provider/stored_results_provider.dart';
 
 class MatchResultCard extends ConsumerWidget {
   final MatchResult result;
+  final bool selectMode;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
 
-  const MatchResultCard({super.key, required this.result});
+  const MatchResultCard({
+    super.key,
+    required this.result,
+    required this.selectMode,
+    required this.selected,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () async => await _viewResults(context),
-      child: Container(
+      onLongPress: () => onSelected(!selected),
+      onTap:
+          () async =>
+              selectMode ? onSelected(!selected) : _viewResults(context),
+      child: AnimatedContainer(
+        duration: Durations.medium1,
         decoration: BoxDecoration(
-          color: ColorScheme.of(context).surfaceContainer,
+          color:
+              (selected)
+                  ? ColorScheme.of(context).primaryContainer
+                  : ColorScheme.of(context).surfaceContainer,
           borderRadius: BorderRadius.circular(kBorderRadius),
         ),
         padding: const EdgeInsets.all(kBorderRadius),
@@ -68,49 +84,60 @@ class MatchResultCard extends ConsumerWidget {
               ],
             ),
             const Spacer(),
-            IconButton(
-              onPressed: () async => showQRCodeOverlay(result),
-              icon: Icon(Icons.qr_code),
-            ),
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  PopupMenuItem(
-                    child: Text("View"),
-                    onTap: () async => await _viewResults(context),
-                  ),
-                  PopupMenuItem(
-                    child: Text("Edit"),
-                    onTap: () async {
-                      await _editResults(context);
-                    },
-                  ),
-                  PopupMenuItem(
-                    child: Text("Delete"),
-                    onTap: () async {
-                      if (!(await showConfirmationDialog(
-                        ConfirmationInfo(
-                          title: "Delete Match Result",
-                          content:
-                              "Are you sure you want to delete this match result?",
-                        ),
-                      ))) {
-                        return;
-                      }
-                      ref
-                          .read(storedResultsProvider.notifier)
-                          .deleteResults(
-                            event: result.eventName,
-                            team: result.teamNumber,
-                            match: result.matchNumber,
-                            gameFormat: ref.read(settingsProvider).gameFormat,
-                          );
-                      ref.invalidate(storedResultsProvider);
-                    },
-                  ),
-                ];
-              },
-            ),
+            if (selectMode)
+              Checkbox(
+                value: selected,
+                onChanged: (val) => onSelected(!selected),
+              ),
+            if (!selectMode)
+              IconButton(
+                onPressed: () async => showQRCode([result]),
+                icon: Icon(Icons.qr_code),
+              ),
+            if (!selectMode)
+              PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      child: Text("Select"),
+                      onTap: () => onSelected(!selected),
+                    ),
+                    PopupMenuItem(
+                      child: Text("View"),
+                      onTap: () async => await _viewResults(context),
+                    ),
+                    PopupMenuItem(
+                      child: Text("Edit"),
+                      onTap: () async {
+                        await _editResults(context);
+                      },
+                    ),
+                    PopupMenuItem(
+                      child: Text("Delete"),
+                      onTap: () async {
+                        if (!(await showConfirmationDialog(
+                          ConfirmationInfo(
+                            title: "Delete Match Result",
+                            content:
+                                "Are you sure you want to delete this match result?",
+                          ),
+                        ))) {
+                          return;
+                        }
+                        ref
+                            .read(storedResultsProvider.notifier)
+                            .deleteResults(
+                              event: result.eventName,
+                              team: result.teamNumber,
+                              match: result.matchNumber,
+                              gameFormat: ref.read(settingsProvider).gameFormat,
+                            );
+                        ref.invalidate(storedResultsProvider);
+                      },
+                    ),
+                  ];
+                },
+              ),
           ],
         ),
       ),

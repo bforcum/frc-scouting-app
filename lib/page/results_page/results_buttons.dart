@@ -142,8 +142,8 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     if (data == null) {
       return;
     }
-    final MatchResult? result = MatchResult.fromBin(data);
-    if (result == null) {
+    final List<MatchResult>? results = MatchResult.fromQR(data);
+    if (results == null) {
       await showAlertDialog(
         title: "Invalid code",
         content: "This QR code probably didn't come from this app",
@@ -154,7 +154,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
 
     final error = await ref
         .read(storedResultsProvider.notifier)
-        .addResult(result);
+        .addAllResults(results);
 
     if (error != null) {
       showAlertDialog(

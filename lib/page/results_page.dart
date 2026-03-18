@@ -6,6 +6,7 @@ import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/settings.dart';
 import 'package:scouting_app/page/results_page/match_result_card.dart';
+import 'package:scouting_app/page/results_page/qr_code_overlay.dart';
 import 'package:scouting_app/page/results_page/results_buttons.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
@@ -24,6 +25,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   String? selectedEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
+  List<BigInt> selectedResults = [];
   final List<DropdownMenuEntry<SortType>> sortOptions = [
     DropdownMenuEntry(
       value: SortType.matchNumAscending,
@@ -56,6 +58,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
     SettingsModel settings = ref.watch(settingsProvider);
     gameFormat = settings.gameFormat;
     selectedEvent = settings.selectedEvent;
+
+    ref.listen(storedResultsProvider, (prev, next) => selectedResults.clear());
 
     final AsyncValue<List<MatchResult>> newResults = ref.watch(
       FilteredResultsProvider(
@@ -126,7 +130,22 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                   ? null
                   : Padding(
                     padding: const EdgeInsets.all(5),
-                    child: MatchResultCard(result: result),
+                    child: MatchResultCard(
+                      result: result,
+                      selectMode: selectedResults.isNotEmpty,
+                      selected: selectedResults.contains(result.id),
+                      onSelected: (selected) {
+                        setState(() {
+                          if (selected) {
+                            if (selectedResults.length < kMaxResultSelection) {
+                              selectedResults.add(result.id);
+                            }
+                          } else {
+                            selectedResults.remove(result.id);
+                          }
+                        });
+                      },
+                    ),
                   );
             },
           ),
@@ -141,9 +160,9 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             SliverFloatingHeader(
               child: Container(
                 color: ColorScheme.of(context).surfaceContainerHigh,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(12),
                 child: Column(
-                  spacing: 10,
+                  spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -165,7 +184,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                                     kBorderRadius,
                                   ),
                                 ),
-                                hintText: "Search teams",
+                                hintText: "Team",
                                 hintStyle: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium!.copyWith(
@@ -221,6 +240,38 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                         ],
                       ),
                     ),
+                    Visibility(
+                      visible: selectedResults.isNotEmpty,
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed:
+                                matchResults.hasValue
+                                    ? () => showQRCode(
+                                      matchResults.requireValue
+                                          .where(
+                                            (element) => selectedResults
+                                                .contains(element.id),
+                                          )
+                                          .toList(),
+                                    )
+                                    : null,
+                            child: Text("QR Code"),
+                          ),
+                          Spacer(),
+                          TextButton(
+                            onPressed:
+                                () => setState(() => selectedResults.clear()),
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: ColorScheme.of(context).primary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -231,7 +282,9 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    "Number of Results: ${matchResults.hasError ? "error" : matchResults.value?.length ?? 0}",
+                    selectedResults.isEmpty
+                        ? "Number of Results: ${matchResults.hasError ? "error" : matchResults.value?.length ?? 0}"
+                        : "Results Selected: ${selectedResults.length} / $kMaxResultSelection",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
