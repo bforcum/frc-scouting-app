@@ -23,31 +23,55 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
       return Text("An error occured: ${asyncStats.error}");
     }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 20,
-
-        columns: [
-          DataColumn(label: Text("Team")),
-          ...format.scoreOptions!.map(
-            (title) => DataColumn(label: Text(title)),
-          ),
-        ],
-        rows:
-            asyncStats.requireValue
-                .map(
-                  (data) => DataRow(
-                    cells: [
-                      DataCell(Text(data.teamNumber.toString())),
-                      ...data.scores.map(
-                        (numbers) =>
-                            DataCell(Text(numbers.average.round().toString())),
-                      ),
-                    ],
-                  ),
-                )
-                .toList(),
+    return Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          children: [
+            DataTable(
+              headingRowColor: WidgetStatePropertyAll(
+                ColorScheme.of(context).surfaceContainer,
+              ),
+              columnSpacing: 20,
+              columns: [
+                DataColumn(label: Text("Team")),
+                ...format.scoreOptions!.map(
+                  (title) => DataColumn(label: Text(title)),
+                ),
+              ],
+              rows: [],
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: DataTable(
+                  columnSpacing: 20,
+                  headingRowHeight: 0,
+                  columns: [
+                    DataColumn(label: Text("Team")),
+                    ...format.scoreOptions!.map(
+                      (title) => DataColumn(label: Text(title)),
+                    ),
+                  ],
+                  rows:
+                      asyncStats.requireValue
+                          .map(
+                            (data) => DataRow(
+                              cells: [
+                                DataCell(Text(data.teamNumber.toString())),
+                                ...data.scores.map(
+                                  (numbers) => DataCell(
+                                    Text(numbers.average.round().toString()),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

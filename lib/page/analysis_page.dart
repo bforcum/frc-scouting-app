@@ -16,76 +16,72 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
   bool filtersVisible = false;
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverFloatingHeader(
-          child: Container(
-            color: ColorScheme.of(context).surfaceContainerHigh,
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              spacing: 8,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 60,
-                  child: Flex(
-                    direction: Axis.horizontal,
-                    spacing: 10,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            fillColor:
-                                ColorScheme.of(context).surfaceContainerLow,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                kBorderRadius,
-                              ),
-                            ),
-                            hintText: "Team number",
-                            hintStyle: Theme.of(context).textTheme.bodyMedium!
-                                .copyWith(color: Theme.of(context).hintColor),
+    return Column(
+      children: [
+        Container(
+          color: ColorScheme.of(context).surfaceContainerHigh,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 60,
+                child: Flex(
+                  direction: Axis.horizontal,
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextField(
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(10),
+                          fillColor:
+                              ColorScheme.of(context).surfaceContainerLow,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(kBorderRadius),
                           ),
-                          textAlignVertical: TextAlignVertical.center,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          keyboardType: TextInputType.number,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          onChanged:
-                              (value) => setState(() => searchText = value),
+                          hintText: "Team number",
+                          hintStyle: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(color: Theme.of(context).hintColor),
                         ),
+                        textAlignVertical: TextAlignVertical.center,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        onChanged:
+                            (value) => setState(() => searchText = value),
                       ),
-                    ],
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed:
-                      () => setState(() {
-                        filtersVisible = !filtersVisible;
-                      }),
-                  label: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text("Filters", textAlign: TextAlign.center),
-                  ),
-                  icon: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      filtersVisible
-                          ? Icons.keyboard_arrow_down
-                          : Icons.keyboard_arrow_right,
                     ),
-                  ),
-                  iconAlignment: IconAlignment.end,
+                  ],
                 ),
-              ],
-            ),
+              ),
+              TextButton.icon(
+                onPressed:
+                    () => setState(() {
+                      filtersVisible = !filtersVisible;
+                    }),
+                label: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text("Filters", textAlign: TextAlign.center),
+                ),
+                icon: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    filtersVisible
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_right,
+                  ),
+                ),
+                iconAlignment: IconAlignment.end,
+              ),
+            ],
           ),
         ),
-        SliverToBoxAdapter(child: AnalysisTable()),
+        AnalysisTable(),
       ],
     );
   }
