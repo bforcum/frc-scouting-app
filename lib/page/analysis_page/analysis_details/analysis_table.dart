@@ -51,7 +51,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
             Column(
               children: [
                 DataTable(
-                  columns: [DataColumn(label: Text("Teams"))],
+                  columns: [DataColumn(label: Text("Team"))],
                   columnSpacing: 0,
                   headingRowColor: WidgetStatePropertyAll(
                     ColorScheme.of(context).surfaceContainer,
@@ -62,7 +62,10 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                   child: SingleChildScrollView(
                     controller: _scKey,
                     child: DataTable(
-                      columns: [DataColumn(label: Text("Teams"))],
+                      dataRowColor: WidgetStatePropertyAll(
+                        ColorScheme.of(context).surfaceContainer,
+                      ),
+                      columns: [DataColumn(label: Text("Team"))],
                       columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
