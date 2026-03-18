@@ -18,9 +18,9 @@ class TeamsList extends _$TeamsList {
   Future<List<TeamData>> build() async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
-    List<MatchResult> results = await ref
-        .watch(storedResultsProvider.notifier)
-        .filterResults(gameFormat: gameFormat);
+    List<MatchResult> results = await ref.watch(
+      FilteredResultsProvider(gameFormat: gameFormat).future,
+    );
     Map<int, List<MatchResult>> binnedResults = {};
 
     for (MatchResult result in results) {

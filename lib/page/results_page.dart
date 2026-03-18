@@ -24,7 +24,6 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   String? selectedEvent;
   String searchText = "";
   SortType sortBy = SortType.values[0];
-  AsyncValue<List<int>> indices = AsyncValue.loading();
   List<String> sortOptions = [
     "Match (first to last)",
     "Match (last to first)",
@@ -38,35 +37,32 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
     gameFormat = settings.gameFormat;
     selectedEvent = settings.selectedEvent;
 
-    matchResults = ref.watch(storedResultsProvider);
-    final tempIndices = ref.watch(
-      ResultIndicesProvider(
+    final AsyncValue<List<MatchResult>> newResults = ref.watch(
+      FilteredResultsProvider(
         sort: sortBy,
         teamFilter: searchText,
         eventName: selectedEvent,
         gameFormat: gameFormat,
       ),
     );
-    if (!tempIndices.isLoading) {
-      debugPrint(selectedEvent);
-      indices = tempIndices;
+    if (!newResults.isLoading) {
+      matchResults = newResults;
     }
     var contentBuilder = Builder(
       builder: (context) {
-        if (indices.hasError) {
-          return SliverFillRemaining(
-            fillOverscroll: true,
+        if (matchResults.hasError) {
+          return SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 spacing: 10,
                 children: [
                   Text(
-                    "Error encountered: ${indices.error}",
+                    "Error encountered: ${matchResults.error}",
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Text(
-                    "${indices.stackTrace}",
+                    "${matchResults.stackTrace}",
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -74,7 +70,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             ),
           );
         }
-        if (indices.isLoading) {
+        if (matchResults.isLoading) {
           return SliverToBoxAdapter(
             child: Center(
               child: Container(
@@ -88,10 +84,10 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
             ),
           );
         }
-        if (indices.value!.isEmpty) {
+        if (matchResults.value!.isEmpty) {
           return SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(20.0),
               child: Text(
                 "No results",
                 textAlign: TextAlign.center,
@@ -101,16 +97,17 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
           );
         }
         return SliverPadding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 90),
           sliver: SliverList.builder(
-            itemCount: indices.requireValue.length,
+            itemCount: matchResults.requireValue.length,
             itemBuilder: (context, index) {
-              MatchResult result =
-                  matchResults.requireValue[indices.requireValue[index]];
-              return Padding(
-                padding: const EdgeInsets.all(5),
-                child: MatchResultCard(result: result),
-              );
+              MatchResult? result = matchResults.valueOrNull?[index];
+              return result == null
+                  ? null
+                  : Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: MatchResultCard(result: result),
+                  );
             },
           ),
         );
@@ -210,11 +207,19 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                         ],
                       ),
                     ),
-                    Text(
-                      "Number of Results: ${indices.hasError ? "error" : indices.value?.length ?? 0}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
                   ],
+                ),
+              ),
+            ),
+            SliverVisibility(
+              visible: matchResults.valueOrNull?.isNotEmpty ?? false,
+              sliver: SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    "Number of Results: ${matchResults.hasError ? "error" : matchResults.value?.length ?? 0}",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               ),
             ),

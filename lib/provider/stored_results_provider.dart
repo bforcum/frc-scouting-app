@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/provider/database_provider.dart';
@@ -38,7 +39,7 @@ class StoredResults extends _$StoredResults {
     String? game = gameFormat?.name;
     return db.managers.matchResults
         .filter((e) => Variable(event).isNull() | e.eventName(event))
-        .filter((e) => Variable(team).isNull() | e.teamNumber(team))
+        .filter((e) => Variable(team).isNull() | e.teamNumber(team?.toString()))
         .filter((e) => Variable(match).isNull() | e.matchNumber(match))
         .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
         .get();
@@ -52,6 +53,7 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
+    ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
 
     return null;
@@ -65,7 +67,7 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
-
+    ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
 
     return null;
@@ -79,6 +81,7 @@ class StoredResults extends _$StoredResults {
             .matchResults
             .filter((e) => e.uuid.isIn(uuids))
             .delete();
+    ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
     return successes == uuids.length;
   }
@@ -95,11 +98,13 @@ class StoredResults extends _$StoredResults {
     int deletions =
         await db.managers.matchResults
             .filter((e) => Variable(event).isNull() | e.eventName(event))
-            .filter((e) => Variable(team).isNull() | e.teamNumber(team))
+            .filter(
+              (e) => Variable(team).isNull() | e.teamNumber(team?.toString()),
+            )
             .filter((e) => Variable(match).isNull() | e.matchNumber(match))
             .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
             .delete();
-
+    ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
 
     return deletions;
@@ -123,6 +128,7 @@ class StoredResults extends _$StoredResults {
     } catch (error) {
       return "Error: ${error.toString()}";
     }
+    ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
 
     return null;
@@ -130,7 +136,7 @@ class StoredResults extends _$StoredResults {
 }
 
 @riverpod
-Future<List<int>> resultIndices(
+Future<List<MatchResult>> filteredResults(
   Ref ref, {
   SortType sort = SortType.matchNumAscending,
   String? teamFilter,
@@ -138,60 +144,40 @@ Future<List<int>> resultIndices(
   int? matchNumber,
   GameFormat? gameFormat,
 }) async {
-  final List<MatchResult> results = await ref
-      .watch(storedResultsProvider.notifier)
-      .filterResults(
-        event: eventName,
-        match: matchNumber,
-        gameFormat: gameFormat,
+  final AppDatabase db = ref.read(databaseProvider);
+  final resultsQuery = db.managers.matchResults
+      .filter((e) => Variable(eventName).isNull() | e.eventName(eventName))
+      .filter(
+        (e) =>
+            Variable(teamFilter).isNull() |
+            e.teamNumber.startsWith(teamFilter ?? ""),
+      )
+      .filter(
+        (e) => Variable(matchNumber).isNull() | e.matchNumber(matchNumber),
+      )
+      .filter(
+        (e) =>
+            Variable(gameFormat?.name).isNull() |
+            e.gameFormatName(gameFormat?.name),
       );
-
-  List<int> indices = [];
-  for (int i = 0; i < results.length; i++) {
-    if (results[i].teamNumber.toString().startsWith(teamFilter ?? "")) {
-      indices.add(i);
-    }
-  }
-
   switch (sort) {
     case SortType.matchNumAscending:
-      indices.sort((a, b) {
-        int sort = results[a].matchNumber - results[b].matchNumber;
-        if (sort == 0) {
-          return results[a].teamNumber - results[b].teamNumber;
-        }
-        return sort;
-      });
-      break;
+      return resultsQuery
+          .orderBy((o) => o.matchNumber.asc() & o.teamNumber.asc())
+          .get();
     case SortType.matchNumDescending:
-      indices.sort((a, b) {
-        int sort = results[b].matchNumber - results[a].matchNumber;
-        if (sort == 0) {
-          return results[b].teamNumber - results[a].teamNumber;
-        }
-        return sort;
-      });
-      break;
+      return resultsQuery
+          .orderBy((o) => o.matchNumber.desc() & o.teamNumber.asc())
+          .get();
     case SortType.teamNumAscending:
-      indices.sort((a, b) {
-        int sort = results[a].teamNumber - results[b].teamNumber;
-        if (sort == 0) {
-          return results[a].matchNumber - results[b].matchNumber;
-        }
-        return sort;
-      });
-      break;
+      return resultsQuery
+          .orderBy((o) => o.teamNumber.asc() & o.matchNumber.asc())
+          .get();
     case SortType.teamNumDescending:
-      indices.sort((a, b) {
-        int sort = results[b].teamNumber - results[a].teamNumber;
-        if (sort == 0) {
-          return results[a].matchNumber - results[b].matchNumber;
-        }
-        return sort;
-      });
-      break;
+      return resultsQuery
+          .orderBy((o) => o.teamNumber.desc() & o.matchNumber.asc())
+          .get();
   }
-  return indices;
 }
 
 enum SortType {

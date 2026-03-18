@@ -17,7 +17,7 @@ part 'database.g.dart';
 class MatchResults extends Table {
   Int64Column get uuid => int64()();
   TextColumn get eventName => text()();
-  IntColumn get teamNumber => integer()();
+  TextColumn get teamNumber => text()();
   IntColumn get matchNumber => integer()();
   Int64Column get timeStamp => int64()();
   TextColumn get scoutName => text()();

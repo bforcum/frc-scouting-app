@@ -220,7 +220,7 @@ abstract class MatchResult
   factory MatchResult.fromDb({
     required BigInt uuid,
     required String eventName,
-    required int teamNumber,
+    required String teamNumber,
     required int matchNumber,
     required BigInt timeStamp,
     required String scoutName,
@@ -235,7 +235,7 @@ abstract class MatchResult
     return MatchResultsCompanion(
       uuid: drift.Value<BigInt>(id),
       eventName: drift.Value<String>(eventName),
-      teamNumber: drift.Value<int>(teamNumber),
+      teamNumber: drift.Value<String>(teamNumber.toString()),
       matchNumber: drift.Value<int>(matchNumber),
       timeStamp: drift.Value<BigInt>(
         BigInt.from(timeStamp.millisecondsSinceEpoch),
