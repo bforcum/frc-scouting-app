@@ -5,15 +5,19 @@ import 'package:scouting_app/model/team_data.dart';
 
 class TeamStatsCard extends ConsumerStatefulWidget {
   final TeamData data;
+  final int listPosition;
 
-  const TeamStatsCard({super.key, required this.data});
+  const TeamStatsCard({
+    super.key,
+    required this.data,
+    required this.listPosition,
+  });
 
   @override
   ConsumerState<TeamStatsCard> createState() => _TeamStatsCardState();
 }
 
 class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
-  bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,11 +29,7 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
       child: Column(
         children: [
           GestureDetector(
-            onTap:
-                () => setState(() {
-                  isExpanded = !isExpanded;
-                }),
-
+            onTap: () {},
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -55,17 +55,20 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                       ),
                     ],
                   ),
+                  Spacer(),
+                  ReorderableDragStartListener(
+                    index: widget.listPosition,
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: ColorScheme.of(context).surfaceContainer,
+                      ),
+                      child: Icon(Icons.drag_handle),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-          Visibility(
-            visible: isExpanded,
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(children: [
-                
-              ],),
             ),
           ),
         ],

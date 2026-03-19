@@ -93,6 +93,7 @@ class _ListPageState extends ConsumerState<ListPage> {
         ),
         Expanded(
           child: ReorderableListView(
+            buildDefaultDragHandles: false,
             padding: EdgeInsets.all(4),
 
             onReorder: (prev, next) {
@@ -113,9 +114,12 @@ class _ListPageState extends ConsumerState<ListPage> {
             },
             children:
                 pickList!
-                    .map(
-                      (e) =>
-                          TeamStatsCard(key: ValueKey(e.teamNumber), data: e),
+                    .mapIndexed(
+                      (i, e) => TeamStatsCard(
+                        key: ValueKey(e.teamNumber),
+                        data: e,
+                        listPosition: i,
+                      ),
                     )
                     .toList(),
           ),
