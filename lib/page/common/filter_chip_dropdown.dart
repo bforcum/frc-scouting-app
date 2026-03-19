@@ -26,8 +26,8 @@ class FilterChipDropdown extends StatelessWidget {
       border: Border.all(color: base),
       color: base.withAlpha(25),
     );
-    final Color contentOff = ColorScheme.of(context).primaryContainer;
-    final Color contentOn = ColorScheme.of(context).onSurface;
+    final Color contentOff = base;
+    final Color contentOn = ColorScheme.of(context).onPrimaryContainer;
 
     return Container(
       decoration: BoxDecoration(

@@ -52,17 +52,17 @@ TextTheme getAppTextTheme(Brightness brightness) {
       color: color,
     ),
     bodyLarge: GoogleFonts.barlow(
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: FontWeight.w500,
       color: color,
     ),
     bodyMedium: GoogleFonts.barlow(
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: FontWeight.w400,
       color: color,
     ),
     bodySmall: GoogleFonts.barlow(
-      fontSize: 16,
+      fontSize: 12,
       fontWeight: FontWeight.w400,
       color: color,
     ),

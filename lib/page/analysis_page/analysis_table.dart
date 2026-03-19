@@ -8,7 +8,8 @@ import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/teams_provider.dart';
 
 class AnalysisTable extends ConsumerStatefulWidget {
-  const AnalysisTable({super.key});
+  final List<bool> filters;
+  const AnalysisTable({super.key, required this.filters});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AnalysisTableState();
@@ -57,6 +58,14 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
     if (teamData.hasError) {
       return Text("An error occured: ${teamData.error}");
     }
+    teamData = AsyncData(
+      teamData.requireValue.where((team) {
+        for (int i = 0; i < widget.filters.length; i++) {
+          if (widget.filters[i] && !team.criteria[i]) return false;
+        }
+        return true;
+      }).toList(),
+    );
 
     teams = teamData.requireValue.map((e) => e.teamNumber).toList();
     final TextStyle headerStyle = TextTheme.of(
