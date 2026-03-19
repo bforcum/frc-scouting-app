@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +18,7 @@ class AnalysisPage extends ConsumerStatefulWidget {
 
 class _AnalysisPageState extends ConsumerState<AnalysisPage> {
   String searchText = "";
+  bool pickListOnly = false;
   bool filtersVisible = false;
   List<bool>? filterStates;
 
@@ -80,24 +83,45 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                   ],
                 ),
               ),
-              TextButton.icon(
-                onPressed:
-                    () => setState(() {
-                      filtersVisible = !filtersVisible;
-                    }),
-                label: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text("Filters", textAlign: TextAlign.center),
-                ),
-                icon: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Icon(
-                    filtersVisible
-                        ? Icons.keyboard_arrow_down
-                        : Icons.keyboard_arrow_right,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton.icon(
+                    onPressed:
+                        () => setState(() {
+                          filtersVisible = !filtersVisible;
+                        }),
+                    label: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text("Filters", textAlign: TextAlign.center),
+                    ),
+                    icon: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Icon(
+                        filtersVisible
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_right,
+                      ),
+                    ),
+                    iconAlignment: IconAlignment.end,
                   ),
-                ),
-                iconAlignment: IconAlignment.end,
+                  TextButton(
+                    onPressed:
+                        () => setState(() => pickListOnly = !pickListOnly),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Pick List Only",
+                        style: TextStyle(
+                          color:
+                              pickListOnly
+                                  ? null
+                                  : ColorScheme.of(context).onSurface,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Visibility(
                 visible: filtersVisible,
@@ -113,7 +137,11 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
             ],
           ),
         ),
-        AnalysisTable(teamSearch: searchText, filters: filterStates!),
+        AnalysisTable(
+          teamSearch: searchText,
+          filters: filterStates!,
+          pickListOnly: pickListOnly,
+        ),
       ],
     );
   }
