@@ -97,7 +97,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       label: Expanded(
                         child: Row(
                           children: [
-                            SizedBox(width: 20),
+                            SizedBox(width: 25),
                             Text("Team", style: headerStyle),
                           ],
                         ),
@@ -134,7 +134,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                           label: Expanded(
                             child: Row(
                               children: [
-                                SizedBox(width: 20),
+                                SizedBox(width: 25),
                                 Text("Team", style: headerStyle),
                               ],
                             ),
