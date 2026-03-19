@@ -150,7 +150,6 @@ abstract class MatchResult
             break;
         }
       } catch (e) {
-        debugPrint(e.toString());
         continue;
       }
     }
@@ -193,7 +192,6 @@ abstract class MatchResult
             break;
         }
       } catch (e) {
-        debugPrint(e.toString());
         continue;
       }
     }

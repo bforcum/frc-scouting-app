@@ -133,7 +133,6 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
         builder:
             (context) => ScannerPage(
               onDetect: (value) {
-                debugPrint(context.widget.toString());
                 Navigator.pop(context, value);
               },
             ),
@@ -217,18 +216,14 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     final Directory dir = await getTemporaryDirectory();
     String filePath = p.join(dir.path, "$fileName.xlsx");
     if (Platform.isWindows) filePath = filePath.replaceAll("/", r"\");
-    debugPrint(filePath);
     var file = File(filePath);
     file.writeAsBytes(fileBytes);
-    // await xFile.saveTo("${dir.path}/$fileName.xlsx");
-    // XFile savedFile = XFile("${dir.path}/$fileName.xlsx");
-    ShareResult result = await SharePlus.instance.share(
+
+    await SharePlus.instance.share(
       ShareParams(
         files: [XFile(filePath)],
         fileNameOverrides: ["$fileName.xlsx"],
       ),
     );
-    debugPrint(result.status.toString());
-    debugPrint(result.raw);
   }
 }

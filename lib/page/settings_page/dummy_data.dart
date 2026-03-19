@@ -57,10 +57,9 @@ Future<String?> generateDummyData(WidgetRef ref) async {
   Random rng = Random();
   try {
     GameFormat gameFormat = ref.read(settingsProvider).gameFormat;
-    int deletions = await ref
+    await ref
         .read(storedResultsProvider.notifier)
         .deleteResults(event: "Test", gameFormat: gameFormat);
-    debugPrint(deletions.toString());
     List<MatchResult> results = List.empty(growable: true);
     int teamNumberOffset = 0;
     for (int i = 1; i <= 72; i++) {

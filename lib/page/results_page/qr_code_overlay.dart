@@ -13,7 +13,6 @@ void showQRCode(List<MatchResult> results) {
   for (MatchResult result in results) {
     writer.write(result.toBin());
   }
-  debugPrint("Length: ${writer.bufferLength}");
 
   showDialog(
     context: homeKey.currentContext!,

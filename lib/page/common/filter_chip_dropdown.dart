@@ -41,7 +41,6 @@ class FilterChipDropdown extends StatelessWidget {
                 .mapIndexed(
                   (idx, label) => GestureDetector(
                     onTap: () {
-                      debugPrint("Working");
                       onToggle(idx);
                     },
                     child: Container(

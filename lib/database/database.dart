@@ -50,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
       final dbFolder =
           await dbDirectory ?? await getApplicationSupportDirectory();
       debugPrint(dbFolder.toString());
-      final file = File(path.join(dbFolder.path, kDbName));
+      final file = File(path.join(dbFolder.path, "$kDbName.sqlite"));
 
       // Also work around limitations on old Android versions
       if (Platform.isAndroid) {
