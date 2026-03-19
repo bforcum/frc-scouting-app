@@ -17,6 +17,7 @@ class ListPage extends ConsumerStatefulWidget {
 
 class _ListPageState extends ConsumerState<ListPage> {
   List<TeamData>? pickList;
+  bool editMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class _ListPageState extends ConsumerState<ListPage> {
     final AsyncValue<List<TeamData>> teamData = ref.watch(teamsListProvider);
 
     if (teamData.isLoading && pickList == null) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     }
     if (teamData.hasError) {
       return Text("An error occured: ${teamData.error}");
@@ -87,7 +88,16 @@ class _ListPageState extends ConsumerState<ListPage> {
                       );
                 },
               ),
-              IconButton(icon: Icon(Icons.edit), onPressed: () {}),
+              IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color:
+                      editMode
+                          ? ColorScheme.of(context).primaryContainer
+                          : null,
+                ),
+                onPressed: () => setState(() => editMode = !editMode),
+              ),
             ],
           ),
         ),
@@ -119,6 +129,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                         key: ValueKey(e.teamNumber),
                         data: e,
                         listPosition: i,
+                        editMode: editMode,
                       ),
                     )
                     .toList(),
