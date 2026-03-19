@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:buffer/buffer.dart';
 import 'package:collection/collection.dart';
 import 'package:excel/excel.dart';
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/database/database.dart';
