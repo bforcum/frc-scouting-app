@@ -113,7 +113,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
             ],
           ),
         ),
-        AnalysisTable(filters: filterStates!),
+        AnalysisTable(teamSearch: searchText, filters: filterStates!),
       ],
     );
   }

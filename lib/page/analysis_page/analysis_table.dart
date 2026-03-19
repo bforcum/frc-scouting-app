@@ -9,8 +9,13 @@ import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/teams_provider.dart';
 
 class AnalysisTable extends ConsumerStatefulWidget {
+  final String teamSearch;
   final List<bool> filters;
-  const AnalysisTable({super.key, required this.filters});
+  const AnalysisTable({
+    super.key,
+    required this.teamSearch,
+    required this.filters,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AnalysisTableState();
@@ -60,6 +65,9 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
     teamData = AsyncData(
       teamData.requireValue
           .where((team) {
+            if (!team.teamNumber.toString().startsWith(widget.teamSearch)) {
+              return false;
+            }
             for (int i = 0; i < widget.filters.length; i++) {
               if (widget.filters[i] && !team.criteria[i]) return false;
             }
