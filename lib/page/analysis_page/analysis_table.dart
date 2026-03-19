@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
+import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
@@ -42,9 +43,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   @override
   Widget build(BuildContext context) {
     final GameFormat format = ref.watch(settingsProvider).gameFormat;
-    final AsyncValue<List<TeamData>> newTeamData = ref.watch(
-      TeamsListProvider(sortBy: sortBy, ascending: ascending),
-    );
+    final AsyncValue<List<TeamData>> newTeamData = ref.watch(teamsListProvider);
     if (!newTeamData.isLoading) {
       teamData = newTeamData;
     }
@@ -59,12 +58,14 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
       return Text("An error occured: ${teamData.error}");
     }
     teamData = AsyncData(
-      teamData.requireValue.where((team) {
-        for (int i = 0; i < widget.filters.length; i++) {
-          if (widget.filters[i] && !team.criteria[i]) return false;
-        }
-        return true;
-      }).toList(),
+      teamData.requireValue
+          .where((team) {
+            for (int i = 0; i < widget.filters.length; i++) {
+              if (widget.filters[i] && !team.criteria[i]) return false;
+            }
+            return true;
+          })
+          .sorted(TeamData.sort(sortBy, ascending)),
     );
 
     teams = teamData.requireValue.map((e) => e.teamNumber).toList();
@@ -79,12 +80,20 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
             Column(
               children: [
                 DataTable(
+                  horizontalMargin: 10,
                   sortAscending: ascending,
                   sortColumnIndex: sortBy == null ? 0 : null,
-                  showCheckboxColumn: true,
+                  showCheckboxColumn: false,
                   columns: [
                     DataColumn(
-                      label: Expanded(child: Text("Team", style: headerStyle)),
+                      label: Expanded(
+                        child: Row(
+                          children: [
+                            SizedBox(width: 20),
+                            Text("Team", style: headerStyle),
+                          ],
+                        ),
+                      ),
                       headingRowAlignment: MainAxisAlignment.spaceBetween,
                       onSort:
                           (a, b) => setState(() {
@@ -107,14 +116,20 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                   child: SingleChildScrollView(
                     controller: _scKey,
                     child: DataTable(
-                      showCheckboxColumn: true,
+                      horizontalMargin: 10,
+                      showCheckboxColumn: false,
                       dataRowColor: WidgetStatePropertyAll(
                         ColorScheme.of(context).surfaceContainer,
                       ),
                       columns: [
                         DataColumn(
                           label: Expanded(
-                            child: Text("Team", style: headerStyle),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 20),
+                                Text("Team", style: headerStyle),
+                              ],
+                            ),
                           ),
                           headingRowAlignment: MainAxisAlignment.spaceBetween,
                           onSort:
@@ -131,10 +146,46 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
-                          teams
+                          teamData.requireValue
                               .map(
                                 (team) => DataRow(
-                                  cells: [DataCell(Text(team.toString()))],
+                                  cells: [
+                                    DataCell(
+                                      GestureDetector(
+                                        onTap:
+                                            () => _setPickListState(
+                                              team.teamNumber,
+                                              format,
+                                              team.position == null,
+                                            ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(4),
+                                          alignment: AlignmentGeometry.center,
+                                          decoration: BoxDecoration(
+                                            color:
+                                                ColorScheme.of(
+                                                  context,
+                                                ).surfaceContainer,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Checkbox(
+                                                value: team.position != null,
+                                                onChanged:
+                                                    (value) =>
+                                                        _setPickListState(
+                                                          team.teamNumber,
+                                                          format,
+                                                          value,
+                                                        ),
+                                              ),
+                                              Text(team.teamNumber.toString()),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               )
                               .toList(),
@@ -236,5 +287,25 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
         ),
       ),
     );
+  }
+
+  Future _setPickListState(
+    int teamNumber,
+    GameFormat format,
+    bool? newValue,
+  ) async {
+    if (newValue ?? false) {
+      ref.read(teamsListProvider.notifier).addToList(teamNumber, format);
+    } else {
+      ref
+          .read(teamsListProvider.notifier)
+          .move(
+            Team(
+              teamNumber: teamNumber,
+              gameFormatName: format.name,
+              pickListPosition: null,
+            ),
+          );
+    }
   }
 }

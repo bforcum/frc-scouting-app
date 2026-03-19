@@ -15,11 +15,7 @@ part 'teams_provider.g.dart';
 @riverpod
 class TeamsList extends _$TeamsList {
   @override
-  Future<List<TeamData>> build({
-    bool pickList = false,
-    int? sortBy,
-    bool ascending = true,
-  }) async {
+  Future<List<TeamData>> build() async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
     List<MatchResult> results = await ref.watch(
@@ -71,11 +67,6 @@ class TeamsList extends _$TeamsList {
                 .managers
                 .teams
                 .filter((e) => e.gameFormatName.equals(gameFormat.name))
-                .filter(
-                  (e) =>
-                      Variable(pickList).equals(false) |
-                      e.pickListPosition.isNotNull(),
-                )
                 .orderBy((o) => o.pickListPosition.asc(nulls: NullsOrder.last))
                 .get())
             .map(
@@ -85,26 +76,28 @@ class TeamsList extends _$TeamsList {
               ),
             )
             .toList();
-
-    int Function(TeamData, TeamData) sort =
-        sortBy == null
-            ? (ascending
-                ? (team1, team2) => team1.teamNumber.compareTo(team2.teamNumber)
-                : (team1, team2) =>
-                    team2.teamNumber.compareTo(team1.teamNumber))
-            : (ascending
-                ? (team1, team2) => team1.scores[sortBy].average.compareTo(
-                  team2.scores[sortBy].average,
-                )
-                : (team1, team2) => (team2.scores[sortBy].average.compareTo(
-                  team1.scores[sortBy].average,
-                )));
-    stats.sort(sort);
     return stats;
   }
 
+  Future addToList(int team, GameFormat format) async {
+    AppDatabase db = ref.read(databaseProvider);
+    final int size =
+        (await db.managers.teams
+                .filter((f) => f.pickListPosition.isNotNull())
+                .get())
+            .length;
+    db.managers.teams.replace(
+      Team(
+        teamNumber: team,
+        gameFormatName: format.name,
+        pickListPosition: size,
+      ),
+    );
+    ref.invalidateSelf();
+  }
+
   Future move(Team team) async {
-    AppDatabase db = await ref.read(databaseProvider);
+    AppDatabase db = ref.read(databaseProvider);
     Team previous =
         await db.managers.teams
             .filter((e) => e.gameFormatName.equals(team.gameFormatName))

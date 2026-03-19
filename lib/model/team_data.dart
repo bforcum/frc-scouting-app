@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
@@ -54,5 +55,19 @@ class TeamData {
       scores: scores,
       criteria: criteria,
     );
+  }
+
+  static int Function(TeamData, TeamData) sort(int? sortBy, bool ascending) {
+    return sortBy == null
+        ? (ascending
+            ? (team1, team2) => team1.teamNumber.compareTo(team2.teamNumber)
+            : (team1, team2) => team2.teamNumber.compareTo(team1.teamNumber))
+        : (ascending
+            ? (team1, team2) => team1.scores[sortBy].average.compareTo(
+              team2.scores[sortBy].average,
+            )
+            : (team1, team2) => (team2.scores[sortBy].average.compareTo(
+              team1.scores[sortBy].average,
+            )));
   }
 }
