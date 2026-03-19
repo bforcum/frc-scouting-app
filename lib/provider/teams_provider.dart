@@ -167,9 +167,8 @@ class TeamsList extends _$TeamsList {
   Future order(GameFormat gameFormat, List<int> teamNumbers) async {
     AppDatabase db = ref.read(databaseProvider);
     // Clear existing positions
-    final clearPositions = db.update(db.teams);
-    clearPositions.where((e) => e.gameFormatName.equals(gameFormat.name));
-    clearPositions.write(TeamsCompanion(pickListPosition: Value(null)));
+    db.managers.teams.update((e) => e(pickListPosition: Value(null)));
+
     // get team numbers that actually exist
     Iterable<int> realTeamNumbers = (await db.managers.teams
             .filter((e) => e.gameFormatName.equals(gameFormat.name))
@@ -189,5 +188,6 @@ class TeamsList extends _$TeamsList {
         ),
       ),
     );
+    ref.invalidateSelf();
   }
 }

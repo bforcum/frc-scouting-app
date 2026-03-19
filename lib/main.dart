@@ -129,7 +129,7 @@ enum PageState {
   scouting(title: "Scouting"),
   results(title: "Results"),
   analysis(title: "Analysis"),
-  list(title: "List"),
+  list(title: "Pick List"),
   settings(title: "Settings");
 
   const PageState({required this.title});

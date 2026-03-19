@@ -164,7 +164,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                             () => _setPickListState(
                                               team.teamNumber,
                                               format,
-                                              team.position == null,
+                                              team.pickListPosition == null,
                                             ),
                                         child: Container(
                                           margin: EdgeInsets.all(4),
@@ -178,7 +178,9 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                           child: Row(
                                             children: [
                                               Checkbox(
-                                                value: team.position != null,
+                                                value:
+                                                    team.pickListPosition !=
+                                                    null,
                                                 onChanged:
                                                     (value) =>
                                                         _setPickListState(

@@ -6,7 +6,7 @@ import 'package:scouting_app/model/match_result.dart';
 class TeamData {
   final int teamNumber;
   final GameFormat gameFormat;
-  final int? position;
+  final int? pickListPosition;
 
   final List<MatchResult> results;
   final List<List<int>> scores;
@@ -15,7 +15,7 @@ class TeamData {
   TeamData._({
     required this.teamNumber,
     required this.gameFormat,
-    this.position,
+    this.pickListPosition,
     required this.results,
     required this.scores,
     required this.criteria,
@@ -51,7 +51,7 @@ class TeamData {
       results: results,
       teamNumber: teamNumber,
       gameFormat: format,
-      position: position,
+      pickListPosition: position,
       scores: scores,
       criteria: criteria,
     );

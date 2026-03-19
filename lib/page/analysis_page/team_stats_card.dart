@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
@@ -6,9 +5,8 @@ import 'package:scouting_app/model/team_data.dart';
 
 class TeamStatsCard extends ConsumerStatefulWidget {
   final TeamData data;
-  final int criterion;
 
-  const TeamStatsCard({super.key, required this.data, required this.criterion});
+  const TeamStatsCard({super.key, required this.data});
 
   @override
   ConsumerState<TeamStatsCard> createState() => _TeamStatsCardState();
@@ -18,11 +16,8 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
   bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
-    Color accent =
-        (widget.data.results.length) < 12
-            ? Color(0xFFFFCC00)
-            : Color(0xFF009900);
     return Container(
+      margin: EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: ColorScheme.of(context).surfaceContainer,
         borderRadius: BorderRadius.circular(kBorderRadius),
@@ -59,28 +54,6 @@ class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
                         style: TextTheme.of(context).bodySmall,
                       ),
                     ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    alignment: Alignment.center,
-                    height: 48,
-                    width: 48,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(kBorderRadius),
-                      border: Border.all(color: accent),
-                      color: accent.withAlpha(32),
-                    ),
-                    child: Text(
-                      "${widget.data.scores[widget.criterion].average.round()}",
-                      style: TextTheme.of(context).bodyMedium,
-                    ),
-                  ),
-
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.chevron_right),
-                    iconSize: 24,
                   ),
                 ],
               ),
