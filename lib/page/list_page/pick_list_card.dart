@@ -3,21 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/team_data.dart';
 
-class TeamStatsCard extends ConsumerStatefulWidget {
+class PickListCard extends ConsumerStatefulWidget {
   final TeamData data;
   final int listPosition;
 
-  const TeamStatsCard({
+  const PickListCard({
     super.key,
     required this.data,
     required this.listPosition,
   });
 
   @override
-  ConsumerState<TeamStatsCard> createState() => _TeamStatsCardState();
+  ConsumerState<PickListCard> createState() => _PickListCardState();
 }
 
-class _TeamStatsCardState extends ConsumerState<TeamStatsCard> {
+class _PickListCardState extends ConsumerState<PickListCard> {
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/team_data.dart';
-import 'package:scouting_app/page/analysis_page/team_stats_card.dart';
+import 'package:scouting_app/page/list_page/pick_list_card.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/teams_provider.dart';
 
@@ -115,7 +115,7 @@ class _ListPageState extends ConsumerState<ListPage> {
             children:
                 pickList!
                     .mapIndexed(
-                      (i, e) => TeamStatsCard(
+                      (i, e) => PickListCard(
                         key: ValueKey(e.teamNumber),
                         data: e,
                         listPosition: i,
