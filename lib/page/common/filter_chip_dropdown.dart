@@ -5,29 +5,39 @@ class FilterChipDropdown extends StatelessWidget {
   final List<String> labels;
   final List<bool> states;
   final ValueChanged<int> onToggle;
+  final bool enabled;
 
   const FilterChipDropdown({
     super.key,
     required this.labels,
     required this.states,
     required this.onToggle,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color base = ColorScheme.of(context).primaryContainer;
+    final Color low =
+        enabled
+            ? ColorScheme.of(context).primaryContainer
+            : Theme.of(context).highlightColor;
+    final Color high =
+        enabled
+            ? ColorScheme.of(context).primary
+            : ColorScheme.of(context).onSurface;
     final BoxDecoration decorOn = BoxDecoration(
       borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: base),
-      color: base,
+      border: Border.all(color: low),
+      color: low,
     );
     final BoxDecoration decorOff = BoxDecoration(
       borderRadius: BorderRadius.circular(24),
-      border: Border.all(color: base),
-      color: base.withAlpha(25),
+      border: Border.all(color: low),
+      color: low.withAlpha(25),
     );
-    final Color contentOff = base;
-    final Color contentOn = ColorScheme.of(context).onPrimaryContainer;
+    final Color contentOff = high;
+    final Color contentOn =
+        enabled ? ColorScheme.of(context).onPrimaryContainer : high;
 
     return Container(
       decoration: BoxDecoration(
