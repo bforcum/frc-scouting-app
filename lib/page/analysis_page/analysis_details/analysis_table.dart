@@ -18,6 +18,10 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   late LinkedScrollControllerGroup _controllers;
   late ScrollController _scKey;
   late ScrollController _scTable;
+  int? sortBy;
+  bool ascending = true;
+  AsyncValue<List<TeamData>> teamData = AsyncValue.loading();
+  List<int> teams = [];
 
   @override
   void initState() {
@@ -36,13 +40,28 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
 
   @override
   Widget build(BuildContext context) {
-    GameFormat format = ref.watch(settingsProvider).gameFormat;
-    AsyncValue<List<TeamData>> asyncStats = ref.watch(TeamsListProvider(false));
-    if (asyncStats.isLoading) return CircularProgressIndicator();
-    if (asyncStats.hasError) {
-      return Text("An error occured: ${asyncStats.error}");
+    final GameFormat format = ref.watch(settingsProvider).gameFormat;
+    final AsyncValue<List<TeamData>> newTeamData = ref.watch(
+      TeamsListProvider(sortBy: sortBy, ascending: ascending),
+    );
+    if (!newTeamData.isLoading) {
+      teamData = newTeamData;
     }
 
+    if (teamData.isLoading) {
+      return Padding(
+        padding: EdgeInsetsGeometry.all(20),
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (teamData.hasError) {
+      return Text("An error occured: ${teamData.error}");
+    }
+
+    teams = teamData.requireValue.map((e) => e.teamNumber).toList();
+    final TextStyle headerStyle = TextTheme.of(
+      context,
+    ).bodyMedium!.copyWith(fontWeight: FontWeight.w900);
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: Expanded(
@@ -51,7 +70,24 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
             Column(
               children: [
                 DataTable(
-                  columns: [DataColumn(label: Text("Team"))],
+                  sortAscending: ascending,
+                  sortColumnIndex: sortBy == null ? 0 : null,
+                  showCheckboxColumn: true,
+                  columns: [
+                    DataColumn(
+                      label: Expanded(child: Text("Team", style: headerStyle)),
+                      headingRowAlignment: MainAxisAlignment.spaceBetween,
+                      onSort:
+                          (a, b) => setState(() {
+                            if (sortBy == null) {
+                              ascending = !ascending;
+                            } else {
+                              sortBy = null;
+                              ascending = true;
+                            }
+                          }),
+                    ),
+                  ],
                   columnSpacing: 0,
                   headingRowColor: WidgetStatePropertyAll(
                     ColorScheme.of(context).surfaceContainer,
@@ -62,19 +98,34 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                   child: SingleChildScrollView(
                     controller: _scKey,
                     child: DataTable(
+                      showCheckboxColumn: true,
                       dataRowColor: WidgetStatePropertyAll(
                         ColorScheme.of(context).surfaceContainer,
                       ),
-                      columns: [DataColumn(label: Text("Team"))],
+                      columns: [
+                        DataColumn(
+                          label: Expanded(
+                            child: Text("Team", style: headerStyle),
+                          ),
+                          headingRowAlignment: MainAxisAlignment.spaceBetween,
+                          onSort:
+                              (a, b) => setState(() {
+                                if (sortBy == null) {
+                                  ascending = !ascending;
+                                } else {
+                                  sortBy = null;
+                                  ascending = true;
+                                }
+                              }),
+                        ),
+                      ],
                       columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
-                          asyncStats.requireValue
+                          teams
                               .map(
-                                (data) => DataRow(
-                                  cells: [
-                                    DataCell(Text(data.teamNumber.toString())),
-                                  ],
+                                (team) => DataRow(
+                                  cells: [DataCell(Text(team.toString()))],
                                 ),
                               )
                               .toList(),
@@ -87,15 +138,35 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DataTable(
+                      sortAscending: ascending,
+                      sortColumnIndex: sortBy,
                       headingRowColor: WidgetStatePropertyAll(
                         ColorScheme.of(context).surfaceContainer,
                       ),
                       columnSpacing: 20,
                       columns:
                           format.scoreOptions!
-                              .map((title) => DataColumn(label: Text(title)))
+                              .map(
+                                (title) => DataColumn(
+                                  label: Expanded(
+                                    child: Text(title, style: headerStyle),
+                                  ),
+                                  headingRowAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  onSort:
+                                      (columnIndex, b) => setState(() {
+                                        if (sortBy == columnIndex) {
+                                          ascending = !ascending;
+                                        } else {
+                                          sortBy = columnIndex;
+                                          ascending = false;
+                                        }
+                                      }),
+                                ),
+                              )
                               .toList(),
                       rows: [],
                     ),
@@ -108,11 +179,26 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                           columns:
                               format.scoreOptions!
                                   .map(
-                                    (title) => DataColumn(label: Text(title)),
+                                    (title) => DataColumn(
+                                      label: Expanded(
+                                        child: Text(title, style: headerStyle),
+                                      ),
+                                      headingRowAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      onSort:
+                                          (columnIndex, b) => setState(() {
+                                            if (sortBy == columnIndex) {
+                                              ascending = !ascending;
+                                            } else {
+                                              sortBy = columnIndex;
+                                              ascending = false;
+                                            }
+                                          }),
+                                    ),
                                   )
                                   .toList(),
                           rows:
-                              asyncStats.requireValue
+                              teamData.requireValue
                                   .map(
                                     (data) => DataRow(
                                       cells:

@@ -15,7 +15,11 @@ part 'teams_provider.g.dart';
 @riverpod
 class TeamsList extends _$TeamsList {
   @override
-  Future<List<TeamData>> build(bool pickList) async {
+  Future<List<TeamData>> build({
+    bool pickList = false,
+    int? sortBy,
+    bool ascending = true,
+  }) async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
     List<MatchResult> results = await ref.watch(
@@ -81,6 +85,21 @@ class TeamsList extends _$TeamsList {
               ),
             )
             .toList();
+
+    int Function(TeamData, TeamData) sort =
+        sortBy == null
+            ? (ascending
+                ? (team1, team2) => team1.teamNumber.compareTo(team2.teamNumber)
+                : (team1, team2) =>
+                    team2.teamNumber.compareTo(team1.teamNumber))
+            : (ascending
+                ? (team1, team2) => team1.scores[sortBy].average.compareTo(
+                  team2.scores[sortBy].average,
+                )
+                : (team1, team2) => (team2.scores[sortBy].average.compareTo(
+                  team1.scores[sortBy].average,
+                )));
+    stats.sort(sort);
     return stats;
   }
 
