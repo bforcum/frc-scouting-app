@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
-import 'package:scouting_app/page/analysis_page/analysis_details/analysis_table.dart';
+import 'package:scouting_app/model/game_format.dart';
+import 'package:scouting_app/page/analysis_page/analysis_table.dart';
+import 'package:scouting_app/page/common/filter_chip_dropdown.dart';
+import 'package:scouting_app/provider/settings_provider.dart';
 
 class AnalysisPage extends ConsumerStatefulWidget {
   const AnalysisPage({super.key});
@@ -14,8 +17,26 @@ class AnalysisPage extends ConsumerStatefulWidget {
 class _AnalysisPageState extends ConsumerState<AnalysisPage> {
   String searchText = "";
   bool filtersVisible = false;
+  List<bool>? filterStates;
+
   @override
   Widget build(BuildContext context) {
+    GameFormat format = ref.watch(settingsProvider).gameFormat;
+    if (format.analysis == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Text(
+            "Analysis not supported for this game format",
+            style: TextTheme.of(context).titleMedium,
+          ),
+        ),
+      );
+    }
+    filterStates ??= List.generate(
+      format.criteriaOptions!.length,
+      (i) => false,
+    );
     return Column(
       children: [
         Container(
@@ -77,6 +98,17 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
                   ),
                 ),
                 iconAlignment: IconAlignment.end,
+              ),
+              Visibility(
+                visible: filtersVisible,
+                child: FilterChipDropdown(
+                  labels:
+                      ref.watch(settingsProvider).gameFormat.criteriaOptions!,
+                  states: filterStates!,
+                  onToggle:
+                      (i) =>
+                          setState(() => filterStates![i] = !filterStates![i]),
+                ),
               ),
             ],
           ),
