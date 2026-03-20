@@ -24,9 +24,17 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
   late GameFormat gameFormat;
   String? selectedEvent;
   String searchText = "";
-  SortType sortBy = SortType.values[0];
+  SortType sortBy = SortType.timeDescending;
   List<BigInt> selectedResults = [];
   final List<DropdownMenuEntry<SortType>> sortOptions = [
+    DropdownMenuEntry(
+      value: SortType.timeDescending,
+      label: "Time (new to old)",
+    ),
+    DropdownMenuEntry(
+      value: SortType.timeAscending,
+      label: "Time (old to new)",
+    ),
     DropdownMenuEntry(
       value: SortType.matchNumAscending,
       label: "Match (ascending)",
@@ -42,14 +50,6 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
     DropdownMenuEntry(
       value: SortType.teamNumDescending,
       label: "Team Num (descending)",
-    ),
-    DropdownMenuEntry(
-      value: SortType.timeDescending,
-      label: "Time (new to old)",
-    ),
-    DropdownMenuEntry(
-      value: SortType.timeAscending,
-      label: "Time (old to new)",
     ),
   ];
 
