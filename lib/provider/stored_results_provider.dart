@@ -10,7 +10,7 @@ import 'package:scouting_app/provider/database_provider.dart';
 
 part 'stored_results_provider.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class StoredResults extends _$StoredResults {
   @override
   Future<List<MatchResult>> build() async {

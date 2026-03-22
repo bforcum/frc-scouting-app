@@ -66,18 +66,14 @@ class MatchResultCard extends ConsumerWidget {
                         ),
                       ),
                       TextSpan(
-                        text: TimeOfDay.fromDateTime(
-                          result.timeStamp
-                              .copyWith(
-                                second: 0,
-                                millisecond: 0,
-                              ) // Exclude granular time info
-                              .toLocal(),
-                        ).format(context),
+                        text:
+                            "${TimeOfDay.fromDateTime(result.timeStamp.copyWith(second: 0, millisecond: 0) // Exclude granular time info
+                            .toLocal()).format(context)}, ",
                         style: TextStyle(
                           color: ColorScheme.of(context).onSurfaceVariant,
                         ),
                       ),
+                      TextSpan(text: result.scoutName),
                     ],
                   ),
                 ),
@@ -146,9 +142,7 @@ class MatchResultCard extends ConsumerWidget {
 
   Future _viewResults(BuildContext context) async {
     (Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ViewResultPage(matchResult: result),
-      ),
+      MaterialPageRoute(builder: (context) => ViewResultPage(result: result)),
     ));
   }
 
