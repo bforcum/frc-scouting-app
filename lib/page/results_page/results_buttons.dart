@@ -141,8 +141,8 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     if (data == null) {
       return;
     }
-    final List<MatchResult>? results = MatchResult.fromQR(data);
-    if (results == null) {
+    final List<MatchResult> results = MatchResult.fromQR(data);
+    if (results.isEmpty) {
       await showAlertDialog(
         title: "Invalid code",
         content: "This QR code probably didn't come from this app",

@@ -10,6 +10,7 @@ import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 import 'dart:convert' show utf8;
 import 'package:drift/drift.dart' as drift;
+import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:statistics/statistics.dart';
 
 part 'match_result.freezed.dart';
@@ -87,7 +88,7 @@ abstract class MatchResult
     return writer.toBytes();
   }
 
-  static List<MatchResult>? fromQR(Uint8List bytes) {
+  static List<MatchResult> fromQR(Uint8List bytes) {
     final reader = ByteDataReader();
     reader.add(bytes);
     final int count = reader.readUint8();
@@ -95,9 +96,12 @@ abstract class MatchResult
     for (int i = 0; i < count; i++) {
       MatchResult? result = _fromByteData(reader);
       if (result == null) {
-        return null;
+        continue;
       }
       results.add(result);
+    }
+    if (results.length < count) {
+      showSnackBarMessage("${count - results.length} results failed to save");
     }
     return results;
   }
