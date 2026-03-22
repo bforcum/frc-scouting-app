@@ -64,15 +64,17 @@ Future<String?> generateDummyData(WidgetRef ref) async {
     int teamNumberOffset = 0;
     for (int i = 1; i <= 72; i++) {
       for (int j = 0; j < 6; j++) {
-        String eventName = "Test";
-        int teamNumber = 1000 + teamNumberOffset;
+        Map<String, dynamic> data = {};
+
+        data["gameFormat"] = gameFormat;
+        data["eventName"] = "Test";
+        data["teamNumber"] = 1000 + teamNumberOffset;
         teamNumberOffset = (teamNumberOffset + 1) % 36;
-        int matchNumber = i;
-        String scoutName = "Test Scout";
-        DateTime timeStamp = DateTime.now().add(
+        data["matchNumber"] = i;
+        data["scoutName"] = "Test Scout";
+        data["timeStamp"] = DateTime.now().add(
           Duration(minutes: i * 6 - 500, seconds: j * 5),
         );
-        Map<String, dynamic> data = {};
         for (var question in gameFormat.questions) {
           switch (question.type) {
             case QuestionType.toggle:
@@ -93,17 +95,7 @@ Future<String?> generateDummyData(WidgetRef ref) async {
               data[question.key] = "Sample text ${(i * 6 + j)}";
           }
         }
-        results.add(
-          MatchResult(
-            eventName: eventName,
-            teamNumber: teamNumber,
-            matchNumber: matchNumber,
-            timeStamp: timeStamp,
-            scoutName: scoutName,
-            gameFormat: gameFormat,
-            data: data,
-          ),
-        );
+        results.add(MatchResult.fromMap(data));
       }
     }
     await ref.read(storedResultsProvider.notifier).addAllResults(results);

@@ -110,23 +110,24 @@ abstract class MatchResult
   }
 
   static MatchResult? _fromByteData(ByteDataReader reader) {
-    String eventName = utf8.decode(reader.read(6)).trim();
-    int teamNumber = reader.readUint16();
-    int matchNumber = reader.readUint8();
-    DateTime timeStamp = DateTime.fromMillisecondsSinceEpoch(
+    final data = <String, dynamic>{};
+    data["eventName"] = utf8.decode(reader.read(6)).trim();
+    data["teamNumber"] = reader.readUint16();
+    data["matchNumber"] = reader.readUint8();
+    data["timeStamp"] = DateTime.fromMillisecondsSinceEpoch(
       reader.readUint64(),
     );
     final int nameLength = reader.readUint8();
-    String scoutName = utf8.decode(reader.read(nameLength)).trim();
-    String gameFormatName = String.fromCharCodes(reader.read(8)).trim();
-
+    data["scoutName"] = utf8.decode(reader.read(nameLength)).trim();
+    final String gameFormatName = String.fromCharCodes(reader.read(8)).trim();
     final GameFormat? gameFormat = GameFormat.values.firstWhereOrNull(
       (format) => format.name == gameFormatName,
     );
     if (gameFormat == null) {
       return null;
     }
-    final data = <String, dynamic>{};
+    data["gameFormat"] = gameFormat;
+
     for (var question in gameFormat.questions) {
       try {
         switch (question.type) {
@@ -153,15 +154,7 @@ abstract class MatchResult
       }
     }
 
-    return MatchResult(
-      eventName: eventName,
-      teamNumber: teamNumber,
-      matchNumber: matchNumber,
-      timeStamp: timeStamp,
-      scoutName: scoutName,
-      gameFormat: gameFormat,
-      data: data,
-    );
+    return MatchResult.fromMap(data);
   }
 
   factory MatchResult.fromExcel(List<Data> values, GameFormat gameFormat) {

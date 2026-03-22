@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/page/results_page/result_field.dart';

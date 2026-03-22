@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
+import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/page/results_page/form_edit_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
 import 'package:scouting_app/provider/stored_results_provider.dart';
+import 'package:statistics/statistics.dart';
 
 class EditResultPage extends ConsumerStatefulWidget {
   final MatchResult matchResult;
@@ -27,8 +29,54 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
   void initState() {
     super.initState();
     // Make a copy of the data so it can be modified
-    resultData = widget.matchResult.data.map((k, v) => MapEntry(k, v));
+    resultData = widget.matchResult.data.copy();
     GameFormat game = widget.matchResult.gameFormat;
+
+    final matchInfoSection = FormSection(
+      title: "Match Information",
+      children: [
+        FormEditInput(
+          value: widget.matchResult.teamNumber,
+          question: QuestionNumber(
+            section: 0,
+            key: "teamNumber",
+            label: "Team number",
+            min: 1,
+          ),
+          onChanged: (val) => resultData["teamNumber"] = val as int,
+        ),
+        FormEditInput(
+          value: widget.matchResult.matchNumber,
+          question: QuestionNumber(
+            section: 0,
+            key: "matchNumber",
+            label: "Match number",
+          ),
+          onChanged: (val) => resultData["matchNumber"] = val as int,
+        ),
+        FormEditInput(
+          value: widget.matchResult.eventName,
+          question: QuestionText(
+            section: 0,
+            key: "eventName",
+            label: "Event name",
+            length: 5,
+            requiredField: true,
+          ),
+          onChanged: (val) => resultData["eventName"] = val as String,
+        ),
+        FormEditInput(
+          value: widget.matchResult.scoutName,
+          question: QuestionText(
+            section: 0,
+            key: "scoutName",
+            label: "Scout name",
+            length: 30,
+          ),
+          onChanged: (val) => resultData["scoutName"] = val as String,
+        ),
+      ],
+    );
 
     List<List<int>> questionIndices = List.generate(
       game.sections.length,
@@ -37,23 +85,25 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
     for (int i = 0; i < game.questions.length; i++) {
       questionIndices[game.questions[i].section].add(i);
     }
-    sections = List.generate(game.sections.length, (section) {
-      return FormSection(
-        title: game.sections[section],
-        children:
-            questionIndices[section].map((index) {
-              return FormEditInput(
-                question: game.questions[index],
-                value: resultData[game.questions[index].key],
-                onChanged: (value) {
-                  resultData[game.questions[index].key] = value;
-                  // setState(() {
-                  // });
-                },
-              );
-            }).toList(),
-      );
-    });
+    sections = [
+      matchInfoSection,
+      for (int section = 0; section < game.sections.length; section++)
+        FormSection(
+          title: game.sections[section],
+          children:
+              questionIndices[section].map((index) {
+                return FormEditInput(
+                  question: game.questions[index],
+                  value: resultData[game.questions[index].key],
+                  onChanged: (value) {
+                    resultData[game.questions[index].key] = value;
+                    // setState(() {
+                    // });
+                  },
+                );
+              }).toList(),
+        ),
+    ];
   }
 
   @override
@@ -121,14 +171,15 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
       return null;
     }
 
-    MatchResult result = widget.matchResult.copyWith(
-      data: resultData,
-      timeStamp: DateTime.now(),
-    );
+    MatchResult result = MatchResult.fromMap(resultData);
     // Handle form submission
-    final String? error = await ref
+    final bool error1 = await ref
         .read(storedResultsProvider.notifier)
-        .updateResult(result);
+        .deleteByUuid([result.id]);
+
+    final String? error2 = await ref
+        .read(storedResultsProvider.notifier)
+        .addResult(result);
 
     ref.invalidate(storedResultsProvider);
 
@@ -136,8 +187,11 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
       setState(() => complete = true);
       return;
     }
-    if (error != null) {
-      showSnackBarMessage(error, context);
+
+    if (error2 != null) {
+      showSnackBarMessage(error2, context);
+    } else if (error1) {
+      showSnackBarMessage("Something went wrong", context);
     }
 
     Navigator.pop(context);
