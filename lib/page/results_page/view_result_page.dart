@@ -24,8 +24,8 @@ class ViewResultPage extends StatelessWidget {
       title: "Match Information",
       children: [
         Text(result.timeStamp.toLocal().toString()),
-        MatchResultField(label: "Event", value: result.eventName),
-        MatchResultField(label: "Scout", value: result.scoutName),
+        MatchResultField(label: "Event", value: result.eventName, big: true),
+        MatchResultField(label: "Scout", value: result.scoutName, big: true),
       ],
     );
 
