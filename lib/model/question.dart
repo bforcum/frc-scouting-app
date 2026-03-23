@@ -2,7 +2,7 @@ enum QuestionType {
   toggle(type: bool),
   counter(type: int),
   number(type: int),
-  dropdown(type: int),
+  select(type: int),
   text(type: String);
 
   const QuestionType({required this.type});
@@ -76,18 +76,18 @@ class QuestionNumber extends Question {
        super._(type: QuestionType.number);
 }
 
-class QuestionDropdown extends Question {
+class QuestionSelect extends Question {
   final List<String> options;
   final int? preset;
 
   @override
-  const QuestionDropdown({
+  const QuestionSelect({
     required super.section,
     required super.key,
     required super.label,
     required this.options,
     this.preset,
-  }) : super._(type: QuestionType.dropdown);
+  }) : super._(type: QuestionType.select);
 }
 
 class QuestionText extends Question {

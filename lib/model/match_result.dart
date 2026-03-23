@@ -74,7 +74,7 @@ abstract class MatchResult
         case QuestionType.number:
           writer.writeUint16(data[question.key] ?? 0);
           break;
-        case QuestionType.dropdown:
+        case QuestionType.select:
           writer.writeUint8(data[question.key] ?? 0);
           break;
         case QuestionType.text:
@@ -144,7 +144,7 @@ abstract class MatchResult
           case QuestionType.number:
             data[question.key] = reader.readUint16();
             break;
-          case QuestionType.dropdown:
+          case QuestionType.select:
             data[question.key] = reader.readUint8();
             break;
           case QuestionType.text:
@@ -177,7 +177,7 @@ abstract class MatchResult
         switch (question.type) {
           case QuestionType.counter:
           case QuestionType.number:
-          case QuestionType.dropdown:
+          case QuestionType.select:
             data[question.key] = (dataVal.value as IntCellValue).value;
             break;
           case QuestionType.toggle:
@@ -216,7 +216,7 @@ abstract class MatchResult
       switch (question.type) {
         case QuestionType.counter:
         case QuestionType.number:
-        case QuestionType.dropdown:
+        case QuestionType.select:
           row.add(IntCellValue(data[question.key]));
           break;
         case QuestionType.toggle:

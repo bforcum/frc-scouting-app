@@ -88,8 +88,8 @@ Future<String?> generateDummyData(WidgetRef ref) async {
               data[question.key] =
                   rng.nextInt(question.max ?? 10000 - (question.min ?? 0) + 1) +
                   (question.min ?? 0);
-            case QuestionType.dropdown:
-              question = question as QuestionDropdown;
+            case QuestionType.select:
+              question = question as QuestionSelect;
               data[question.key] = rng.nextInt(question.options.length);
             case QuestionType.text:
               data[question.key] = "Sample text ${(i * 6 + j)}";

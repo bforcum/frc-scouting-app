@@ -12,10 +12,10 @@ class MatchResultField extends StatelessWidget {
           label: question.label,
           value: value ? "True" : "False",
         );
-      case QuestionType.dropdown:
+      case QuestionType.select:
         return MatchResultField(
           label: question.label,
-          value: (question as QuestionDropdown).options[value],
+          value: (question as QuestionSelect).options[value],
         );
       case QuestionType.counter:
         return MatchResultField(label: question.label, value: value.toString());

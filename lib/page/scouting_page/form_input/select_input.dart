@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
-class DropdownQuestionInput extends StatelessWidget {
-  final QuestionDropdown question;
+class SelectQuestionInput extends StatelessWidget {
+  final QuestionSelect question;
   final Function(int?) onChanged;
   final String? errorText;
   final int? initialValue;
 
-  const DropdownQuestionInput({
+  const SelectQuestionInput({
     super.key,
     required this.question,
     required this.onChanged,

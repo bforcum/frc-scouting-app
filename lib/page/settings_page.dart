@@ -5,7 +5,7 @@ import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/model/settings.dart';
-import 'package:scouting_app/page/scouting_page/form_input/dropdown_input.dart';
+import 'package:scouting_app/page/scouting_page/form_input/select_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
@@ -69,8 +69,8 @@ class SettingsPage extends ConsumerWidget {
                             settings.copyWith(eventName: text.toUpperCase()),
                           ),
                 ),
-                DropdownQuestionInput(
-                  question: QuestionDropdown(
+                SelectQuestionInput(
+                  question: QuestionSelect(
                     section: 0,
                     key: "",
                     label: "Selected Event",
@@ -94,8 +94,8 @@ class SettingsPage extends ConsumerWidget {
             FormSection(
               title: "Visual",
               children: [
-                DropdownQuestionInput(
-                  question: QuestionDropdown(
+                SelectQuestionInput(
+                  question: QuestionSelect(
                     section: 0,
                     key: "",
                     label: "App theme",
@@ -138,8 +138,8 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 GenerateDummyData(),
                 ResetDatabase(),
-                DropdownQuestionInput(
-                  question: QuestionDropdown(
+                SelectQuestionInput(
+                  question: QuestionSelect(
                     section: 0,
                     key: "",
                     label: "Game Format",

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/scouting_page/form_input/counter_input.dart';
-import 'package:scouting_app/page/scouting_page/form_input/dropdown_input.dart';
+import 'package:scouting_app/page/scouting_page/form_input/select_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/number_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
@@ -120,11 +120,11 @@ FormField createFormField({
             },
           ),
     ),
-    QuestionType.dropdown => FormField<int>(
+    QuestionType.select => FormField<int>(
       key: fieldKey,
       validator: (value) {
         if (value == null) {
-          if ((question as QuestionDropdown).preset == null) {
+          if ((question as QuestionSelect).preset == null) {
             return 'Please select an option';
           } else {
             onChanged(question.preset);
@@ -134,8 +134,8 @@ FormField createFormField({
       },
       initialValue: value,
       builder:
-          (formState) => DropdownQuestionInput(
-            question: question as QuestionDropdown,
+          (formState) => SelectQuestionInput(
+            question: question as QuestionSelect,
             errorText: formState.errorText,
             initialValue: value,
             onChanged: (value) {

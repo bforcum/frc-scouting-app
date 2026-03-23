@@ -64,7 +64,7 @@ const List<Question> _questions2026 = [
   QuestionToggle(section: 0, key: "autoClimb", label: "Climb Success"),
   QuestionCounter(section: 2, key: "cycleSize", label: "Fuel per cycle"),
   QuestionCounter(section: 2, key: "cycles", label: "Number of cycles"),
-  QuestionDropdown(
+  QuestionSelect(
     section: 2,
     key: "accuracy",
     label: "Accuracy",
@@ -76,19 +76,19 @@ const List<Question> _questions2026 = [
       "Most succeed",
     ],
   ),
-  QuestionDropdown(
+  QuestionSelect(
     section: 2,
     key: "offPass",
     label: "Passing",
     options: ["None", "Some", "Lots"],
   ),
-  QuestionDropdown(
+  QuestionSelect(
     section: 1,
     key: "aggression",
     label: "Aggression",
     options: ["None", "Blocking", "Pushing", "Ramming"],
   ),
-  QuestionDropdown(
+  QuestionSelect(
     section: 1,
     key: "defPass",
     label: "Passing",
@@ -179,13 +179,13 @@ const List<Question> _questions2025 = [
     max: 12,
   ),
   QuestionToggle(key: "defense", section: 2, label: "Played defense?"),
-  QuestionDropdown(
+  QuestionSelect(
     key: "endAttempt",
     section: 2,
     label: "End attempt",
     options: ["None", "Park", "High Cage", "Low Cage"],
   ),
-  QuestionDropdown(
+  QuestionSelect(
     key: "endResult",
     section: 2,
     label: "End result",
@@ -221,7 +221,7 @@ const List<Question> _questions2024 = [
   QuestionCounter(key: "speakerMiss", section: 1, label: "Speaker Miss"),
   QuestionCounter(key: "amp", section: 1, label: "Amp Success"),
   QuestionCounter(key: "ampMiss", section: 1, label: "Amp Miss"),
-  QuestionDropdown(
+  QuestionSelect(
     section: 2,
     key: "end",
     label: "End Position",
