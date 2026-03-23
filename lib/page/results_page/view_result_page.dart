@@ -23,7 +23,12 @@ class ViewResultPage extends StatelessWidget {
     final matchInformation = FormSection(
       title: "Match Information",
       children: [
-        Text(result.timeStamp.toLocal().toString()),
+        Text(
+          result.timeStamp.toLocal().toString().substring(0, 11) +
+              TimeOfDay.fromDateTime(
+                result.timeStamp.copyWith(second: 0, millisecond: 0).toLocal(),
+              ).format(context),
+        ),
         MatchResultField(label: "Event", value: result.eventName, big: true),
         MatchResultField(label: "Scout", value: result.scoutName, big: true),
       ],

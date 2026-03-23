@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/consts.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/team_data.dart';
+import 'package:scouting_app/page/analysis_page/analysis_details.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/provider/teams_provider.dart';
 
@@ -127,6 +128,15 @@ class _PickListCardState extends ConsumerState<PickListCard> {
               ),
               child: content,
             );
-    return GestureDetector(onTap: () {}, child: frame);
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AnalysisDetailsPage(data: widget.data),
+          ),
+        );
+      },
+      child: frame,
+    );
   }
 }

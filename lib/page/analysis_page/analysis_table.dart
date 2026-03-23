@@ -5,6 +5,7 @@ import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/team_data.dart';
+import 'package:scouting_app/page/analysis_page/analysis_details.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
 import 'package:scouting_app/provider/teams_provider.dart';
 
@@ -164,39 +165,39 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                 (team) => DataRow(
                                   cells: [
                                     DataCell(
-                                      GestureDetector(
-                                        onTap:
-                                            () => _setPickListState(
-                                              team.teamNumber,
-                                              format,
-                                              team.pickListPosition == null,
+                                      onTap:
+                                          () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) =>
+                                                      AnalysisDetailsPage(
+                                                        data: team,
+                                                      ),
                                             ),
-                                        child: Container(
-                                          margin: EdgeInsets.all(4),
-                                          alignment: AlignmentGeometry.center,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                ColorScheme.of(
-                                                  context,
-                                                ).surfaceContainer,
                                           ),
-                                          child: Row(
-                                            children: [
-                                              Checkbox(
-                                                value:
-                                                    team.pickListPosition !=
-                                                    null,
-                                                onChanged:
-                                                    (value) =>
-                                                        _setPickListState(
-                                                          team.teamNumber,
-                                                          format,
-                                                          value,
-                                                        ),
-                                              ),
-                                              Text(team.teamNumber.toString()),
-                                            ],
-                                          ),
+                                      Container(
+                                        margin: EdgeInsets.all(4),
+                                        alignment: AlignmentGeometry.center,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              ColorScheme.of(
+                                                context,
+                                              ).surfaceContainer,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Checkbox(
+                                              value:
+                                                  team.pickListPosition != null,
+                                              onChanged:
+                                                  (value) => _setPickListState(
+                                                    team.teamNumber,
+                                                    format,
+                                                    value,
+                                                  ),
+                                            ),
+                                            Text(team.teamNumber.toString()),
+                                          ],
                                         ),
                                       ),
                                     ),
