@@ -68,6 +68,7 @@ const List<Question> _questions2026 = [
     section: 2,
     key: "accuracy",
     label: "Accuracy",
+    dropdown: true,
     options: [
       "Most miss",
       "Majority miss",

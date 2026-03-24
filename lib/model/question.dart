@@ -79,6 +79,7 @@ class QuestionNumber extends Question {
 class QuestionSelect extends Question {
   final List<String> options;
   final int? preset;
+  final bool dropdown;
 
   @override
   const QuestionSelect({
@@ -87,6 +88,7 @@ class QuestionSelect extends Question {
     required super.label,
     required this.options,
     this.preset,
+    this.dropdown = false,
   }) : super._(type: QuestionType.select);
 }
 

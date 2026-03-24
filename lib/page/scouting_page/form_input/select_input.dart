@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 
@@ -19,6 +20,35 @@ class SelectQuestionInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!question.dropdown) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
+        children: [
+          Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+          SegmentedButton<int>(
+            showSelectedIcon: false,
+            segments:
+                question.options
+                    .mapIndexed(
+                      (i, val) => ButtonSegment<int>(
+                        value: i,
+                        label: Text(
+                          val,
+                          style: TextTheme.of(context).bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                    .toList(),
+            selected: initialValue == null ? {} : {initialValue!},
+            emptySelectionAllowed: true,
+            onSelectionChanged: (set) => onChanged(set.firstOrNull),
+            expandedInsets: EdgeInsets.zero,
+          ),
+        ],
+      );
+    }
     return Row(
       children: [
         Text(question.label, style: Theme.of(context).textTheme.bodyMedium),

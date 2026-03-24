@@ -61,12 +61,12 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     return SingleChildScrollView(
       controller: _scrollController,
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(12.0),
         child: Form(
           autovalidateMode: AutovalidateMode.onUnfocus,
           key: _formKey,
           child: Column(
-            spacing: 20,
+            spacing: 12,
             children: [
               matchInfoSection,
               ...sections,

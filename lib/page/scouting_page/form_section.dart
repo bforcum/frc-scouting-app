@@ -15,7 +15,7 @@ class FormSection extends StatelessWidget {
       spacing: 10,
       children: [
         Container(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.all(12),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(kBorderRadius)),
