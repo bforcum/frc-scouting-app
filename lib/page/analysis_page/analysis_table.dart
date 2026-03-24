@@ -58,7 +58,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
 
     if (teamData.isLoading) {
       return Padding(
-        padding: EdgeInsetsGeometry.all(20),
+        padding: EdgeInsetsGeometry.all(12),
         child: CircularProgressIndicator(),
       );
     }
@@ -222,7 +222,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       headingRowColor: WidgetStatePropertyAll(
                         ColorScheme.of(context).surfaceContainer,
                       ),
-                      columnSpacing: 20,
+                      columnSpacing: 12,
                       columns:
                           format.scoreOptions!
                               .map(
@@ -250,7 +250,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       child: SingleChildScrollView(
                         controller: _scTable,
                         child: DataTable(
-                          columnSpacing: 20,
+                          columnSpacing: 12,
                           headingRowHeight: 0,
                           columns:
                               format.scoreOptions!

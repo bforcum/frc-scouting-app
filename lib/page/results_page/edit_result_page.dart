@@ -118,7 +118,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(12),
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUnfocus,

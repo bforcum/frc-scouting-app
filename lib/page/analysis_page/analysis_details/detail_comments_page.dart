@@ -15,13 +15,13 @@ class DetailCommentsPage extends StatelessWidget {
     return Expanded(
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 20,
+            spacing: 12,
             children:
                 results
-                    .where((e) => (e.comments ?? "").isNotEmpty)
+                    .where((e) => (e.comment ?? "").isNotEmpty)
                     .map(
                       (e) => Container(
                         padding: EdgeInsets.all(8),
@@ -38,7 +38,7 @@ class DetailCommentsPage extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(e.comments!),
+                            Text(e.comment!),
                             Row(
                               children: [
                                 Spacer(),

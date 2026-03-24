@@ -38,7 +38,7 @@ abstract class MatchResult
     assert(data["timeStamp"].runtimeType == DateTime);
     assert(data["scoutName"].runtimeType == String);
     assert(data["gameFormat"].runtimeType == GameFormat);
-    assert(data["comments"].runtimeType == String);
+    assert(data["comment"].runtimeType == String);
 
     return MatchResult(
       eventName: data["eventName"],
@@ -51,7 +51,7 @@ abstract class MatchResult
     );
   }
 
-  String? get comments => data["comments"];
+  String? get comment => data["comment"];
 
   Uint8List toBin() {
     final writer = ByteDataWriter();

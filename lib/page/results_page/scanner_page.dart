@@ -33,7 +33,7 @@ class _ScannerPageState extends State<ScannerPage> {
         ),
         body: const Center(
           child: Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(12.0),
             child: Text(
               "Scanning not supported on Windows and Linux",
               textAlign: TextAlign.center,

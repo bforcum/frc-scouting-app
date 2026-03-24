@@ -111,7 +111,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
         if (matchResults.value!.isEmpty) {
           return SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(12.0),
               child: Text(
                 "No results",
                 textAlign: TextAlign.center,

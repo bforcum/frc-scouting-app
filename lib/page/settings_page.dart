@@ -31,9 +31,9 @@ class SettingsPage extends ConsumerWidget {
     }
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        padding: const EdgeInsets.all(12),
         child: Column(
-          spacing: 20,
+          spacing: 12,
           children: [
             FormSection(
               title: "User Info",
@@ -76,6 +76,7 @@ class SettingsPage extends ConsumerWidget {
                     label: "Selected Event",
                     options: ["All Events", ...(events.valueOrNull ?? [])],
                     preset: eventIndex,
+                    dropdown: true,
                   ),
                   onChanged:
                       (eventNum) => ref
@@ -147,6 +148,7 @@ class SettingsPage extends ConsumerWidget {
                       GameFormat.values.length,
                       (i) => GameFormat.values[i].name,
                     ),
+                    dropdown: true,
                   ),
                   initialValue: settings.gameFormat.index,
                   onChanged: (i) {

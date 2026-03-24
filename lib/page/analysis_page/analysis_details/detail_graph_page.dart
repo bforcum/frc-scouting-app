@@ -19,9 +19,9 @@ class _DetailGraphPageState extends State<DetailGraphPage> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(12.0),
         child: Column(
-          spacing: 20,
+          spacing: 12,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
@@ -38,7 +38,7 @@ class _DetailGraphPageState extends State<DetailGraphPage> {
                         (value) => setState(() {
                           if (value != null) scoreOption = value;
                         }),
-                    label: Text("Sort by"),
+                    label: Text("Statistic"),
                     width: constraints.maxWidth,
                     requestFocusOnTap: false,
                     keyboardType: TextInputType.none,

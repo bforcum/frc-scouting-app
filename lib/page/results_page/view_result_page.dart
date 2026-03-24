@@ -54,8 +54,8 @@ class ViewResultPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(spacing: 20, children: [matchInformation, ...sections]),
+          padding: const EdgeInsets.all(12),
+          child: Column(spacing: 12, children: [matchInformation, ...sections]),
         ),
       ),
     );

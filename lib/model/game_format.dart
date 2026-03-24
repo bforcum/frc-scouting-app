@@ -9,7 +9,7 @@ enum GameFormat {
     id: 2,
     sections: _sections2026,
     questions: _questions2026,
-    comments: _comments2026,
+    comment: _comment2026,
     analysis: MatchAnalysis2026.new,
     scoreOptions: MatchAnalysis2026.scoreOptions,
     criteriaOptions: MatchAnalysis2026.criteriaOptions,
@@ -18,7 +18,7 @@ enum GameFormat {
     id: 1,
     sections: _sections2025,
     questions: _questions2025,
-    comments: _comments2025,
+    comment: _comment2025,
     analysis: MatchAnalysis2025.new,
     scoreOptions: MatchAnalysis2025.scoreOptions,
     criteriaOptions: MatchAnalysis2025.criteriaOptions,
@@ -27,13 +27,13 @@ enum GameFormat {
     id: 0,
     sections: _sections2024,
     questions: _questions2024,
-    comments: _comments2024,
+    comment: _comment2024,
   );
 
   final int id;
   final List<String> sections;
   final List<Question> _questions;
-  final QuestionText _comments;
+  final QuestionText _comment;
   final MatchAnalysis Function(MatchResult)? analysis;
   final List<String>? scoreOptions;
   final List<String>? criteriaOptions;
@@ -42,14 +42,14 @@ enum GameFormat {
     required this.id,
     required this.sections,
     required List<Question> questions,
-    required QuestionText comments,
+    required QuestionText comment,
     this.analysis,
     this.scoreOptions,
     this.criteriaOptions,
   }) : _questions = questions,
-       _comments = comments;
+       _comment = comment;
 
-  List<Question> get questions => [..._questions, _comments];
+  List<Question> get questions => [..._questions, _comment];
 }
 
 const List<String> _sections2026 = [
@@ -106,9 +106,9 @@ const List<Question> _questions2026 = [
   QuestionToggle(section: 3, key: "moveShot", label: "Can shoot while moving"),
   QuestionToggle(section: 3, key: "disabled", label: "Disabled during match"),
 ];
-const QuestionText _comments2026 = QuestionText(
+const QuestionText _comment2026 = QuestionText(
   section: 3,
-  key: "comments",
+  key: "comment",
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
@@ -194,9 +194,9 @@ const List<Question> _questions2025 = [
   ),
 ];
 
-const QuestionText _comments2025 = QuestionText(
+const QuestionText _comment2025 = QuestionText(
   section: 3,
-  key: "comments",
+  key: "comment",
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
@@ -238,9 +238,9 @@ const List<Question> _questions2024 = [
   QuestionToggle(section: 2, key: "trap", label: "Scored note in trap"),
 ];
 
-const QuestionText _comments2024 = QuestionText(
+const QuestionText _comment2024 = QuestionText(
   section: 3,
-  key: "comments",
+  key: "comment",
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
