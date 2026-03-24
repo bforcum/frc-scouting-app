@@ -22,7 +22,7 @@ abstract class MatchResult
   const MatchResult._();
 
   const factory MatchResult({
-    required String eventName,
+    required String eventCode,
     required int teamNumber,
     required int matchNumber,
     required DateTime timeStamp,
@@ -32,7 +32,7 @@ abstract class MatchResult
   }) = _MatchResultModel;
 
   factory MatchResult.fromMap(Map<String, dynamic> data) {
-    assert(data["eventName"].runtimeType == String);
+    assert(data["eventCode"].runtimeType == String);
     assert(data["teamNumber"].runtimeType == int);
     assert(data["matchNumber"].runtimeType == int);
     assert(data["timeStamp"].runtimeType == DateTime);
@@ -41,7 +41,7 @@ abstract class MatchResult
     assert(data["comment"].runtimeType == String);
 
     return MatchResult(
-      eventName: data["eventName"],
+      eventCode: data["eventCode"],
       teamNumber: data["teamNumber"]!,
       matchNumber: data["matchNumber"]!,
       timeStamp: data["timeStamp"]!,
@@ -55,13 +55,13 @@ abstract class MatchResult
 
   Uint8List toBin() {
     final writer = ByteDataWriter();
-    writer.write(utf8.encode(eventName.padRight(6)));
+    writer.write(utf8.encode(eventCode.padRight(6)));
     writer.writeUint16(teamNumber);
     writer.writeUint8(matchNumber);
     writer.writeUint64(timeStamp.millisecondsSinceEpoch);
     writer.writeUint8(scoutName.length);
     writer.write(utf8.encode(scoutName));
-    writer.write(utf8.encode(gameFormat.name.padRight(8)));
+    writer.writeUint16(gameFormat.id);
 
     for (var question in gameFormat.questions) {
       switch (question.type) {
@@ -115,7 +115,7 @@ abstract class MatchResult
 
   static MatchResult? _fromByteData(ByteDataReader reader) {
     final data = <String, dynamic>{};
-    data["eventName"] = utf8.decode(reader.read(6)).trim();
+    data["eventCode"] = utf8.decode(reader.read(6)).trim();
     data["teamNumber"] = reader.readUint16();
     data["matchNumber"] = reader.readUint8();
     data["timeStamp"] = DateTime.fromMillisecondsSinceEpoch(
@@ -123,9 +123,9 @@ abstract class MatchResult
     );
     final int nameLength = reader.readUint8();
     data["scoutName"] = utf8.decode(reader.read(nameLength)).trim();
-    final String gameFormatName = String.fromCharCodes(reader.read(8)).trim();
+    final int gameFormatId = reader.readInt16();
     final GameFormat? gameFormat = GameFormat.values.firstWhereOrNull(
-      (format) => format.name == gameFormatName,
+      (format) => format.id == gameFormatId,
     );
     if (gameFormat == null) {
       return null;
@@ -164,7 +164,7 @@ abstract class MatchResult
   factory MatchResult.fromExcel(List<Data> values, GameFormat gameFormat) {
     final data = <String, dynamic>{};
 
-    String eventName = values[0].value.toString();
+    String eventCode = values[0].value.toString();
     int teamNumber = (values[1].value as IntCellValue).value;
     int matchNumber = (values[2].value as IntCellValue).value;
     DateTime timeStamp = (values[3].value as DateTimeCellValue).asDateTimeUtc();
@@ -194,7 +194,7 @@ abstract class MatchResult
 
     return MatchResult(
       gameFormat: gameFormat,
-      eventName: eventName,
+      eventCode: eventCode,
       teamNumber: teamNumber,
       matchNumber: matchNumber,
       timeStamp: timeStamp,
@@ -206,7 +206,7 @@ abstract class MatchResult
   List<CellValue> toExcel({bool withEvent = true}) {
     List<CellValue> row = List.empty(growable: true);
 
-    if (withEvent) row.add(TextCellValue(eventName));
+    if (withEvent) row.add(TextCellValue(eventCode));
     row.add(IntCellValue(teamNumber));
     row.add(IntCellValue(matchNumber));
     row.add(DateTimeCellValue.fromDateTime(timeStamp));
@@ -231,12 +231,12 @@ abstract class MatchResult
 
   factory MatchResult.fromDb({
     required BigInt uuid,
-    required String eventName,
+    required String eventCode,
     required String teamNumber,
     required int matchNumber,
     required BigInt timeStamp,
     required String scoutName,
-    required String gameFormatName,
+    required int gameFormat,
     required Uint8List data,
   }) {
     return MatchResult.fromBin(data)!;
@@ -246,14 +246,14 @@ abstract class MatchResult
   Map<String, drift.Expression<Object>> toColumns(bool nullToAbsent) {
     return MatchResultsCompanion(
       uuid: drift.Value<BigInt>(id),
-      eventName: drift.Value<String>(eventName),
+      eventCode: drift.Value<String>(eventCode),
       teamNumber: drift.Value<String>(teamNumber.toString()),
       matchNumber: drift.Value<int>(matchNumber),
       timeStamp: drift.Value<BigInt>(
         BigInt.from(timeStamp.millisecondsSinceEpoch),
       ),
       scoutName: drift.Value<String>(scoutName),
-      gameFormatName: drift.Value<String>(gameFormat.name),
+      gameFormat: drift.Value<int>(gameFormat.id),
       data: drift.Value<Uint8List>(toBin()),
     ).toColumns(nullToAbsent);
   }
@@ -261,7 +261,7 @@ abstract class MatchResult
   BigInt get id {
     int uuid = (timeStamp.year - 2000) << (7 * 8);
     List<int> eventBytes =
-        eventName.toUpperCase().padRight(5, '\x40').encodeUTF8();
+        this.eventCode.toUpperCase().padRight(5, '\x40').encodeUTF8();
     int eventCode = 0;
     for (int i = 0; i < 5; i++) {
       eventCode *= 26;

@@ -65,7 +65,8 @@ class _PickListCardState extends ConsumerState<PickListCard> {
                   .move(
                     Team(
                       teamNumber: widget.data.teamNumber,
-                      gameFormatName: widget.data.gameFormat.name,
+                      eventCode: widget.data.eventCode,
+                      gameFormat: widget.data.gameFormat.id,
                       pickListPosition: null,
                     ),
                   );

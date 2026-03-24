@@ -65,7 +65,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
       FilteredResultsProvider(
         sort: sortBy,
         teamFilter: searchText,
-        eventName: selectedEvent,
+        eventCode: selectedEvent,
         gameFormat: gameFormat,
       ),
     );

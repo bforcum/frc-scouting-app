@@ -15,9 +15,13 @@ part 'teams_provider.g.dart';
 @riverpod
 class TeamsList extends _$TeamsList {
   @override
-  Future<List<TeamData>> build() async {
+  Future<List<TeamData>?> build() async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
+    String? eventCode = settings.selectedEvent;
+    if (eventCode == null) {
+      return null;
+    }
     List<MatchResult> results = await ref.watch(
       FilteredResultsProvider(gameFormat: gameFormat).future,
     );
@@ -41,7 +45,7 @@ class TeamsList extends _$TeamsList {
         .read(databaseProvider)
         .managers
         .teams
-        .filter((e) => e.gameFormatName.equals(gameFormat.name))
+        .filter((e) => e.gameFormat.equals(gameFormat.id))
         .filter((e) => e.teamNumber.not.isIn(teamNumbers))
         .delete();
 
@@ -54,7 +58,7 @@ class TeamsList extends _$TeamsList {
           (o) => teamNumbers.map(
             (val) => TeamsCompanion(
               teamNumber: Value(val),
-              gameFormatName: Value(gameFormat.name),
+              gameFormat: Value(gameFormat.id),
             ),
           ),
           mode: InsertMode.insertOrIgnore,
@@ -66,7 +70,7 @@ class TeamsList extends _$TeamsList {
                 .read(databaseProvider)
                 .managers
                 .teams
-                .filter((e) => e.gameFormatName.equals(gameFormat.name))
+                .filter((e) => e.gameFormat.equals(gameFormat.id))
                 .orderBy((o) => o.pickListPosition.asc(nulls: NullsOrder.last))
                 .get())
             .map(
@@ -79,7 +83,11 @@ class TeamsList extends _$TeamsList {
     return stats;
   }
 
-  Future addToList(int team, GameFormat format) async {
+  Future addToList({
+    required int team,
+    required String eventCode,
+    required GameFormat format,
+  }) async {
     AppDatabase db = ref.read(databaseProvider);
     final int size =
         (await db.managers.teams
@@ -89,7 +97,8 @@ class TeamsList extends _$TeamsList {
     db.managers.teams.replace(
       Team(
         teamNumber: team,
-        gameFormatName: format.name,
+        eventCode: eventCode,
+        gameFormat: format.id,
         pickListPosition: size,
       ),
     );
@@ -100,7 +109,7 @@ class TeamsList extends _$TeamsList {
     AppDatabase db = ref.read(databaseProvider);
     Team previous =
         await db.managers.teams
-            .filter((e) => e.gameFormatName.equals(team.gameFormatName))
+            .filter((e) => e.gameFormat.equals(team.gameFormat))
             .filter((e) => e.teamNumber.equals(team.teamNumber))
             .getSingle();
 
@@ -110,7 +119,7 @@ class TeamsList extends _$TeamsList {
     if (previous.pickListPosition == null) {
       updateStatement.where(
         (e) =>
-            e.gameFormatName.equals(team.gameFormatName) &
+            e.gameFormat.equals(team.gameFormat) &
             e.pickListPosition.isBiggerOrEqualValue(team.pickListPosition!) &
             e.pickListPosition.isNotNull(),
       );
@@ -122,7 +131,7 @@ class TeamsList extends _$TeamsList {
     } else if (team.pickListPosition == null) {
       updateStatement.where(
         (e) =>
-            e.gameFormatName.equals(team.gameFormatName) &
+            e.gameFormat.equals(team.gameFormat) &
             e.pickListPosition.isBiggerThanValue(previous.pickListPosition!) &
             e.pickListPosition.isNotNull(),
       );
@@ -134,7 +143,7 @@ class TeamsList extends _$TeamsList {
     } else if (team.pickListPosition! < previous.pickListPosition!) {
       updateStatement.where(
         (e) =>
-            e.gameFormatName.equals(team.gameFormatName) &
+            e.gameFormat.equals(team.gameFormat) &
             e.pickListPosition.isBiggerOrEqualValue(team.pickListPosition!) &
             e.pickListPosition.isSmallerThanValue(previous.pickListPosition!) &
             e.pickListPosition.isNotNull(),
@@ -147,7 +156,7 @@ class TeamsList extends _$TeamsList {
     } else if (team.pickListPosition! > previous.pickListPosition!) {
       updateStatement.where(
         (e) =>
-            e.gameFormatName.equals(team.gameFormatName) &
+            e.gameFormat.equals(team.gameFormat) &
             e.pickListPosition.isSmallerOrEqualValue(team.pickListPosition!) &
             e.pickListPosition.isBiggerThanValue(previous.pickListPosition!) &
             e.pickListPosition.isNotNull(),
@@ -164,14 +173,19 @@ class TeamsList extends _$TeamsList {
   }
 
   /// Orders team numbers based on a new pick list order
-  Future order(GameFormat gameFormat, List<int> teamNumbers) async {
+  Future order(
+    GameFormat gameFormat,
+    String eventCode,
+    List<int> teamNumbers,
+  ) async {
     AppDatabase db = ref.read(databaseProvider);
     // Clear existing positions
     db.managers.teams.update((e) => e(pickListPosition: Value(null)));
 
     // get team numbers that actually exist
     Iterable<int> realTeamNumbers = (await db.managers.teams
-            .filter((e) => e.gameFormatName.equals(gameFormat.name))
+            .filter((e) => e.gameFormat.equals(gameFormat.id))
+            .filter((e) => e.eventCode.equals(eventCode))
             .get())
         .map((team) => team.teamNumber);
     // Filter provided teamNumbers to only those with data and assign it to realTeamNumbers
@@ -182,8 +196,9 @@ class TeamsList extends _$TeamsList {
     await db.managers.teams.bulkReplace(
       teamNumbers.mapIndexed(
         (int i, int team) => Team(
-          gameFormatName: gameFormat.name,
           teamNumber: team,
+          eventCode: eventCode,
+          gameFormat: gameFormat.id,
           pickListPosition: i,
         ),
       ),

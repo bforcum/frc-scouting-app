@@ -25,6 +25,7 @@ class _ListPageState extends ConsumerState<ListPage> {
   @override
   Widget build(BuildContext context) {
     GameFormat format = ref.watch(settingsProvider).gameFormat;
+    String? eventCode = ref.watch(settingsProvider).eventCode;
     if (format.analysis == null) {
       return Center(
         child: Padding(
@@ -36,7 +37,17 @@ class _ListPageState extends ConsumerState<ListPage> {
         ),
       );
     }
-    final AsyncValue<List<TeamData>> teamData = ref.watch(teamsListProvider);
+
+    if (eventCode == null) {
+      return Center(
+        child: Text(
+          "Please select a specific event in settings",
+          style: TextTheme.of(context).titleMedium,
+        ),
+      );
+    }
+
+    final AsyncValue<List<TeamData>?> teamData = ref.watch(teamsListProvider);
     filterStates ??= List.generate(
       format.criteriaOptions!.length,
       (i) => false,
@@ -48,9 +59,20 @@ class _ListPageState extends ConsumerState<ListPage> {
     if (teamData.hasError) {
       return Text("An error occured: ${teamData.error}");
     }
+
     if (teamData.hasValue) {
+      if (teamData.requireValue == null) {
+        if (teamData.requireValue == null) {
+          return Center(
+            child: Text(
+              "Please select a specific event in settings",
+              style: TextTheme.of(context).titleMedium,
+            ),
+          );
+        }
+      }
       pickList =
-          teamData.requireValue
+          teamData.requireValue!
               .where((data) => data.pickListPosition != null)
               .toList();
     }
@@ -138,6 +160,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                           .read(teamsListProvider.notifier)
                           .order(
                             format,
+                            eventCode,
                             pickList!.map((e) => e.teamNumber).toList(),
                           );
                     },
@@ -155,8 +178,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                 visible: filtersVisible,
                 child: FilterChipDropdown(
                   enabled: !editMode,
-                  labels:
-                      ref.watch(settingsProvider).gameFormat.criteriaOptions!,
+                  labels: format.criteriaOptions!,
                   states: filterStates!,
                   onToggle:
                       (i) =>
@@ -182,7 +204,8 @@ class _ListPageState extends ConsumerState<ListPage> {
                   .move(
                     Team(
                       teamNumber: pickList![prev].teamNumber,
-                      gameFormatName: format.name,
+                      eventCode: pickList![prev].eventCode,
+                      gameFormat: format.id,
                       pickListPosition: next,
                     ),
                   );

@@ -5,6 +5,7 @@ import 'package:scouting_app/model/match_result.dart';
 
 class TeamData {
   final int teamNumber;
+  final String eventCode;
   final GameFormat gameFormat;
   final int? pickListPosition;
 
@@ -14,6 +15,7 @@ class TeamData {
 
   TeamData._({
     required this.teamNumber,
+    required this.eventCode,
     required this.gameFormat,
     this.pickListPosition,
     required this.results,
@@ -25,6 +27,7 @@ class TeamData {
     assert(results.isNotEmpty, "The MatchResult list must contain results");
 
     int teamNumber = results[0].teamNumber;
+    String eventCode = results[0].eventCode;
     GameFormat format = results[0].gameFormat;
     int numScoreOptions = format.scoreOptions!.length;
     int numCriteriaOptions = format.criteriaOptions!.length;
@@ -36,6 +39,7 @@ class TeamData {
 
     for (int i = 0; i < results.length; i++) {
       assert(results[i].gameFormat == format);
+      assert(results[i].eventCode == eventCode);
 
       MatchAnalysis? analysis = results[i].analysis;
 
@@ -50,6 +54,7 @@ class TeamData {
     return TeamData._(
       results: results,
       teamNumber: teamNumber,
+      eventCode: eventCode,
       gameFormat: format,
       pickListPosition: position,
       scores: scores,

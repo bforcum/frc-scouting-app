@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -11,17 +10,19 @@ import 'package:path/path.dart' as path;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import 'database.steps.dart';
+
 part 'database.g.dart';
 
 @UseRowClass(MatchResult, constructor: "fromDb")
 class MatchResults extends Table {
   Int64Column get uuid => int64()();
-  TextColumn get eventName => text()();
+  TextColumn get eventCode => text()();
   TextColumn get teamNumber => text()();
   IntColumn get matchNumber => integer()();
   Int64Column get timeStamp => int64()();
   TextColumn get scoutName => text()();
-  TextColumn get gameFormatName => text()();
+  IntColumn get gameFormat => integer()();
   BlobColumn get data => blob()();
 
   @override
@@ -30,25 +31,36 @@ class MatchResults extends Table {
 
 class Teams extends Table {
   IntColumn get teamNumber => integer()();
-  TextColumn get gameFormatName => text()();
+  TextColumn get eventCode => text()();
+  IntColumn get gameFormat => integer()();
   IntColumn get pickListPosition => integer().nullable()();
 
   @override
-  Set<Column> get primaryKey => {teamNumber, gameFormatName};
+  Set<Column> get primaryKey => {teamNumber, eventCode, gameFormat};
 }
 
-@DriftDatabase(tables: [MatchResults, Teams])
-class AppDatabase extends _$AppDatabase {
-  AppDatabase({FutureOr<Directory>? directory})
-    : super(_openConnection(directory));
+class PitScouting extends Table {
+  IntColumn get teamNumber => integer()();
+  TextColumn get eventCode => text()();
+  IntColumn get gameFormat => integer()();
+  Int64Column get timeStamp => int64()();
+  TextColumn get scoutName => text()();
+  BlobColumn get data => blob()();
 
   @override
-  int get schemaVersion => 1;
+  Set<Column> get primaryKey => {teamNumber, eventCode, gameFormat};
+}
 
-  static QueryExecutor _openConnection(FutureOr<Directory>? dbDirectory) {
+@DriftDatabase(tables: [Teams, MatchResults, PitScouting])
+class AppDatabase extends _$AppDatabase {
+  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+
+  @override
+  int get schemaVersion => 2;
+
+  static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
-      final dbFolder =
-          await dbDirectory ?? await getApplicationSupportDirectory();
+      final dbFolder = await kDbPath;
       debugPrint(dbFolder.toString());
       final file = File(path.join(dbFolder.path, "$kDbName.sqlite"));
 
@@ -68,13 +80,33 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  // static QueryExecutor _openConnection() {
-  //   return driftDatabase(
-  //     name: 'app_database',
-  //     native: DriftNativeOptions(
-  //       databaseDirectory: () => getApplicationCacheDirectory(),
-  //     ),
-  //     // If you need web support, see https://drift.simonbinder.eu/platforms/web/
-  //   );
-  // }
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(onUpgrade: _schemaUpgrade);
+  }
 }
+
+extension Migrations on GeneratedDatabase {
+  OnUpgrade get _schemaUpgrade => stepByStep(
+    from1To2: (m, schema) async {
+      await m.drop(schema.matchResults);
+      await m.create(schema.matchResults);
+      await m.drop(schema.teams);
+      await m.create(schema.teams);
+      await m.create(schema.pitScouting);
+    },
+  );
+}
+
+/*
+extension Migrations on GeneratedDatabase {
+  // Extracting the `stepByStep` call into a static field or method ensures that you're not
+  // accidentally referring to the current database schema (via a getter on the database class).
+  // This ensures that each step brings the database into the correct snapshot.
+  OnUpgrade get _schemaUpgrade => stepByStep(
+    from1To2: (m, schema) async {
+      await m.createTable(schema.groups);
+    },
+  );
+}
+*/

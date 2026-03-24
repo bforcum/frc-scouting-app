@@ -55,15 +55,15 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
           onChanged: (val) => resultData["matchNumber"] = val as int,
         ),
         FormEditInput(
-          value: widget.matchResult.eventName,
+          value: widget.matchResult.eventCode,
           question: QuestionText(
             section: 0,
-            key: "eventName",
+            key: "eventCode",
             label: "Event name",
             length: 5,
             requiredField: true,
           ),
-          onChanged: (val) => resultData["eventName"] = val as String,
+          onChanged: (val) => resultData["eventCode"] = val as String,
         ),
         FormEditInput(
           value: widget.matchResult.scoutName,

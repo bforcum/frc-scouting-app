@@ -36,12 +36,12 @@ class StoredResults extends _$StoredResults {
     GameFormat? gameFormat,
   }) {
     final db = ref.read(databaseProvider);
-    String? game = gameFormat?.name;
+    int? game = gameFormat?.id;
     return db.managers.matchResults
-        .filter((e) => Variable(event).isNull() | e.eventName(event))
+        .filter((e) => Variable(event).isNull() | e.eventCode(event))
         .filter((e) => Variable(team).isNull() | e.teamNumber(team?.toString()))
         .filter((e) => Variable(match).isNull() | e.matchNumber(match))
-        .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
+        .filter((e) => Variable(game).isNull() | e.gameFormat(game))
         .get();
   }
 
@@ -94,15 +94,15 @@ class StoredResults extends _$StoredResults {
   }) async {
     final db = ref.read(databaseProvider);
 
-    String? game = gameFormat?.name;
+    int? game = gameFormat?.id;
     int deletions =
         await db.managers.matchResults
-            .filter((e) => Variable(event).isNull() | e.eventName(event))
+            .filter((e) => Variable(event).isNull() | e.eventCode(event))
             .filter(
               (e) => Variable(team).isNull() | e.teamNumber(team?.toString()),
             )
             .filter((e) => Variable(match).isNull() | e.matchNumber(match))
-            .filter((e) => Variable(game).isNull() | e.gameFormatName(game))
+            .filter((e) => Variable(game).isNull() | e.gameFormat(game))
             .delete();
     ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
@@ -140,13 +140,13 @@ Future<List<MatchResult>> filteredResults(
   Ref ref, {
   SortType sort = SortType.matchNumAscending,
   String? teamFilter,
-  String? eventName,
+  String? eventCode,
   int? matchNumber,
   GameFormat? gameFormat,
 }) async {
   final AppDatabase db = ref.read(databaseProvider);
   final resultsQuery = db.managers.matchResults
-      .filter((e) => Variable(eventName).isNull() | e.eventName(eventName))
+      .filter((e) => Variable(eventCode).isNull() | e.eventCode(eventCode))
       .filter(
         (e) =>
             Variable(teamFilter).isNull() |
@@ -157,8 +157,7 @@ Future<List<MatchResult>> filteredResults(
       )
       .filter(
         (e) =>
-            Variable(gameFormat?.name).isNull() |
-            e.gameFormatName(gameFormat?.name),
+            Variable(gameFormat?.name).isNull() | e.gameFormat(gameFormat?.id),
       );
   switch (sort) {
     case SortType.matchNumAscending:
@@ -199,8 +198,8 @@ Future<List<String>> resultEvents(Ref ref) async {
   List<MatchResult> results = await ref.read(storedResultsProvider.future);
 
   for (final result in results) {
-    if (!events.contains(result.eventName)) {
-      events.add(result.eventName);
+    if (!events.contains(result.eventCode)) {
+      events.add(result.eventCode);
     }
   }
   return events;

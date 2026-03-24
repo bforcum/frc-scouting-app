@@ -11,7 +11,7 @@ sealed class SettingsModel with _$SettingsModel {
   const SettingsModel._();
   const factory SettingsModel({
     @Default("") String scoutName,
-    @Default("") String eventName,
+    String? eventCode,
     String? selectedEvent,
     @Default(true) bool incrementMatchNumber,
     @Default(ThemeMode.system) ThemeMode themeMode,
@@ -20,7 +20,7 @@ sealed class SettingsModel with _$SettingsModel {
 
   void persistToSharedPreferences(SharedPreferences prefs) {
     prefs.setString("setting.scoutName", scoutName);
-    prefs.setString("setting.eventName", eventName);
+    prefs.setString("setting.eventCode", eventCode ?? '\u0000');
     prefs.setString("setting.selectedEvent", selectedEvent ?? '\u0000');
     prefs.setString("setting.themeMode", themeMode.name);
     prefs.setBool("setting.incrementMatchNumber", incrementMatchNumber);

@@ -15,7 +15,7 @@ abstract class FormDataModel with _$FormDataModel {
     if (data["timeStamp"] is! DateTime) return null;
     if (data["teamNumber"] is! int) return null;
     if (data["matchNumber"] is! int) return null;
-    if (data["eventName"] is! String) return null;
+    if (data["eventCode"] is! String) return null;
     if (data["scoutName"] is! String) return null;
     GameFormat gameFormat = data["gameFormat"];
     for (var key in gameFormat.questions.map((q) => q.key)) {

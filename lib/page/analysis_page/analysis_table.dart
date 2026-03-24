@@ -30,7 +30,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   late ScrollController _scTable;
   int? sortBy;
   bool ascending = true;
-  AsyncValue<List<TeamData>> teamData = AsyncValue.loading();
+  AsyncValue<List<TeamData>?> teamData = AsyncValue.loading();
   List<int> teams = [];
 
   @override
@@ -51,7 +51,9 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   @override
   Widget build(BuildContext context) {
     final GameFormat format = ref.watch(settingsProvider).gameFormat;
-    final AsyncValue<List<TeamData>> newTeamData = ref.watch(teamsListProvider);
+    final AsyncValue<List<TeamData>?> newTeamData = ref.watch(
+      teamsListProvider,
+    );
     if (!newTeamData.isLoading) {
       teamData = newTeamData;
     }
@@ -65,8 +67,23 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
     if (teamData.hasError) {
       return Text("An error occured: ${teamData.error}");
     }
+
+    if (teamData.requireValue == null) {
+      if (teamData.requireValue == null) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              "Please select a specific event in settings",
+              style: TextTheme.of(context).titleMedium,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    }
     teamData = AsyncData(
-      teamData.requireValue
+      teamData.requireValue!
           .where((team) {
             if (!team.teamNumber.toString().startsWith(widget.teamSearch)) {
               return false;
@@ -82,7 +99,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
           .sorted(TeamData.sort(sortBy, ascending)),
     );
 
-    teams = teamData.requireValue.map((e) => e.teamNumber).toList();
+    teams = teamData.requireValue!.map((e) => e.teamNumber).toList();
     final TextStyle headerStyle = TextTheme.of(
       context,
     ).bodyMedium!.copyWith(fontWeight: FontWeight.w900);
@@ -160,7 +177,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
-                          teamData.requireValue
+                          teamData.requireValue!
                               .map(
                                 (team) => DataRow(
                                   cells: [
@@ -192,6 +209,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                               onChanged:
                                                   (value) => _setPickListState(
                                                     team.teamNumber,
+                                                    team.eventCode,
                                                     format,
                                                     value,
                                                   ),
@@ -274,7 +292,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                   )
                                   .toList(),
                           rows:
-                              teamData.requireValue
+                              teamData.requireValue!
                                   .map(
                                     (data) => DataRow(
                                       cells:
@@ -307,18 +325,22 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
 
   Future _setPickListState(
     int teamNumber,
+    String eventCode,
     GameFormat format,
     bool? newValue,
   ) async {
     if (newValue ?? false) {
-      ref.read(teamsListProvider.notifier).addToList(teamNumber, format);
+      ref
+          .read(teamsListProvider.notifier)
+          .addToList(team: teamNumber, eventCode: eventCode, format: format);
     } else {
       ref
           .read(teamsListProvider.notifier)
           .move(
             Team(
               teamNumber: teamNumber,
-              gameFormatName: format.name,
+              eventCode: eventCode,
+              gameFormat: format.id,
               pickListPosition: null,
             ),
           );

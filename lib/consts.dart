@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scouting_app/model/question.dart';
 
 const double kBorderRadius = 8;
@@ -6,6 +9,8 @@ const double kBorderRadius = 8;
 const kMaxResultSelection = 4;
 
 final String kDbName = "scouting_data";
+
+final Future<Directory> kDbPath = getApplicationSupportDirectory();
 
 final List<Question> kRequiredQuestions = [
   QuestionNumber(

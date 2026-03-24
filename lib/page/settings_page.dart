@@ -58,7 +58,7 @@ class SettingsPage extends ConsumerWidget {
                     label: "Event name",
                     length: 5,
                   ),
-                  initialValue: settings.eventName,
+                  initialValue: settings.eventCode,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s]")),
                   ],
@@ -66,7 +66,7 @@ class SettingsPage extends ConsumerWidget {
                       (text) => ref
                           .read(settingsProvider.notifier)
                           .updateSettings(
-                            settings.copyWith(eventName: text.toUpperCase()),
+                            settings.copyWith(eventCode: text.toUpperCase()),
                           ),
                 ),
                 SelectQuestionInput(

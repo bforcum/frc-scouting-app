@@ -123,7 +123,7 @@ class MatchResultCard extends ConsumerWidget {
                         ref
                             .read(storedResultsProvider.notifier)
                             .deleteResults(
-                              event: result.eventName,
+                              event: result.eventCode,
                               team: result.teamNumber,
                               match: result.matchNumber,
                               gameFormat: ref.read(settingsProvider).gameFormat,

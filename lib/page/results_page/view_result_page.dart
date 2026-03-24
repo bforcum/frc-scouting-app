@@ -29,7 +29,7 @@ class ViewResultPage extends StatelessWidget {
                 result.timeStamp.copyWith(second: 0, millisecond: 0).toLocal(),
               ).format(context),
         ),
-        MatchResultField(label: "Event", value: result.eventName, big: true),
+        MatchResultField(label: "Event", value: result.eventCode, big: true),
         MatchResultField(label: "Scout", value: result.scoutName, big: true),
       ],
     );

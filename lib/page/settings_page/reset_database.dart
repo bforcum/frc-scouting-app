@@ -1,8 +1,10 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
-import 'package:scouting_app/provider/stored_results_provider.dart';
+import 'package:scouting_app/provider/database_provider.dart';
 
 class ResetDatabase extends ConsumerWidget {
   const ResetDatabase({super.key});
@@ -23,8 +25,14 @@ class ResetDatabase extends ConsumerWidget {
             )) {
               return;
             }
-            await ref.read(storedResultsProvider.notifier).deleteResults();
-            ref.invalidate(storedResultsProvider);
+            AppDatabase db = ref.read(databaseProvider);
+            final m = drift.Migrator(db);
+            for (final drift.TableInfo<drift.Table, Object?> table
+                in db.allTables) {
+              m
+                  .deleteTable(table.actualTableName)
+                  .whenComplete(() => m.createTable(table));
+            }
             if (context.mounted) {
               showSnackBarMessage("All data cleared");
             }

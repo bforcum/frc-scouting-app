@@ -1,0 +1,246 @@
+{
+	"_meta": {
+		"description": "This file contains a serialized version of schema entities for drift.",
+		"version": "1.2.0"
+	},
+	"options": {
+		"store_date_time_values_as_text": false
+	},
+	"entities": [
+		{
+			"id": 0,
+			"references": [],
+			"type": "table",
+			"data": {
+				"name": "teams",
+				"was_declared_in_moor": false,
+				"columns": [
+					{
+						"name": "team_number",
+						"getter_name": "teamNumber",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "event_code",
+						"getter_name": "eventCode",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "game_format",
+						"getter_name": "gameFormat",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "pick_list_position",
+						"getter_name": "pickListPosition",
+						"moor_type": "int",
+						"nullable": true,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					}
+				],
+				"is_virtual": false,
+				"without_rowid": false,
+				"constraints": [],
+				"explicit_pk": [
+					"team_number",
+					"event_code",
+					"game_format"
+				]
+			}
+		},
+		{
+			"id": 1,
+			"references": [],
+			"type": "table",
+			"data": {
+				"name": "match_results",
+				"was_declared_in_moor": false,
+				"columns": [
+					{
+						"name": "uuid",
+						"getter_name": "uuid",
+						"moor_type": "bigInt",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "event_code",
+						"getter_name": "eventCode",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "team_number",
+						"getter_name": "teamNumber",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "match_number",
+						"getter_name": "matchNumber",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "time_stamp",
+						"getter_name": "timeStamp",
+						"moor_type": "bigInt",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "scout_name",
+						"getter_name": "scoutName",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "game_format",
+						"getter_name": "gameFormat",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "data",
+						"getter_name": "data",
+						"moor_type": "blob",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					}
+				],
+				"is_virtual": false,
+				"without_rowid": false,
+				"constraints": [],
+				"explicit_pk": [
+					"uuid"
+				]
+			}
+		},
+		{
+			"id": 2,
+			"references": [],
+			"type": "table",
+			"data": {
+				"name": "pit_scouting",
+				"was_declared_in_moor": false,
+				"columns": [
+					{
+						"name": "team_number",
+						"getter_name": "teamNumber",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "event_code",
+						"getter_name": "eventCode",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "game_format",
+						"getter_name": "gameFormat",
+						"moor_type": "int",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "time_stamp",
+						"getter_name": "timeStamp",
+						"moor_type": "bigInt",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "scout_name",
+						"getter_name": "scoutName",
+						"moor_type": "string",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					},
+					{
+						"name": "data",
+						"getter_name": "data",
+						"moor_type": "blob",
+						"nullable": false,
+						"customConstraints": null,
+						"default_dart": null,
+						"default_client_dart": null,
+						"dsl_features": []
+					}
+				],
+				"is_virtual": false,
+				"without_rowid": false,
+				"constraints": [],
+				"explicit_pk": [
+					"team_number",
+					"event_code",
+					"game_format"
+				]
+			}
+		}
+	]
+}

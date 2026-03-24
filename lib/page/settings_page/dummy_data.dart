@@ -67,7 +67,7 @@ Future<String?> generateDummyData(WidgetRef ref) async {
         Map<String, dynamic> data = {};
 
         data["gameFormat"] = gameFormat;
-        data["eventName"] = "Test";
+        data["eventCode"] = "Test";
         data["teamNumber"] = 1000 + teamNumberOffset;
         teamNumberOffset = (teamNumberOffset + 1) % 36;
         data["matchNumber"] = i;
@@ -102,6 +102,6 @@ Future<String?> generateDummyData(WidgetRef ref) async {
   } catch (error) {
     return "Error: ${error.toString()}";
   }
-  ref.invalidate(storedResultsProvider);
+
   return null;
 }

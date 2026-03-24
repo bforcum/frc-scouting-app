@@ -145,11 +145,11 @@ class ScoutingPageState extends ConsumerState<ScoutingPage> {
     data["gameFormat"] = gameFormat;
     data["timeStamp"] = DateTime.timestamp();
 
-    data["eventName"] = ref.read(settingsProvider).eventName;
+    data["eventCode"] = ref.read(settingsProvider).eventCode;
     data["scoutName"] = ref.read(settingsProvider).scoutName;
 
-    if (data["eventName"] == null || data["eventName"] == "") {
-      showSnackBarMessage("Please set the event name in Settings.");
+    if (data["eventCode"] == null || data["eventCode"] == "") {
+      showSnackBarMessage("Please set the event code in Settings.");
       return;
     }
     if (data["scoutName"] == null || data["scoutName"] == "") {
