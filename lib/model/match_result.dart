@@ -101,7 +101,7 @@ abstract class MatchResult
       results.add(result);
     }
     if (results.length < count) {
-      showSnackBarMessage("${count - results.length} results failed to save");
+      showSnackBarMessage("${count - results.length} result(s) failed to save");
     }
     return results;
   }

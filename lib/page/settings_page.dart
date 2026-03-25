@@ -131,12 +131,23 @@ class SettingsPage extends ConsumerWidget {
                             settings.copyWith(incrementMatchNumber: val),
                           ),
                 ),
-                // Increment match number toggle
               ],
             ),
             FormSection(
               title: "⚠️ Advanced ⚠️",
               children: [
+                ToggleQuestionInput(
+                  question: QuestionToggle(
+                    section: 0,
+                    key: "",
+                    label: "Scouting Lead",
+                  ),
+                  value: settings.scoutingLead,
+                  onChanged:
+                      (val) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(settings.copyWith(scoutingLead: val)),
+                ),
                 GenerateDummyData(),
                 ResetDatabase(),
                 SelectQuestionInput(

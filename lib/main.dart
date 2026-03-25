@@ -80,6 +80,23 @@ class _AppState extends ConsumerState<App> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+    ref.listen(settingsProvider, (prev, next) {
+      if (next.scoutingLead != prev?.scoutingLead) {
+        if (currentPage >= 2) {
+          if (next.scoutingLead) {
+            setState(() {
+              currentPage = 4;
+            });
+          } else {
+            setState(() {
+              currentPage = 2;
+            });
+          }
+        }
+      }
+    });
+    final bool scoutingLead = ref.watch(settingsProvider).scoutingLead;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorScheme.of(context).primaryContainer,
@@ -94,23 +111,23 @@ class _AppState extends ConsumerState<App> {
           [
             ScoutingPage(key: homeKey),
             ResultsPage(key: homeKey),
-            AnalysisPage(key: homeKey),
-            ListPage(key: homeKey),
+            if (scoutingLead) ...[
+              AnalysisPage(key: homeKey),
+              ListPage(key: homeKey),
+            ],
             SettingsPage(key: homeKey),
           ][currentPage],
       bottomNavigationBar: CustomNavigationBar(
         destinationIcons: [
           Icons.search,
           Icons.book_outlined,
-          Icons.bar_chart,
-          Icons.assignment_outlined,
+          if (scoutingLead) ...[Icons.bar_chart, Icons.assignment_outlined],
           Icons.settings,
         ],
         destinationLabels: [
           "Scouting",
           "Results",
-          "Analysis",
-          "List",
+          if (scoutingLead) ...["Analysis", "List"],
           "Settings",
         ],
         selectedIndex: currentPage,
