@@ -90,10 +90,22 @@ class SettingsPage extends ConsumerWidget {
                             ),
                           ),
                 ),
+                ToggleQuestionInput(
+                  question: QuestionToggle(
+                    section: 0,
+                    key: "",
+                    label: "Scouting Lead",
+                  ),
+                  value: settings.scoutingLead,
+                  onChanged:
+                      (val) => ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(settings.copyWith(scoutingLead: val)),
+                ),
               ],
             ),
             FormSection(
-              title: "Visual",
+              title: "Preferences",
               children: [
                 SelectQuestionInput(
                   question: QuestionSelect(
@@ -112,11 +124,6 @@ class SettingsPage extends ConsumerWidget {
                             ),
                           ),
                 ),
-              ],
-            ),
-            FormSection(
-              title: "Preferences",
-              children: [
                 ToggleQuestionInput(
                   question: QuestionToggle(
                     section: 0,
@@ -136,18 +143,6 @@ class SettingsPage extends ConsumerWidget {
             FormSection(
               title: "⚠️ Advanced ⚠️",
               children: [
-                ToggleQuestionInput(
-                  question: QuestionToggle(
-                    section: 0,
-                    key: "",
-                    label: "Scouting Lead",
-                  ),
-                  value: settings.scoutingLead,
-                  onChanged:
-                      (val) => ref
-                          .read(settingsProvider.notifier)
-                          .updateSettings(settings.copyWith(scoutingLead: val)),
-                ),
                 GenerateDummyData(),
                 ResetDatabase(),
                 SelectQuestionInput(
