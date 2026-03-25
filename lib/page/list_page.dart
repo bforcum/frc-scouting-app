@@ -33,18 +33,23 @@ class _ListPageState extends ConsumerState<ListPage> {
           child: Text(
             "Pick list not supported for this game format",
             style: TextTheme.of(context).titleMedium,
+            textAlign: TextAlign.center,
           ),
         ),
       );
     }
-
-    if (eventCode == null) {
-      return Center(
+    final noEventMessage = Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
         child: Text(
           "Please select a specific event in settings",
           style: TextTheme.of(context).titleMedium,
+          textAlign: TextAlign.center,
         ),
-      );
+      ),
+    );
+    if (eventCode == null) {
+      return noEventMessage;
     }
 
     final AsyncValue<List<TeamData>?> teamData = ref.watch(teamsListProvider);
@@ -63,12 +68,7 @@ class _ListPageState extends ConsumerState<ListPage> {
     if (teamData.hasValue) {
       if (teamData.requireValue == null) {
         if (teamData.requireValue == null) {
-          return Center(
-            child: Text(
-              "Please select a specific event in settings",
-              style: TextTheme.of(context).titleMedium,
-            ),
-          );
+          return noEventMessage;
         }
       }
       pickList =
