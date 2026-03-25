@@ -61,7 +61,7 @@ class _PickListCardState extends ConsumerState<PickListCard> {
                 return;
               }
               ref
-                  .read(teamsListProvider.notifier)
+                  .read(TeamsListProvider(widget.data.eventCode).notifier)
                   .move(
                     Team(
                       teamNumber: widget.data.teamNumber,

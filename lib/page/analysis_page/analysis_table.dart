@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:scouting_app/database/database.dart';
 import 'package:scouting_app/model/game_format.dart';
+import 'package:scouting_app/model/settings.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/analysis_page/analysis_details.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
@@ -30,7 +31,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   late ScrollController _scTable;
   int? sortBy;
   bool ascending = true;
-  AsyncValue<List<TeamData>?> teamData = AsyncValue.loading();
+  List<TeamData>? teamData;
   List<int> teams = [];
 
   @override
@@ -50,40 +51,32 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
 
   @override
   Widget build(BuildContext context) {
-    final GameFormat format = ref.watch(settingsProvider).gameFormat;
-    final AsyncValue<List<TeamData>?> newTeamData = ref.watch(
-      teamsListProvider,
-    );
-    if (!newTeamData.isLoading) {
-      teamData = newTeamData;
-    }
+    final SettingsModel settings = ref.watch(settingsProvider);
 
-    if (teamData.isLoading) {
-      return Padding(
-        padding: EdgeInsetsGeometry.all(12),
-        child: CircularProgressIndicator(),
+    if (settings.selectedEvent == null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Text(
+            "Please select a specific event in settings",
+            style: TextTheme.of(context).titleMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
       );
     }
-    if (teamData.hasError) {
-      return Text("An error occured: ${teamData.error}");
+    final AsyncValue<List<TeamData>> newTeamData = ref.watch(
+      TeamsListProvider(settings.selectedEvent!),
+    );
+    if (newTeamData.isLoading && teamData == null) {
+      return CircularProgressIndicator();
     }
 
-    if (teamData.requireValue == null) {
-      if (teamData.requireValue == null) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              "Please select a specific event in settings",
-              style: TextTheme.of(context).titleMedium,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        );
-      }
+    if (newTeamData.hasError) {
+      return Text("An error occured: ${newTeamData.error!}");
     }
-    teamData = AsyncData(
-      teamData.requireValue!
+    if (newTeamData.hasValue) {
+      teamData = newTeamData.requireValue
           .where((team) {
             if (!team.teamNumber.toString().startsWith(widget.teamSearch)) {
               return false;
@@ -96,10 +89,10 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
             }
             return true;
           })
-          .sorted(TeamData.sort(sortBy, ascending)),
-    );
+          .sorted(TeamData.sort(sortBy, ascending));
+    }
 
-    teams = teamData.requireValue!.map((e) => e.teamNumber).toList();
+    teams = teamData!.map((e) => e.teamNumber).toList();
     final TextStyle headerStyle = TextTheme.of(
       context,
     ).bodyMedium!.copyWith(fontWeight: FontWeight.w900);
@@ -177,7 +170,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       columnSpacing: 0,
                       headingRowHeight: 0,
                       rows:
-                          teamData.requireValue!
+                          teamData!
                               .map(
                                 (team) => DataRow(
                                   cells: [
@@ -210,7 +203,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                                   (value) => _setPickListState(
                                                     team.teamNumber,
                                                     team.eventCode,
-                                                    format,
+                                                    settings.gameFormat,
                                                     value,
                                                   ),
                                             ),
@@ -242,7 +235,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                       ),
                       columnSpacing: 12,
                       columns:
-                          format.scoreOptions!
+                          settings.gameFormat.scoreOptions!
                               .map(
                                 (title) => DataColumn(
                                   label: Expanded(
@@ -271,7 +264,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                           columnSpacing: 12,
                           headingRowHeight: 0,
                           columns:
-                              format.scoreOptions!
+                              settings.gameFormat.scoreOptions!
                                   .map(
                                     (title) => DataColumn(
                                       label: Expanded(
@@ -292,7 +285,7 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
                                   )
                                   .toList(),
                           rows:
-                              teamData.requireValue!
+                              teamData!
                                   .map(
                                     (data) => DataRow(
                                       cells:
@@ -331,11 +324,11 @@ class _AnalysisTableState extends ConsumerState<AnalysisTable> {
   ) async {
     if (newValue ?? false) {
       ref
-          .read(teamsListProvider.notifier)
+          .read(TeamsListProvider(eventCode).notifier)
           .addToList(team: teamNumber, eventCode: eventCode, format: format);
     } else {
       ref
-          .read(teamsListProvider.notifier)
+          .read(TeamsListProvider(eventCode).notifier)
           .move(
             Team(
               teamNumber: teamNumber,

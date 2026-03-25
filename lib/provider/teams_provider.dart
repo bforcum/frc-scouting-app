@@ -15,15 +15,15 @@ part 'teams_provider.g.dart';
 @riverpod
 class TeamsList extends _$TeamsList {
   @override
-  Future<List<TeamData>?> build() async {
+  Future<List<TeamData>> build(String eventCode) async {
     SettingsModel settings = ref.watch(settingsProvider);
     GameFormat gameFormat = settings.gameFormat;
-    String? eventCode = settings.selectedEvent;
-    if (eventCode == null) {
-      return null;
-    }
+
     List<MatchResult> results = await ref.watch(
-      FilteredResultsProvider(gameFormat: gameFormat).future,
+      FilteredResultsProvider(
+        gameFormat: gameFormat,
+        eventCode: eventCode,
+      ).future,
     );
     Map<int, List<MatchResult>> binnedResults = {};
 
@@ -58,6 +58,7 @@ class TeamsList extends _$TeamsList {
           (o) => teamNumbers.map(
             (val) => TeamsCompanion(
               teamNumber: Value(val),
+              eventCode: Value(eventCode),
               gameFormat: Value(gameFormat.id),
             ),
           ),
@@ -105,7 +106,7 @@ class TeamsList extends _$TeamsList {
     ref.invalidateSelf();
   }
 
-  Future move(Team team) async {
+  Future<void> move(Team team) async {
     AppDatabase db = ref.read(databaseProvider);
     Team previous =
         await db.managers.teams

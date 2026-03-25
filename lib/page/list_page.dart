@@ -25,7 +25,7 @@ class _ListPageState extends ConsumerState<ListPage> {
   @override
   Widget build(BuildContext context) {
     GameFormat format = ref.watch(settingsProvider).gameFormat;
-    String? eventCode = ref.watch(settingsProvider).eventCode;
+    String? eventCode = ref.watch(settingsProvider).selectedEvent;
     if (format.analysis == null) {
       return Center(
         child: Padding(
@@ -38,45 +38,42 @@ class _ListPageState extends ConsumerState<ListPage> {
         ),
       );
     }
-    final noEventMessage = Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Text(
-          "Please select a specific event in settings",
-          style: TextTheme.of(context).titleMedium,
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
     if (eventCode == null) {
-      return noEventMessage;
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Text(
+            "Please select a specific event in settings",
+            style: TextTheme.of(context).titleMedium,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
     }
 
-    final AsyncValue<List<TeamData>?> teamData = ref.watch(teamsListProvider);
+    AsyncValue<List<TeamData>> teams = ref.watch(TeamsListProvider(eventCode));
+
+    if (pickList == null) {
+      if (teams.hasValue) {
+        pickList =
+            teams.requireValue
+                .where((team) => team.pickListPosition != null)
+                .sortedBy((team) => team.pickListPosition!)
+                .toList();
+      } else {
+        return Center(child: CircularProgressIndicator());
+      }
+    }
+
+    if (teams.hasError) {
+      return Text("An error occured: ${teams.error}");
+    }
+
     filterStates ??= List.generate(
       format.criteriaOptions!.length,
       (i) => false,
     );
 
-    if (teamData.isLoading && pickList == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-    if (teamData.hasError) {
-      return Text("An error occured: ${teamData.error}");
-    }
-
-    if (teamData.hasValue) {
-      if (teamData.requireValue == null) {
-        if (teamData.requireValue == null) {
-          return noEventMessage;
-        }
-      }
-      pickList =
-          teamData.requireValue!
-              .where((data) => data.pickListPosition != null)
-              .toList();
-    }
-    pickList!.sortBy((e) => e.pickListPosition!);
     List<TeamData> filteredPickList =
         editMode
             ? pickList!
@@ -157,7 +154,7 @@ class _ListPageState extends ConsumerState<ListPage> {
                         );
                       });
                       ref
-                          .read(teamsListProvider.notifier)
+                          .read(TeamsListProvider(eventCode).notifier)
                           .order(
                             format,
                             eventCode,
@@ -193,18 +190,20 @@ class _ListPageState extends ConsumerState<ListPage> {
             buildDefaultDragHandles: false,
             padding: EdgeInsets.all(8),
 
-            onReorder: (prev, next) {
+            onReorder: (prev, next) async {
               next -= (next > prev) ? 1 : 0;
               // Swap within ephemeral state
-              final TeamData team = pickList!.removeAt(prev);
-              pickList!.insert(next, team);
+              setState(() {
+                final TeamData team = pickList!.removeAt(prev);
+                pickList!.insert(next, team);
+              });
 
-              ref
-                  .read(teamsListProvider.notifier)
+              await ref
+                  .read(TeamsListProvider(eventCode).notifier)
                   .move(
                     Team(
-                      teamNumber: pickList![prev].teamNumber,
-                      eventCode: pickList![prev].eventCode,
+                      teamNumber: pickList![next].teamNumber,
+                      eventCode: pickList![next].eventCode,
                       gameFormat: format.id,
                       pickListPosition: next,
                     ),
