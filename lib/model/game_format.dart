@@ -1,10 +1,25 @@
+import 'dart:math';
+
+import 'package:collection/collection.dart';
+import 'package:excel/excel.dart';
+import 'package:flutter/material.dart';
 import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/analysis/match_analysis/match_analysis_2025.dart';
 import 'package:scouting_app/analysis/match_analysis/match_analysis_2026.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
+import 'package:scouting_app/page/scouting_page/form_input/dense_counter_input.dart';
+import 'package:statistics/statistics.dart';
+
+part 'game_format_2026.dart';
 
 enum GameFormat {
+  v2026v2(
+    id: 3,
+    sections: _sections2026v2,
+    questions: _questions2026v2,
+    comment: _comment2026,
+  ),
   v2026(
     id: 2,
     sections: _sections2026,
@@ -58,6 +73,7 @@ const List<String> _sections2026 = [
   "Offense",
   "End-Game, Additional",
 ];
+
 const List<Question> _questions2026 = [
   QuestionCounter(section: 0, key: "autoFuel", label: "Auto Fuel"),
   QuestionToggle(section: 0, key: "autoClimbAttempt", label: "Climb Attempted"),

@@ -29,6 +29,7 @@ class _AnalysisPageState extends ConsumerState<AnalysisPage> {
           padding: const EdgeInsets.all(40.0),
           child: Text(
             "Analysis not supported for this game format",
+            textAlign: TextAlign.center,
             style: TextTheme.of(context).titleMedium,
           ),
         ),

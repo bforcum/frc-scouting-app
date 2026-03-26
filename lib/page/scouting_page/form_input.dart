@@ -23,6 +23,7 @@ class FormInput extends ConsumerWidget {
     Key fieldKey = ValueKey(ref.watch(formResetProvider));
 
     FormField formField = createFormField(
+      context: context,
       fieldKey: fieldKey,
       question: question,
       value: value,
@@ -33,6 +34,7 @@ class FormInput extends ConsumerWidget {
 }
 
 FormField createFormField({
+  required BuildContext context,
   Key? fieldKey,
   required Question question,
   required dynamic value,
@@ -44,6 +46,7 @@ FormField createFormField({
     validator: (value) => question.validator(value, onChanged),
     builder:
         (formState) => question.input(
+          context: context,
           value: value,
           onChanged: (value) {
             onChanged(value);

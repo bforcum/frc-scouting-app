@@ -10,6 +10,7 @@ class CounterQuestionInput extends StatelessWidget {
   final int? preset;
   final int stepSize;
   final int value;
+
   const CounterQuestionInput({
     super.key,
     required this.label,

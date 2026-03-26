@@ -12,20 +12,7 @@ import 'package:scouting_app/page/scouting_page/form_input/select_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 
-enum QuestionType {
-  toggle(type: bool),
-  counter(type: int),
-  number(type: int),
-  select(type: int),
-  text(type: String);
-
-  const QuestionType({required this.type});
-
-  final Type type;
-}
-
 abstract class Question<T> {
-  abstract final QuestionType type;
   abstract final String key;
   abstract final int section;
   abstract final String label;
@@ -33,12 +20,13 @@ abstract class Question<T> {
   abstract final int cellCount;
 
   Widget input({
+    required BuildContext context,
     T? value,
     required void Function(T? value) onChanged,
     String? errorText,
   });
   String? validator(T? value, void Function(T?) onChanged);
-  Widget view(T value);
+  Widget view(BuildContext context, T value);
   void toBin(ByteDataWriter writer, T val);
   T? fromBin(ByteDataReader reader);
   List<CellValue> toExcel(T val);
@@ -49,8 +37,6 @@ abstract class Question<T> {
 }
 
 class QuestionToggle extends Question<bool> {
-  @override
-  final QuestionType type = QuestionType.toggle;
   @override
   final int cellCount = 1;
   @override
@@ -70,11 +56,7 @@ class QuestionToggle extends Question<bool> {
   });
 
   @override
-  Widget input({
-    bool? value,
-    required void Function(bool?) onChanged,
-    String? errorText,
-  }) {
+  Widget input({required context, value, required onChanged, errorText}) {
     return ToggleQuestionInput(
       label: label,
       preset: preset,
@@ -90,7 +72,8 @@ class QuestionToggle extends Question<bool> {
   }
 
   @override
-  Widget view(value) => MatchResultField(label: label, value: value.toString());
+  Widget view(context, value) =>
+      MatchResultField(label: label, value: value.toString());
   @override
   void toBin(writer, val) => writer.writeUint8(val == true ? 1 : 0);
   @override
@@ -104,8 +87,6 @@ class QuestionToggle extends Question<bool> {
 }
 
 class QuestionCounter extends Question<int> {
-  @override
-  final QuestionType type = QuestionType.counter;
   @override
   final int cellCount = 1;
   @override
@@ -132,7 +113,7 @@ class QuestionCounter extends Question<int> {
   }) : assert(max - min < 256, "Counter range must be less than 256"),
        assert(stepSize > 0);
   @override
-  Widget input({int? value, required onChanged, errorText}) =>
+  Widget input({required context, value, required onChanged, errorText}) =>
       CounterQuestionInput(
         label: label,
         value: value ?? preset ?? min,
@@ -148,7 +129,8 @@ class QuestionCounter extends Question<int> {
   }
 
   @override
-  Widget view(val) => MatchResultField(label: label, value: val.toString());
+  Widget view(context, val) =>
+      MatchResultField(label: label, value: val.toString());
   @override
   void toBin(writer, val) => writer.writeUint8(val - min);
   @override
@@ -163,8 +145,6 @@ class QuestionCounter extends Question<int> {
 }
 
 class QuestionNumber extends Question<int> {
-  @override
-  final QuestionType type = QuestionType.number;
   @override
   final int cellCount = 1;
   @override
@@ -194,15 +174,16 @@ class QuestionNumber extends Question<int> {
        ),
        assert(min <= max, "Min can't be greater than max");
   @override
-  Widget input({value, required onChanged, errorText}) => NumberQuestionInput(
-    label: label,
-    initialValue: value,
-    min: min,
-    max: max,
-    hint: hint,
-    errorText: errorText,
-    onChanged: onChanged,
-  );
+  Widget input({required context, value, required onChanged, errorText}) =>
+      NumberQuestionInput(
+        label: label,
+        initialValue: value,
+        min: min,
+        max: max,
+        hint: hint,
+        errorText: errorText,
+        onChanged: onChanged,
+      );
   @override
   String? validator(value, onChanged) {
     if (value == null) {
@@ -216,7 +197,8 @@ class QuestionNumber extends Question<int> {
   }
 
   @override
-  Widget view(val) => MatchResultField(label: label, value: val.toString());
+  Widget view(context, val) =>
+      MatchResultField(label: label, value: val.toString());
   @override
   void toBin(writer, val) => writer.writeUint16(val - min);
   @override
@@ -231,8 +213,6 @@ class QuestionNumber extends Question<int> {
 }
 
 class QuestionSelect extends Question<int> {
-  @override
-  final QuestionType type = QuestionType.select;
   @override
   final int cellCount = 1;
   @override
@@ -255,17 +235,18 @@ class QuestionSelect extends Question<int> {
     required this.options,
     this.preset,
     this.dropdown = false,
-  }) : assert(preset == null || (0 <= preset && preset < options.length));
+  });
 
   @override
-  Widget input({value, required onChanged, errorText}) => SelectQuestionInput(
-    label: label,
-    options: options,
-    dropdown: dropdown,
-    errorText: errorText,
-    initialValue: value ?? preset,
-    onChanged: onChanged,
-  );
+  Widget input({required context, value, required onChanged, errorText}) =>
+      SelectQuestionInput(
+        label: label,
+        options: options,
+        dropdown: dropdown,
+        errorText: errorText,
+        initialValue: value ?? preset,
+        onChanged: onChanged,
+      );
   @override
   String? validator(value, onChanged) {
     if (value == null) {
@@ -279,7 +260,8 @@ class QuestionSelect extends Question<int> {
   }
 
   @override
-  Widget view(val) => MatchResultField(label: label, value: options[val]);
+  Widget view(context, val) =>
+      MatchResultField(label: label, value: options[val], big: !dropdown);
   @override
   void toBin(writer, val) => writer.writeInt8(val);
   @override
@@ -295,8 +277,6 @@ class QuestionSelect extends Question<int> {
 }
 
 class QuestionText extends Question<String> {
-  @override
-  final QuestionType type = QuestionType.text;
   @override
   final int cellCount = 1;
   @override
@@ -323,14 +303,15 @@ class QuestionText extends Question<String> {
     this.hint,
   }) : preset = null;
   @override
-  Widget input({value, required onChanged, errorText}) => TextQuestionInput(
-    label: label,
-    length: length,
-    hint: hint,
-    errorText: errorText,
-    initialValue: value,
-    onChanged: onChanged,
-  );
+  Widget input({required context, value, required onChanged, errorText}) =>
+      TextQuestionInput(
+        label: label,
+        length: length,
+        hint: hint,
+        errorText: errorText,
+        initialValue: value,
+        onChanged: onChanged,
+      );
   @override
   String? validator(value, onChanged) {
     if ((value == null || value == "") && requiredField) {
@@ -344,7 +325,7 @@ class QuestionText extends Question<String> {
   }
 
   @override
-  Widget view(val) => MatchResultField(
+  Widget view(context, val) => MatchResultField(
     label: label,
     value: val.toString(),
     hint: "No data",

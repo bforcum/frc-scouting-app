@@ -40,6 +40,7 @@ class ViewResultPage extends StatelessWidget {
         children:
             questionIndices[section].map((index) {
               return game.questions[index].view(
+                context,
                 result.data[game.questions[index].key],
               );
             }).toList(),

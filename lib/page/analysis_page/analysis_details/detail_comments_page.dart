@@ -12,6 +12,37 @@ class DetailCommentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> cards =
+        results
+            .where((e) => (e.comment ?? "").isNotEmpty)
+            .map(
+              (e) => Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: ColorScheme.of(context).surfaceContainer,
+                  borderRadius: BorderRadius.circular(kBorderRadius),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Match ${e.matchNumber}",
+                      style: TextTheme.of(
+                        context,
+                      ).bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    Text(e.comment!),
+                    Row(
+                      children: [
+                        Spacer(),
+                        Text(e.scoutName, textAlign: TextAlign.end),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+            .toList();
     return Expanded(
       child: SingleChildScrollView(
         child: Padding(
@@ -20,36 +51,18 @@ class DetailCommentsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 12,
             children:
-                results
-                    .where((e) => (e.comment ?? "").isNotEmpty)
-                    .map(
-                      (e) => Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: ColorScheme.of(context).surfaceContainer,
-                          borderRadius: BorderRadius.circular(kBorderRadius),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Match ${e.matchNumber}",
-                              style: TextTheme.of(context).bodyLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(e.comment!),
-                            Row(
-                              children: [
-                                Spacer(),
-                                Text(e.scoutName, textAlign: TextAlign.end),
-                              ],
-                            ),
-                          ],
+                cards.isEmpty
+                    ? [
+                      Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text(
+                          "No Comments",
+                          textAlign: TextAlign.center,
+                          style: TextTheme.of(context).titleSmall,
                         ),
                       ),
-                    )
-                    .toList(),
+                    ]
+                    : cards,
           ),
         ),
       ),
