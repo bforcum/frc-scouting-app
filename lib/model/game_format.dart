@@ -112,7 +112,6 @@ const QuestionText _comment2026 = QuestionText(
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
-  big: true,
 );
 
 const List<String> _sections2025 = [
@@ -200,7 +199,6 @@ const QuestionText _comment2025 = QuestionText(
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
-  big: true,
 );
 
 const List<String> _sections2024 = [
@@ -244,5 +242,4 @@ const QuestionText _comment2024 = QuestionText(
   label: "Notes",
   hint: "Additional Notes",
   length: 100,
-  big: true,
 );

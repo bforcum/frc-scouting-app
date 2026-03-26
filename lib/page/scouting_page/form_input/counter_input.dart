@@ -1,38 +1,31 @@
-import 'package:flutter/material.dart';
-import 'package:scouting_app/model/question.dart';
+import 'dart:math' as math;
 
-class CounterQuestionInput extends StatefulWidget {
+import 'package:flutter/material.dart';
+
+class CounterQuestionInput extends StatelessWidget {
   final Function(int) onChanged;
+  final String label;
+  final int min;
+  final int max;
+  final int? preset;
+  final int stepSize;
   final int value;
-  final QuestionCounter question;
   const CounterQuestionInput({
     super.key,
+    required this.label,
     required this.value,
     required this.onChanged,
-    required this.question,
+    required this.min,
+    required this.max,
+    this.preset,
+    this.stepSize = 1,
   });
-
-  @override
-  State<CounterQuestionInput> createState() => _CounterQuestionInputState();
-}
-
-class _CounterQuestionInputState extends State<CounterQuestionInput> {
-  late int value;
-
-  @override
-  void initState() {
-    super.initState();
-    value = widget.value;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          widget.question.label,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         const Spacer(),
         Container(
           height: 48,
@@ -52,14 +45,9 @@ class _CounterQuestionInputState extends State<CounterQuestionInput> {
                 icon: Icon(Icons.horizontal_rule),
 
                 onPressed:
-                    (value <= widget.question.min)
+                    (value <= min)
                         ? null
-                        : () {
-                          setState(() {
-                            --value;
-                            widget.onChanged(value);
-                          });
-                        },
+                        : () => onChanged(math.max(min, value - stepSize)),
               ),
               Container(
                 width: 32,
@@ -73,14 +61,9 @@ class _CounterQuestionInputState extends State<CounterQuestionInput> {
                 iconSize: 32,
                 icon: Icon(Icons.add),
                 onPressed:
-                    (value >= widget.question.max)
+                    (value >= max)
                         ? null
-                        : () {
-                          setState(() {
-                            value += 1;
-                            widget.onChanged(value);
-                          });
-                        },
+                        : () => onChanged(math.min(max, value + stepSize)),
               ),
             ],
           ),

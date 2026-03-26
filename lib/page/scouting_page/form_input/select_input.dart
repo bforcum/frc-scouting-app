@@ -2,34 +2,40 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scouting_app/model/question.dart';
 
 class SelectQuestionInput extends StatelessWidget {
-  final QuestionSelect question;
+  final String label;
+  final List<String> options;
+  final bool dropdown;
+  final int? preset;
+
   final Function(int?) onChanged;
   final String? errorText;
   final int? initialValue;
 
   const SelectQuestionInput({
     super.key,
-    required this.question,
+    required this.label,
+    required this.options,
+    required this.dropdown,
     required this.onChanged,
+    this.preset,
     this.errorText,
     this.initialValue,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (!question.dropdown) {
+    if (!dropdown) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         spacing: 8,
         children: [
-          Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+          Text(label, style: Theme.of(context).textTheme.bodyMedium),
           SegmentedButton<int>(
             showSelectedIcon: false,
             segments:
-                question.options
+                options
                     .mapIndexed(
                       (i, val) => ButtonSegment<int>(
                         value: i,
@@ -51,7 +57,7 @@ class SelectQuestionInput extends StatelessWidget {
     }
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         DropdownMenu<int>(
           width: 144,
@@ -78,14 +84,14 @@ class SelectQuestionInput extends StatelessWidget {
           trailingIcon: Icon(Icons.arrow_drop_down, size: 20),
           selectedTrailingIcon: Icon(Icons.arrow_drop_up, size: 20),
           requestFocusOnTap: false,
-          initialSelection: initialValue ?? question.preset,
+          initialSelection: initialValue ?? preset,
           hintText: "Select",
           keyboardType: TextInputType.none,
           enableSearch: false,
           textStyle: Theme.of(context).textTheme.bodySmall!,
           dropdownMenuEntries: [
-            for (int i = 0; i < question.options.length; i++)
-              DropdownMenuEntry(value: i, label: question.options[i]),
+            for (int i = 0; i < options.length; i++)
+              DropdownMenuEntry(value: i, label: options[i]),
           ],
           onSelected: (value) {
             onChanged(value);

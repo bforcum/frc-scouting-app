@@ -32,13 +32,13 @@ abstract class MatchResult
   }) = _MatchResultModel;
 
   factory MatchResult.fromMap(Map<String, dynamic> data) {
-    assert(data["eventCode"].runtimeType == String);
-    assert(data["teamNumber"].runtimeType == int);
-    assert(data["matchNumber"].runtimeType == int);
-    assert(data["timeStamp"].runtimeType == DateTime);
-    assert(data["scoutName"].runtimeType == String);
-    assert(data["gameFormat"].runtimeType == GameFormat);
-    assert(data["comment"].runtimeType == String);
+    assert(data["eventCode"] is String);
+    assert(data["teamNumber"] is int);
+    assert(data["matchNumber"] is int);
+    assert(data["timeStamp"] is DateTime);
+    assert(data["scoutName"] is String);
+    assert(data["gameFormat"] is GameFormat);
+    assert(data["comment"] is String);
 
     return MatchResult(
       eventCode: data["eventCode"],
@@ -64,25 +64,7 @@ abstract class MatchResult
     writer.writeUint16(gameFormat.id);
 
     for (var question in gameFormat.questions) {
-      switch (question.type) {
-        case QuestionType.counter:
-          writer.writeUint8(data[question.key] ?? 0);
-          break;
-        case QuestionType.toggle:
-          writer.writeUint8(data[question.key] == true ? 1 : 0);
-          break;
-        case QuestionType.number:
-          writer.writeUint16(data[question.key] ?? 0);
-          break;
-        case QuestionType.select:
-          writer.writeUint8(data[question.key] ?? 0);
-          break;
-        case QuestionType.text:
-          Uint8List text = utf8.encode(data[question.key]?.toString() ?? "");
-          writer.writeUint8(text.length);
-          writer.write(text);
-          break;
-      }
+      question.toBin(writer, data[question.key]);
     }
 
     return writer.toBytes();
@@ -134,25 +116,7 @@ abstract class MatchResult
 
     for (var question in gameFormat.questions) {
       try {
-        switch (question.type) {
-          case QuestionType.counter:
-            data[question.key] = reader.readUint8();
-            break;
-          case QuestionType.toggle:
-            data[question.key] = reader.readUint8() > 0;
-            break;
-          case QuestionType.number:
-            data[question.key] = reader.readUint16();
-            break;
-          case QuestionType.select:
-            data[question.key] = reader.readUint8();
-            break;
-          case QuestionType.text:
-            int length = reader.readUint8();
-            data[question.key] =
-                String.fromCharCodes(reader.read(length)).trim();
-            break;
-        }
+        data[question.key] = question.fromBin(reader);
       } catch (e) {
         continue;
       }
@@ -172,21 +136,8 @@ abstract class MatchResult
 
     for (int i = 0; i < gameFormat.questions.length; i++) {
       Question question = gameFormat.questions[i];
-      Data dataVal = values[i + 5];
       try {
-        switch (question.type) {
-          case QuestionType.counter:
-          case QuestionType.number:
-          case QuestionType.select:
-            data[question.key] = (dataVal.value as IntCellValue).value;
-            break;
-          case QuestionType.toggle:
-            data[question.key] = (dataVal.value as BoolCellValue).value;
-            break;
-          case QuestionType.text:
-            data[question.key] = (dataVal.value as TextCellValue).toString();
-            break;
-        }
+        data[question.key] = question.fromExcel(values, i + 5);
       } catch (e) {
         continue;
       }
@@ -213,18 +164,7 @@ abstract class MatchResult
     row.add(TextCellValue(scoutName));
 
     for (var question in gameFormat.questions) {
-      switch (question.type) {
-        case QuestionType.counter:
-        case QuestionType.number:
-        case QuestionType.select:
-          row.add(IntCellValue(data[question.key]));
-          break;
-        case QuestionType.toggle:
-          row.add(BoolCellValue(data[question.key]));
-        case QuestionType.text:
-          row.add(TextCellValue(data[question.key]));
-          break;
-      }
+      row.addAll(question.toExcel(data[question.key]));
     }
     return row;
   }

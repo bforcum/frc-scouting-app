@@ -39,9 +39,8 @@ class ViewResultPage extends StatelessWidget {
         title: game.sections[section],
         children:
             questionIndices[section].map((index) {
-              return MatchResultField.question(
-                question: game.questions[index],
-                value: result.data[game.questions[index].key],
+              return game.questions[index].view(
+                result.data[game.questions[index].key],
               );
             }).toList(),
       );

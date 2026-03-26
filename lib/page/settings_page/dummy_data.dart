@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scouting_app/model/game_format.dart';
 import 'package:scouting_app/model/match_result.dart';
-import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/common/confirmation.dart';
 import 'package:scouting_app/page/common/snack_bar_message.dart';
 import 'package:scouting_app/provider/settings_provider.dart';
@@ -76,24 +75,7 @@ Future<String?> generateDummyData(WidgetRef ref) async {
           Duration(minutes: i * 6 - 500, seconds: j * 5),
         );
         for (var question in gameFormat.questions) {
-          switch (question.type) {
-            case QuestionType.toggle:
-              data[question.key] = rng.nextBool();
-            case QuestionType.counter:
-              question = question as QuestionCounter;
-              data[question.key] =
-                  rng.nextInt(question.max - question.min + 1) + question.min;
-            case QuestionType.number:
-              question = question as QuestionNumber;
-              data[question.key] =
-                  rng.nextInt(question.max ?? 10000 - (question.min ?? 0) + 1) +
-                  (question.min ?? 0);
-            case QuestionType.select:
-              question = question as QuestionSelect;
-              data[question.key] = rng.nextInt(question.options.length);
-            case QuestionType.text:
-              data[question.key] = "Sample text ${(i * 6 + j)}";
-          }
+          data[question.key] = question.randomValue(rng);
         }
         results.add(MatchResult.fromMap(data));
       }

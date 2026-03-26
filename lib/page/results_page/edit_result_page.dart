@@ -59,7 +59,7 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
           question: QuestionText(
             section: 0,
             key: "eventCode",
-            label: "Event name",
+            label: "Event code",
             length: 5,
             requiredField: true,
           ),

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scouting_app/consts.dart';
-import 'package:scouting_app/model/question.dart';
 
 class TextQuestionInput extends StatefulWidget {
   final Function(String)? onChanged;
-  final QuestionText question;
+  final String? hint;
+  final String label;
+  final bool big;
+  final int length;
   final String? initialValue;
   final String? errorText;
   final List<TextInputFormatter>? inputFormatters;
 
   const TextQuestionInput({
     super.key,
-    required this.question,
+    required this.label,
+    required this.length,
+    this.big = true,
+    this.hint,
     this.errorText,
     this.initialValue,
     this.onChanged,
@@ -24,23 +29,19 @@ class TextQuestionInput extends StatefulWidget {
 }
 
 class _TextQuestionInputState extends State<TextQuestionInput> {
-  late final QuestionText question;
-
   final _focusNode = FocusNode();
   String? _hintText = "";
 
   @override
   void initState() {
     super.initState();
-
-    question = widget.question;
-    _hintText = question.hint ?? "";
+    _hintText = widget.hint ?? "";
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _hintText = "";
       } else {
-        _hintText = question.hint;
+        _hintText = widget.hint;
       }
       setState(() {});
     });
@@ -51,17 +52,17 @@ class _TextQuestionInputState extends State<TextQuestionInput> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
         SizedBox(height: 10),
         TextFormField(
           minLines: 1,
-          maxLines: widget.question.big ? null : 1,
+          maxLines: widget.big ? null : 1,
           initialValue:
               (widget.initialValue != "") ? widget.initialValue : null,
           onChanged: widget.onChanged,
           focusNode: _focusNode,
           keyboardType: TextInputType.text,
-          maxLength: question.length,
+          maxLength: widget.length,
           autocorrect: false,
           textAlign: TextAlign.left,
           textAlignVertical: TextAlignVertical.top,

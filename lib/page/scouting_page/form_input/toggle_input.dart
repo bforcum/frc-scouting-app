@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:scouting_app/model/question.dart';
 
 class ToggleQuestionInput extends StatelessWidget {
   final Function(bool) onChanged;
   final bool? value;
-  final QuestionToggle question;
+  final String label;
+  final bool? preset;
 
   const ToggleQuestionInput({
     super.key,
-    required this.question,
+    required this.label,
+    this.preset,
     required this.value,
     required this.onChanged,
   });
@@ -17,12 +18,12 @@ class ToggleQuestionInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         SizedBox(
           height: 36,
           child: _ToggleSwitch(
-            value: value ?? question.preset ?? false,
+            value: value ?? preset ?? false,
             onChanged: (value) {
               onChanged(value);
             },

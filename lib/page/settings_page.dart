@@ -39,12 +39,8 @@ class SettingsPage extends ConsumerWidget {
               title: "User Info",
               children: [
                 TextQuestionInput(
-                  question: QuestionText(
-                    section: 0,
-                    key: "",
-                    label: "Scout name",
-                    length: 30,
-                  ),
+                  label: "Scout name",
+                  length: 30,
                   initialValue: settings.scoutName,
                   onChanged:
                       (text) => ref
@@ -52,12 +48,8 @@ class SettingsPage extends ConsumerWidget {
                           .updateSettings(settings.copyWith(scoutName: text)),
                 ),
                 TextQuestionInput(
-                  question: QuestionText(
-                    section: 0,
-                    key: "",
-                    label: "Event name",
-                    length: 5,
-                  ),
+                  label: "Event code",
+                  length: 5,
                   initialValue: settings.eventCode,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r"[a-zA-Z\s]")),
@@ -70,14 +62,10 @@ class SettingsPage extends ConsumerWidget {
                           ),
                 ),
                 SelectQuestionInput(
-                  question: QuestionSelect(
-                    section: 0,
-                    key: "",
-                    label: "Selected Event",
-                    options: ["All Events", ...(events.valueOrNull ?? [])],
-                    preset: eventIndex,
-                    dropdown: true,
-                  ),
+                  label: "Selected Event",
+                  options: ["All Events", ...(events.valueOrNull ?? [])],
+                  preset: eventIndex,
+                  dropdown: true,
                   onChanged:
                       (eventNum) => ref
                           .read(settingsProvider.notifier)
@@ -91,11 +79,7 @@ class SettingsPage extends ConsumerWidget {
                           ),
                 ),
                 ToggleQuestionInput(
-                  question: QuestionToggle(
-                    section: 0,
-                    key: "",
-                    label: "Scouting Lead",
-                  ),
+                  label: "Scouting Lead",
                   value: settings.scoutingLead,
                   onChanged:
                       (val) => ref
@@ -108,12 +92,9 @@ class SettingsPage extends ConsumerWidget {
               title: "Preferences",
               children: [
                 SelectQuestionInput(
-                  question: QuestionSelect(
-                    section: 0,
-                    key: "",
-                    label: "App theme",
-                    options: ["System", "Light", "Dark"],
-                  ),
+                  label: "App theme",
+                  options: ["System", "Light", "Dark"],
+                  dropdown: true,
                   initialValue: settings.themeMode.index,
                   onChanged:
                       (themeIndex) => ref
@@ -125,11 +106,7 @@ class SettingsPage extends ConsumerWidget {
                           ),
                 ),
                 ToggleQuestionInput(
-                  question: QuestionToggle(
-                    section: 0,
-                    key: "",
-                    label: "Increment match number",
-                  ),
+                  label: "Increment match number",
                   value: settings.incrementMatchNumber,
                   onChanged:
                       (val) => ref
@@ -146,16 +123,12 @@ class SettingsPage extends ConsumerWidget {
                 GenerateDummyData(),
                 ResetDatabase(),
                 SelectQuestionInput(
-                  question: QuestionSelect(
-                    section: 0,
-                    key: "",
-                    label: "Game Format",
-                    options: List.generate(
-                      GameFormat.values.length,
-                      (i) => GameFormat.values[i].name,
-                    ),
-                    dropdown: true,
+                  label: "Game Format",
+                  options: List.generate(
+                    GameFormat.values.length,
+                    (i) => GameFormat.values[i].name,
                   ),
+                  dropdown: true,
                   initialValue: settings.gameFormat.index,
                   onChanged: (i) {
                     for (var question in List<Question>.from([

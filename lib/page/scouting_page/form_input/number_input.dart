@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scouting_app/model/question.dart';
 
 class NumberQuestionInput extends StatefulWidget {
   final Function(int?) onChanged;
-  final QuestionNumber question;
+  final String label;
   final int? initialValue;
+  final int? min;
+  final int? max;
+  final String? hint;
   final String? errorText;
 
   const NumberQuestionInput({
     super.key,
-    required this.question,
+    required this.label,
     required this.onChanged,
+    this.min,
+    this.max,
+    this.hint,
     this.initialValue,
     this.errorText,
   });
@@ -21,7 +26,6 @@ class NumberQuestionInput extends StatefulWidget {
 }
 
 class _NumberQuestionInputState extends State<NumberQuestionInput> {
-  late final QuestionNumber question;
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   String _hintText = "";
@@ -29,16 +33,15 @@ class _NumberQuestionInputState extends State<NumberQuestionInput> {
   @override
   void initState() {
     super.initState();
-    question = widget.question;
 
-    _hintText = question.hint ?? "0";
+    _hintText = widget.hint ?? "0";
     _controller.text = widget.initialValue?.toString() ?? "";
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _hintText = "";
       } else {
-        _hintText = question.hint ?? "0";
+        _hintText = widget.hint ?? "0";
       }
       setState(() {});
     });
@@ -48,7 +51,7 @@ class _NumberQuestionInputState extends State<NumberQuestionInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(question.label, style: Theme.of(context).textTheme.bodyMedium),
+        Text(widget.label, style: Theme.of(context).textTheme.bodyMedium),
         Spacer(),
         Container(
           // clipBehavior: Clip.hardEdge,
@@ -78,8 +81,8 @@ class _NumberQuestionInputState extends State<NumberQuestionInput> {
               }
               int val = int.parse(text!);
 
-              if ((question.min != null && (val < question.min!)) ||
-                  (question.max != null && val > question.max!)) {
+              if ((widget.min != null && (val < widget.min!)) ||
+                  (widget.max != null && val > widget.max!)) {
                 return "";
               }
               return null;
