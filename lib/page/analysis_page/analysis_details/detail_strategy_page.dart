@@ -38,7 +38,7 @@ class DetailStrategyPage extends StatelessWidget {
                         color:
                             HSLColor.fromAHSL(
                               1.0,
-                              (i * 25.0) % 360.0,
+                              (-i * 30.0) % 360.0,
                               1.0,
                               0.4,
                             ).toColor(),

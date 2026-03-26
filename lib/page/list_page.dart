@@ -186,40 +186,65 @@ class _ListPageState extends ConsumerState<ListPage> {
           ),
         ),
         Expanded(
-          child: ReorderableListView(
-            buildDefaultDragHandles: false,
-            padding: EdgeInsets.all(8),
-
-            onReorder: (prev, next) async {
-              next -= (next > prev) ? 1 : 0;
-              // Swap within ephemeral state
-              setState(() {
-                final TeamData team = pickList!.removeAt(prev);
-                pickList!.insert(next, team);
-              });
-
-              await ref
-                  .read(TeamsListProvider(eventCode).notifier)
-                  .move(
-                    Team(
-                      teamNumber: pickList![next].teamNumber,
-                      eventCode: pickList![next].eventCode,
-                      gameFormat: format.id,
-                      pickListPosition: next,
+          child: Builder(
+            builder: (context) {
+              if (pickList!.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      "No teams in pick list yet",
+                      style: TextTheme.of(context).titleSmall,
                     ),
-                  );
+                  ),
+                );
+              } else if (filteredPickList.isEmpty) {
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      "No teams match these criteria",
+                      style: TextTheme.of(context).titleSmall,
+                    ),
+                  ),
+                );
+              }
+              return ReorderableListView(
+                buildDefaultDragHandles: false,
+                padding: EdgeInsets.all(8),
+
+                onReorder: (prev, next) async {
+                  next -= (next > prev) ? 1 : 0;
+                  // Swap within ephemeral state
+                  setState(() {
+                    final TeamData team = pickList!.removeAt(prev);
+                    pickList!.insert(next, team);
+                  });
+
+                  await ref
+                      .read(TeamsListProvider(eventCode).notifier)
+                      .move(
+                        Team(
+                          teamNumber: pickList![next].teamNumber,
+                          eventCode: pickList![next].eventCode,
+                          gameFormat: format.id,
+                          pickListPosition: next,
+                        ),
+                      );
+                },
+                children:
+                    filteredPickList
+                        .mapIndexed(
+                          (i, e) => PickListCard(
+                            key: ValueKey(e.teamNumber),
+                            data: e,
+                            listPosition: i,
+                            editMode: editMode,
+                          ),
+                        )
+                        .toList(),
+              );
             },
-            children:
-                filteredPickList
-                    .mapIndexed(
-                      (i, e) => PickListCard(
-                        key: ValueKey(e.teamNumber),
-                        data: e,
-                        listPosition: i,
-                        editMode: editMode,
-                      ),
-                    )
-                    .toList(),
           ),
         ),
       ],
