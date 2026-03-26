@@ -1,5 +1,5 @@
 import 'dart:convert' show utf8;
-import 'dart:math';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:buffer/buffer.dart';
@@ -31,7 +31,7 @@ abstract class Question<T> {
   T? fromBin(ByteDataReader reader);
   List<CellValue> toExcel(T val);
   T fromExcel(List<Data> cells, int i);
-  T randomValue([Random? generator]);
+  T randomValue([math.Random? generator]);
 
   const Question();
 }
@@ -83,7 +83,8 @@ class QuestionToggle extends Question<bool> {
   @override
   bool fromExcel(cells, i) => (cells[i].value as BoolCellValue).value;
   @override
-  bool randomValue([generator]) => generator?.nextBool() ?? Random().nextBool();
+  bool randomValue([generator]) =>
+      generator?.nextBool() ?? math.Random().nextBool();
 }
 
 class QuestionCounter extends Question<int> {
@@ -141,7 +142,7 @@ class QuestionCounter extends Question<int> {
   int fromExcel(cells, i) => (cells[i].value as IntCellValue).value;
   @override
   int randomValue([generator]) =>
-      (generator ?? Random()).nextInt(max - min) + min;
+      (generator ?? math.Random()).nextInt(math.min(max, 20) - min) + min;
 }
 
 class QuestionNumber extends Question<int> {
@@ -209,7 +210,7 @@ class QuestionNumber extends Question<int> {
   int fromExcel(cells, i) => (cells[i].value as IntCellValue).value;
   @override
   int randomValue([generator]) =>
-      (generator ?? Random()).nextInt(max - min) + min;
+      (generator ?? math.Random()).nextInt(max - min) + min;
 }
 
 class QuestionSelect extends Question<int> {
@@ -273,7 +274,7 @@ class QuestionSelect extends Question<int> {
       options.indexOf((cells[i].value as TextCellValue).value.text!);
   @override
   int randomValue([generator]) =>
-      (generator ?? Random()).nextInt(options.length);
+      (generator ?? math.Random()).nextInt(options.length);
 }
 
 class QuestionText extends Question<String> {

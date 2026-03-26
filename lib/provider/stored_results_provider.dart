@@ -63,7 +63,7 @@ class StoredResults extends _$StoredResults {
     final db = ref.read(databaseProvider);
 
     try {
-      await db.matchResults.insertAll(results);
+      await db.matchResults.insertAll(results, mode: InsertMode.insertOrFail);
     } catch (error) {
       return "Error: ${error.toString()}";
     }
@@ -156,8 +156,7 @@ Future<List<MatchResult>> filteredResults(
         (e) => Variable(matchNumber).isNull() | e.matchNumber(matchNumber),
       )
       .filter(
-        (e) =>
-            Variable(gameFormat?.name).isNull() | e.gameFormat(gameFormat?.id),
+        (e) => Variable(gameFormat?.id).isNull() | e.gameFormat(gameFormat?.id),
       );
   switch (sort) {
     case SortType.matchNumAscending:
@@ -192,7 +191,7 @@ enum SortType {
   timeDescending,
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 Future<List<String>> resultEvents(Ref ref) async {
   List<String> events = [];
   List<MatchResult> results = await ref.read(storedResultsProvider.future);

@@ -29,7 +29,7 @@ class MatchAnalysis2026v2 implements MatchAnalysis {
                 ((result.data["autoCycleFull"] as int) +
                     0.5 * (result.data["autoCycleHalf"] as int) +
                     0.2 * (result.data["autoCycleSmall"] as int)) *
-                ([0.2, 0.4, 0.6, 0.8, 0.9][result.data["accuracy"]]))
+                ([0.2, 0.4, 0.6, 0.8, 0.9][result.data["autoAccuracy"]]))
             .round(),
       2 =>
         <double>[

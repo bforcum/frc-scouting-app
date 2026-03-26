@@ -66,7 +66,7 @@ class _ListPageState extends ConsumerState<ListPage> {
     }
 
     if (teams.hasError) {
-      return Text("An error occured: ${teams.error}");
+      return Text("An error occurred: ${teams.error}");
     }
 
     filterStates ??= List.generate(

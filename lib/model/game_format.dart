@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:excel/excel.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:scouting_app/analysis/match_analysis.dart';
 import 'package:scouting_app/analysis/match_analysis/match_analysis_2025.dart';
 import 'package:scouting_app/analysis/match_analysis/match_analysis_2026.dart';
+import 'package:scouting_app/analysis/match_analysis/match_analysis_2026v2.dart';
 import 'package:scouting_app/model/match_result.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/page/scouting_page/form_input/dense_counter_input.dart';
@@ -19,6 +20,9 @@ enum GameFormat {
     sections: _sections2026v2,
     questions: _questions2026v2,
     comment: _comment2026,
+    analysis: MatchAnalysis2026v2.new,
+    scoreOptions: MatchAnalysis2026v2.scoreOptions,
+    criteriaOptions: MatchAnalysis2026v2.criteriaOptions,
   ),
   v2026(
     id: 2,

@@ -31,6 +31,8 @@ const List<Question> _questions2026v2 = [
     label: "Accuracy (%)",
     options: ["<30", "30-50", "50-70", "70-90", "90+"],
   ),
+  QuestionToggle(section: 0, key: "autoClimbAttempt", label: "Climb Attempted"),
+  QuestionToggle(section: 0, key: "autoClimb", label: "Climb Success"),
   QuestionToggle(section: 0, key: "autoWin", label: "Won auto"),
   QuestionSelect(
     section: 1,
@@ -74,7 +76,7 @@ const List<Question> _questions2026v2 = [
     label: "Hopper size",
     stepSize: 5,
   ),
-  _QuestionCountGrid(
+  _QuestionCounterGrid(
     section: 2,
     key: "teleHubCycles",
     label: "Hub Cycles (accuracy & amount in hopper)",
@@ -99,7 +101,7 @@ const List<Question> _questions2026v2 = [
   QuestionToggle(section: 3, key: "disabled", label: "Disabled during match"),
 ];
 
-class _QuestionCountGrid extends Question<List<int>> {
+class _QuestionCounterGrid extends Question<List<int>> {
   @override
   final int cellCount = 1;
   @override
@@ -117,7 +119,7 @@ class _QuestionCountGrid extends Question<List<int>> {
   final int min;
   final int max;
 
-  const _QuestionCountGrid({
+  const _QuestionCounterGrid({
     required this.section,
     required this.key,
     required this.label,
@@ -259,7 +261,9 @@ class _QuestionCountGrid extends Question<List<int>> {
   List<int> randomValue([generator]) {
     List<int> values = [];
     for (int i = 0; i < columnLabels.length * rowLabels.length; i++) {
-      values.add((generator ?? Random()).nextInt(max - min) + min);
+      values.add(
+        (generator ?? math.Random()).nextInt(math.min(max, 20) - min) + min,
+      );
     }
     return values;
   }

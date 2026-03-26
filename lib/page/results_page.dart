@@ -83,11 +83,7 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                 children: [
                   Text(
                     "Error encountered: ${matchResults.error}",
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Text(
-                    "${matchResults.stackTrace}",
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),
