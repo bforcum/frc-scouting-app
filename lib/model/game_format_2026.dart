@@ -103,7 +103,9 @@ const List<Question> _questions2026v2 = [
 
 class _QuestionCounterGrid extends Question<List<int>> {
   @override
-  final int cellCount = 1;
+  final QuestionType type = QuestionType.custom;
+  @override
+  int get cellCount => columnLabels.length * rowLabels.length;
   @override
   final String key;
   @override

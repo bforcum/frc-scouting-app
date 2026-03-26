@@ -12,7 +12,10 @@ import 'package:scouting_app/page/scouting_page/form_input/select_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 
+enum QuestionType { toggle, counter, number, select, text, custom }
+
 abstract class Question<T> {
+  abstract final QuestionType type;
   abstract final String key;
   abstract final int section;
   abstract final String label;
@@ -37,6 +40,8 @@ abstract class Question<T> {
 }
 
 class QuestionToggle extends Question<bool> {
+  @override
+  final QuestionType type = QuestionType.toggle;
   @override
   final int cellCount = 1;
   @override
@@ -88,6 +93,8 @@ class QuestionToggle extends Question<bool> {
 }
 
 class QuestionCounter extends Question<int> {
+  @override
+  final QuestionType type = QuestionType.counter;
   @override
   final int cellCount = 1;
   @override
@@ -146,6 +153,8 @@ class QuestionCounter extends Question<int> {
 }
 
 class QuestionNumber extends Question<int> {
+  @override
+  final QuestionType type = QuestionType.number;
   @override
   final int cellCount = 1;
   @override
@@ -215,6 +224,8 @@ class QuestionNumber extends Question<int> {
 
 class QuestionSelect extends Question<int> {
   @override
+  final QuestionType type = QuestionType.select;
+  @override
   final int cellCount = 1;
   @override
   final String key;
@@ -278,6 +289,8 @@ class QuestionSelect extends Question<int> {
 }
 
 class QuestionText extends Question<String> {
+  @override
+  final QuestionType type = QuestionType.text;
   @override
   final int cellCount = 1;
   @override
