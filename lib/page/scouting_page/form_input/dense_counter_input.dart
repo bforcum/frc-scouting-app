@@ -23,33 +23,24 @@ class DenseCounterInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        debugPrint("Test");
-        if (details.primaryVelocity == null) return;
-        if (details.primaryVelocity! > 20.0 && value < max) {
-          onChanged(math.min(max, value + stepSize));
-        } else if (details.primaryVelocity! < -20.0 && value > min) {
-          onChanged(math.max(min, value - stepSize));
-        }
-      },
-      child: Container(
-        height: 48,
-        decoration: BoxDecoration(
-          border: Border.all(color: ColorScheme.of(context).outline, width: 2),
-          borderRadius: BorderRadius.circular(kBorderRadius),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Expanded(
-          child: Stack(
-            fit: StackFit.passthrough,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        border: Border.all(color: ColorScheme.of(context).outline, width: 2),
+        borderRadius: BorderRadius.circular(kBorderRadius),
+      ),
+      child: Expanded(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Flex(
+                direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.arrow_left,
+                    Icons.remove,
                     size: 20,
                     color:
                         value <= min ? Theme.of(context).disabledColor : null,
@@ -63,23 +54,39 @@ class DenseCounterInput extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.arrow_right,
+                    Icons.add,
                     size: 20,
                     color:
                         value >= max ? Theme.of(context).disabledColor : null,
                   ),
                 ],
               ),
-              // Row(
-              //   mainAxisSize: MainAxisSize.max,
-              //   children: [
-              //     GestureDetector(),
-              //     Expanded(child: GestureDetector()),
-              //     Expanded(child: GestureDetector()),
-              //   ],
-              // ),
-            ],
-          ),
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => onChanged(math.max(min, value - stepSize)),
+                      child: Container(
+                        width: constraints.maxWidth / 2,
+                        height: 44,
+                        color: Color.fromARGB(32, 32, 32, 32),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => onChanged(math.min(max, value + stepSize)),
+                      child: Container(
+                        width: constraints.maxWidth / 2,
+                        height: 44,
+                        color: Color.fromARGB(32, 32, 32, 32),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
