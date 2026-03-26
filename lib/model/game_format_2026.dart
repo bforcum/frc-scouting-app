@@ -138,45 +138,51 @@ class _QuestionCounterGrid extends Question<List<int>> {
       cells.add(<Widget>[]);
       for (int j = 0; j < columnLabels.length; j++) {
         cells[i].add(
-          DenseCounterInput(
-            value: (value ?? preset)?[3 * i + j] ?? 0,
-            onChanged: (val) {
-              List<int> newList =
-                  value?.copy() ??
-                  List.filled(columnLabels.length * rowLabels.length, 0);
-              newList[3 * i + j] = val;
-              onChanged(newList);
-            },
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: DenseCounterInput(
+                value: (value ?? preset)?[3 * i + j] ?? 0,
+                onChanged: (val) {
+                  List<int> newList =
+                      value?.copy() ??
+                      List.filled(columnLabels.length * rowLabels.length, 0);
+                  newList[3 * i + j] = val;
+                  onChanged(newList);
+                },
+              ),
+            ),
           ),
         );
       }
     }
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(label),
-        Row(
+        Flex(
+          direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(width: 40),
             ...columnLabels.map(
-              (columnLabel) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 6),
-                width: 68,
-                height: 60,
-                alignment: Alignment.center,
-                child: Text(columnLabel),
+              (columnLabel) => Flexible(
+                child: Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: Text(columnLabel),
+                ),
               ),
             ),
           ],
         ),
         ...rowLabels.mapIndexed(
-          (i, rowLabel) => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          (i, rowLabel) => Flex(
+            direction: Axis.horizontal,
             children: [
               Container(
                 width: 40,
-                height: 60,
+                height: 55,
                 alignment: Alignment.center,
                 child: Text(rowLabel),
               ),

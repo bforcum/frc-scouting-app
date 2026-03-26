@@ -40,21 +40,46 @@ class DenseCounterInput extends StatelessWidget {
           borderRadius: BorderRadius.circular(kBorderRadius),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.arrow_left, size: 20),
-            Container(
-              width: 24,
-              alignment: Alignment.center,
-              child: Text(
-                value.toString(),
-                style: Theme.of(context).textTheme.bodyMedium,
+        child: Expanded(
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.arrow_left,
+                    size: 20,
+                    color:
+                        value <= min ? Theme.of(context).disabledColor : null,
+                  ),
+                  Container(
+                    width: 24,
+                    alignment: Alignment.center,
+                    child: Text(
+                      value.toString(),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_right,
+                    size: 20,
+                    color:
+                        value >= max ? Theme.of(context).disabledColor : null,
+                  ),
+                ],
               ),
-            ),
-            Icon(Icons.arrow_right, size: 20),
-          ],
+              // Row(
+              //   mainAxisSize: MainAxisSize.max,
+              //   children: [
+              //     GestureDetector(),
+              //     Expanded(child: GestureDetector()),
+              //     Expanded(child: GestureDetector()),
+              //   ],
+              // ),
+            ],
+          ),
         ),
       ),
     );
