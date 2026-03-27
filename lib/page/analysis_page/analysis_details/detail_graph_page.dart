@@ -17,81 +17,79 @@ class _DetailGraphPageState extends State<DetailGraphPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: Column(
-          spacing: 12,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: ColorScheme.of(context).surfaceContainer,
-                borderRadius: BorderRadius.circular(kBorderRadius),
-              ),
-              padding: EdgeInsets.all(8),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return DropdownMenu(
-                    initialSelection: scoreOption,
-                    onSelected:
-                        (value) => setState(() {
-                          if (value != null) scoreOption = value;
-                        }),
-                    label: Text("Statistic"),
-                    width: constraints.maxWidth,
-                    requestFocusOnTap: false,
-                    keyboardType: TextInputType.none,
-                    enableSearch: false,
-                    inputDecorationTheme: InputDecorationTheme(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(kBorderRadius),
-                      ),
-                      labelStyle: Theme.of(context).textTheme.bodyMedium!
-                          .copyWith(color: Theme.of(context).hintColor),
-                    ),
-                    textStyle: Theme.of(context).textTheme.bodySmall,
-
-                    dropdownMenuEntries:
-                        widget.team.gameFormat.scoreOptions!
-                            .mapIndexed(
-                              (i, e) => DropdownMenuEntry(value: i, label: e),
-                            )
-                            .toList(),
-                  );
-                },
-              ),
+    return Padding(
+      padding: EdgeInsets.all(12.0),
+      child: Column(
+        spacing: 12,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: ColorScheme.of(context).surfaceContainer,
+              borderRadius: BorderRadius.circular(kBorderRadius),
             ),
-            Container(
-              height: 300,
-              padding: EdgeInsets.all(8),
-              child: LineChart(
-                LineChartData(
-                  minY: 0,
-                  titlesData: FlTitlesData(
-                    rightTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+            padding: EdgeInsets.all(8),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return DropdownMenu(
+                  initialSelection: scoreOption,
+                  onSelected:
+                      (value) => setState(() {
+                        if (value != null) scoreOption = value;
+                      }),
+                  label: Text("Statistic"),
+                  width: constraints.maxWidth,
+                  requestFocusOnTap: false,
+                  keyboardType: TextInputType.none,
+                  enableSearch: false,
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(kBorderRadius),
                     ),
-                    topTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
+                    labelStyle: Theme.of(context).textTheme.bodyMedium!
+                        .copyWith(color: Theme.of(context).hintColor),
                   ),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: [
-                        for (int i = 0; i < widget.team.results.length; i++)
-                          FlSpot(
-                            widget.team.results[i].matchNumber.toDouble(),
-                            widget.team.scores[scoreOption][i].toDouble(),
-                          ),
-                      ],
-                    ),
-                  ],
+                  textStyle: Theme.of(context).textTheme.bodySmall,
+
+                  dropdownMenuEntries:
+                      widget.team.gameFormat.scoreOptions!
+                          .mapIndexed(
+                            (i, e) => DropdownMenuEntry(value: i, label: e),
+                          )
+                          .toList(),
+                );
+              },
+            ),
+          ),
+          Container(
+            height: 300,
+            padding: EdgeInsets.all(8),
+            child: LineChart(
+              LineChartData(
+                minY: 0,
+                titlesData: FlTitlesData(
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: [
+                      for (int i = 0; i < widget.team.results.length; i++)
+                        FlSpot(
+                          widget.team.results[i].matchNumber.toDouble(),
+                          widget.team.scores[scoreOption][i].toDouble(),
+                        ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

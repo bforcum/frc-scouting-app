@@ -57,14 +57,12 @@ class DetailStrategyPage extends StatelessWidget {
       );
     }
 
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            spacing: 12,
-            children: [FormSection(title: "Stats", children: charts)],
-          ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: Column(
+          spacing: 12,
+          children: [FormSection(title: "Stats", children: charts)],
         ),
       ),
     );

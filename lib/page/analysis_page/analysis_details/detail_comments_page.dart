@@ -43,27 +43,25 @@ class DetailCommentsPage extends StatelessWidget {
               ),
             )
             .toList();
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 12,
-            children:
-                cards.isEmpty
-                    ? [
-                      Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text(
-                          "No Comments",
-                          textAlign: TextAlign.center,
-                          style: TextTheme.of(context).titleSmall,
-                        ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 12,
+          children:
+              cards.isEmpty
+                  ? [
+                    Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        "No Comments",
+                        textAlign: TextAlign.center,
+                        style: TextTheme.of(context).titleSmall,
                       ),
-                    ]
-                    : cards,
-          ),
+                    ),
+                  ]
+                  : cards,
         ),
       ),
     );
