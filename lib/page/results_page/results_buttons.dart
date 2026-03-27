@@ -78,7 +78,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
                 onTap: importFromExcel,
               ),
               SpeedDialChild(
-                label: "Delete selected results",
+                label: "Delete listed results",
                 shape: CircleBorder(),
 
                 child: Icon(Icons.delete_forever, size: 30),
