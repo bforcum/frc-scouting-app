@@ -29,11 +29,6 @@
 	<key>NSCameraUsageDescription</key>
 	<string>ScoutSquatch uses the camera to transfer data between devices using QR codes. No images are saved.</string>
 	<key>UIApplicationSceneManifest</key>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
