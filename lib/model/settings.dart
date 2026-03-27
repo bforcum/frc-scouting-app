@@ -31,7 +31,7 @@ class SettingsModel with _$SettingsModel {
     this.incrementMatchNumber = true,
     this.scoutingLead = false,
     this.themeMode = ThemeMode.system,
-    this.gameFormat = GameFormat.v2026,
+    this.gameFormat = GameFormat.v2026v2,
   });
 
   void persistToSharedPreferences(SharedPreferences prefs) {
