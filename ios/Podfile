@@ -46,3 +46,4 @@ Pod::PICKER_MEDIA = false
 Pod::PICKER_AUDIO = false
 target 'Runner' do
   use_frameworks!
+end
