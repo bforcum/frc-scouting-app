@@ -234,6 +234,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
   Future<void> importFromExcel() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       dialogTitle: "Select a spreadsheet that came from this app",
+      type: FileType.custom,
       allowedExtensions: ["xlsx"],
     );
     if (result == null) {
