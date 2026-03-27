@@ -62,11 +62,11 @@ class StoredResults extends _$StoredResults {
   Future<String?> addAllResults(List<MatchResult> results) async {
     final db = ref.read(databaseProvider);
 
-    try {
-      await db.matchResults.insertAll(results, mode: InsertMode.insertOrFail);
-    } catch (error) {
-      return "Error: ${error.toString()}";
-    }
+    // try {
+    await db.matchResults.insertAll(results, mode: InsertMode.insertOrFail);
+    // } catch (error, stack) {
+    //   rethrow;
+    // }
     ref.invalidate(filteredResultsProvider);
     ref.invalidateSelf();
 

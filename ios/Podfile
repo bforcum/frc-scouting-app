@@ -41,3 +41,9 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
 end
+
+target 'Runner' do
+  use_frameworks!
+
+Pod::PICKER_MEDIA = false
+Pod::PICKER_AUDIO = false

@@ -125,22 +125,25 @@ abstract class MatchResult
     return MatchResult.fromMap(data);
   }
 
-  factory MatchResult.fromExcel(List<Data> values, GameFormat gameFormat) {
+  factory MatchResult.fromExcel(
+    List<Data?> values,
+    GameFormat gameFormat, [
+    String? eventCode,
+  ]) {
     final data = <String, dynamic>{};
+    int i = 0;
+    eventCode ??= values[i++]!.value.toString();
+    int teamNumber = (values[i++]!.value as IntCellValue).value;
+    int matchNumber = (values[i++]!.value as IntCellValue).value;
+    DateTime timeStamp =
+        (values[i++]!.value as DateTimeCellValue).asDateTimeUtc();
+    String scoutName = values[i++]!.value.toString();
 
-    String eventCode = values[0].value.toString();
-    int teamNumber = (values[1].value as IntCellValue).value;
-    int matchNumber = (values[2].value as IntCellValue).value;
-    DateTime timeStamp = (values[3].value as DateTimeCellValue).asDateTimeUtc();
-    String scoutName = values[4].value.toString();
+    for (int j = 0; j < gameFormat.questions.length; j++) {
+      Question question = gameFormat.questions[j];
+      data[question.key] = question.fromExcel(values, i);
 
-    for (int i = 0; i < gameFormat.questions.length; i++) {
-      Question question = gameFormat.questions[i];
-      try {
-        data[question.key] = question.fromExcel(values, i + 5);
-      } catch (e) {
-        continue;
-      }
+      i += question.cellCount;
     }
 
     return MatchResult(

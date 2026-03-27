@@ -260,7 +260,7 @@ class _QuestionCounterGrid extends Question<List<int>> {
   List<int> fromExcel(cells, i) {
     List<int> values = [];
     for (int j = 0; j < columnLabels.length * rowLabels.length; j++) {
-      values.add((cells[i + j].value! as IntCellValue).value);
+      values.add((cells[i + j]!.value! as IntCellValue).value);
     }
     return values;
   }

@@ -33,7 +33,7 @@ abstract class Question<T> {
   void toBin(ByteDataWriter writer, T val);
   T? fromBin(ByteDataReader reader);
   List<CellValue> toExcel(T val);
-  T fromExcel(List<Data> cells, int i);
+  T fromExcel(List<Data?> cells, int i);
   T randomValue([math.Random? generator]);
 
   const Question();
@@ -86,7 +86,7 @@ class QuestionToggle extends Question<bool> {
   @override
   List<CellValue> toExcel(value) => [BoolCellValue(value)];
   @override
-  bool fromExcel(cells, i) => (cells[i].value as BoolCellValue).value;
+  bool fromExcel(cells, i) => (cells[i]!.value as BoolCellValue).value;
   @override
   bool randomValue([generator]) =>
       generator?.nextBool() ?? math.Random().nextBool();
@@ -146,7 +146,7 @@ class QuestionCounter extends Question<int> {
   @override
   List<CellValue> toExcel(value) => [IntCellValue(value)];
   @override
-  int fromExcel(cells, i) => (cells[i].value as IntCellValue).value;
+  int fromExcel(cells, i) => (cells[i]!.value as IntCellValue).value;
   @override
   int randomValue([generator]) =>
       (generator ?? math.Random()).nextInt(math.min(max, 20) - min) + min;
@@ -216,7 +216,7 @@ class QuestionNumber extends Question<int> {
   @override
   List<CellValue> toExcel(value) => [IntCellValue(value)];
   @override
-  int fromExcel(cells, i) => (cells[i].value as IntCellValue).value;
+  int fromExcel(cells, i) => (cells[i]!.value as IntCellValue).value;
   @override
   int randomValue([generator]) =>
       (generator ?? math.Random()).nextInt(max - min) + min;
@@ -282,7 +282,7 @@ class QuestionSelect extends Question<int> {
   List<CellValue> toExcel(val) => [TextCellValue(options[val])];
   @override
   int fromExcel(cells, i) =>
-      options.indexOf((cells[i].value as TextCellValue).value.text!);
+      options.indexOf((cells[i]!.value as TextCellValue).value.text!);
   @override
   int randomValue([generator]) =>
       (generator ?? math.Random()).nextInt(options.length);
@@ -362,7 +362,7 @@ class QuestionText extends Question<String> {
   List<CellValue> toExcel(val) => [TextCellValue(val)];
   @override
   String fromExcel(cells, i) =>
-      (cells[i].value as TextCellValue).value.text ?? "";
+      (cells[i]!.value as TextCellValue).value.text ?? "";
   @override
   String randomValue([generator]) => "Sample Text";
 }

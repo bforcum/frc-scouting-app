@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
@@ -64,16 +66,17 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
             buttonSize: Size(54, 54),
             children: [
               SpeedDialChild(
-                label: "Export to CSV",
+                label: "Export to Excel",
                 shape: CircleBorder(),
                 child: Icon(Icons.file_upload, size: 30),
                 onTap: () => exportToExcel(),
               ),
-              // SpeedDialChild(
-              //   label: "Import from CSV",
-              //   shape: CircleBorder(),
-              //   child: Icon(Icons.file_download, size: 30),
-              // ),
+              SpeedDialChild(
+                label: "Import from Excel",
+                shape: CircleBorder(),
+                child: Icon(Icons.file_download, size: 30),
+                onTap: importFromExcel,
+              ),
               SpeedDialChild(
                 label: "Delete selected results",
                 shape: CircleBorder(),
@@ -189,6 +192,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       TextCellValue(selectedEvent ?? "All Events"),
       TextCellValue("Game format:"),
       TextCellValue(gameFormat.name),
+      IntCellValue(gameFormat.id),
     ]);
     sheetObject.appendRow([
       if (selectedEvent == null) TextCellValue("Event"),
@@ -225,5 +229,56 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
         fileNameOverrides: ["$fileName.xlsx"],
       ),
     );
+  }
+
+  Future<void> importFromExcel() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      dialogTitle: "Select a spreadsheet that came from this app",
+      allowedExtensions: ["xlsx"],
+    );
+    if (result == null) {
+      debugPrint("No result recieved");
+      return;
+    }
+    if (!result.xFiles[0].name.endsWith(".xlsx")) {
+      debugPrint("Incorrect file type");
+      return;
+    }
+    Excel excel = Excel.decodeBytes(await result.xFiles[0].readAsBytes());
+    Sheet sheet = excel.tables.values.first;
+
+    int id = (sheet.rows[0][4]?.value as IntCellValue?)?.value ?? -1;
+    GameFormat? gameFormat = GameFormat.values.singleWhereOrNull(
+      (f) => f.id == id,
+    );
+    if (gameFormat == null) {
+      debugPrint("No game format decoded");
+      return;
+    }
+    String? eventCode = (sheet.rows[0][1]?.value as TextCellValue?)?.value.text;
+    if (eventCode == null) {
+      debugPrint("No event code decoded");
+      return;
+    }
+    if (eventCode.toLowerCase() == "all events") {
+      eventCode = null;
+    }
+
+    List<MatchResult> results = [];
+    int failures = 0;
+    for (List<Data?> row in sheet.rows.skip(2)) {
+      results.add(MatchResult.fromExcel(row, gameFormat, eventCode));
+      // } catch (e) {
+      //   debugPrint(e.toString());
+      //   failures++;
+      // }
+    }
+    debugPrint("Failures: $failures");
+    String? error = await ref
+        .read(storedResultsProvider.notifier)
+        .addAllResults(results);
+    if (error != null) {
+      debugPrint(error);
+    }
   }
 }
