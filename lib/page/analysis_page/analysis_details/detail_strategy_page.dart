@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scouting_app/model/question.dart';
 import 'package:scouting_app/model/team_data.dart';
 import 'package:scouting_app/page/scouting_page/form_section.dart';
+import 'package:statistics/statistics.dart';
 
 class DetailStrategyPage extends StatelessWidget {
   final TeamData team;
@@ -18,8 +19,8 @@ class DetailStrategyPage extends StatelessWidget {
     List<Map<String, dynamic>> data = team.results.map((e) => e.data).toList();
     List<Widget> charts = [];
     for (QuestionSelect question in selectQuestions) {
-      List<int> selectResults =
-          data.map((e) => e[question.key] as int).toList();
+      Map<int, int> selectResults =
+          data.map((e) => e[question.key] as int).counts();
       charts.add(
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,11 +43,14 @@ class DetailStrategyPage extends StatelessWidget {
                               1.0,
                               0.4,
                             ).toColor(),
-                        title: question.options[i],
-                        value:
-                            selectResults
-                                .reduce((a, b) => b == i ? a + 1 : a)
-                                .toDouble(),
+                        badgeWidget: Container(
+                          color: ColorScheme.of(
+                            context,
+                          ).surfaceContainerHighest.withAlpha(192),
+                          padding: EdgeInsets.all(2),
+                          child: Text(question.options[i]),
+                        ),
+                        value: selectResults[i]?.toDouble() ?? 0,
                       ),
                   ],
                 ),
