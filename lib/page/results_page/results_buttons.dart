@@ -162,6 +162,8 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       showSnackBarMessage(error);
       return;
     }
+
+    showSnackBarMessage("Success!");
   }
 
   Future<void> exportToExcel() async {
