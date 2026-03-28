@@ -96,9 +96,9 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
                   question: game.questions[index],
                   value: resultData[game.questions[index].key],
                   onChanged: (value) {
-                    resultData[game.questions[index].key] = value;
-                    // setState(() {
-                    // });
+                    setState(() {
+                      resultData[game.questions[index].key] = value;
+                    });
                   },
                 );
               }).toList(),
@@ -171,11 +171,12 @@ class _EditResultPageState extends ConsumerState<EditResultPage> {
       return null;
     }
 
-    MatchResult result = MatchResult.fromMap(resultData);
     // Handle form submission
     final bool error1 = await ref
         .read(storedResultsProvider.notifier)
-        .deleteByUuid([result.id]);
+        .deleteByUuid([widget.matchResult.id]);
+
+    MatchResult result = MatchResult.fromMap(resultData);
 
     final String? error2 = await ref
         .read(storedResultsProvider.notifier)

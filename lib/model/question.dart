@@ -12,7 +12,18 @@ import 'package:scouting_app/page/scouting_page/form_input/select_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/text_input.dart';
 import 'package:scouting_app/page/scouting_page/form_input/toggle_input.dart';
 
-enum QuestionType { toggle, counter, number, select, text, custom }
+enum QuestionType {
+  toggle(type: bool),
+  counter(type: int),
+  number(type: int),
+  select(type: int),
+  text(type: String),
+  custom(type: dynamic);
+
+  const QuestionType({required this.type});
+
+  final Type type;
+}
 
 abstract class Question<T> {
   abstract final QuestionType type;

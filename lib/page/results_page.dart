@@ -20,6 +20,7 @@ class ResultsPage extends ConsumerStatefulWidget {
 
 class _ResultsPageState extends ConsumerState<ResultsPage> {
   late AsyncValue<List<MatchResult>> matchResults = AsyncValue.loading();
+  late final FocusNode _fc = FocusNode();
 
   late GameFormat gameFormat;
   String? selectedEvent;
@@ -193,6 +194,8 @@ class _ResultsPageState extends ConsumerState<ResultsPage> {
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
                               ],
+                              focusNode: _fc,
+                              onTapOutside: (e) => _fc.unfocus(),
                               onChanged:
                                   (value) => setState(() => searchText = value),
                             ),

@@ -159,11 +159,7 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
         .addAllResults(results);
 
     if (error != null) {
-      showAlertDialog(
-        title: "Error with Saving",
-        content: error,
-        closeMessage: "Okay",
-      );
+      showSnackBarMessage(error);
       return;
     }
   }
@@ -238,11 +234,11 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       allowedExtensions: ["xlsx"],
     );
     if (result == null) {
-      debugPrint("No result recieved");
+      showSnackBarMessage("No file recieved");
       return;
     }
     if (!result.xFiles[0].name.endsWith(".xlsx")) {
-      debugPrint("Incorrect file type");
+      showSnackBarMessage("Incorrect file type");
       return;
     }
     Excel excel = Excel.decodeBytes(await result.xFiles[0].readAsBytes());
@@ -253,12 +249,12 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
       (f) => f.id == id,
     );
     if (gameFormat == null) {
-      debugPrint("No game format decoded");
+      showSnackBarMessage("No game format decoded");
       return;
     }
     String? eventCode = (sheet.rows[0][1]?.value as TextCellValue?)?.value.text;
     if (eventCode == null) {
-      debugPrint("No event code decoded");
+      showSnackBarMessage("No event code decoded");
       return;
     }
     if (eventCode.toLowerCase() == "all events") {
@@ -268,18 +264,20 @@ class _ResultsButtonsState extends ConsumerState<ResultsButtons>
     List<MatchResult> results = [];
     int failures = 0;
     for (List<Data?> row in sheet.rows.skip(2)) {
-      results.add(MatchResult.fromExcel(row, gameFormat, eventCode));
-      // } catch (e) {
-      //   debugPrint(e.toString());
-      //   failures++;
-      // }
+      try {
+        results.add(MatchResult.fromExcel(row, gameFormat, eventCode));
+      } catch (e) {
+        debugPrint(e.toString());
+        failures++;
+      }
     }
-    debugPrint("Failures: $failures");
     String? error = await ref
         .read(storedResultsProvider.notifier)
         .addAllResults(results);
-    if (error != null) {
-      debugPrint(error);
+    if (error == null) {
+      showSnackBarMessage("Failures: $failures");
+    } else {
+      showSnackBarMessage("Failures: $failures, error: $error");
     }
   }
 }
